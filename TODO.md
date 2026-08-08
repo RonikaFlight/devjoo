@@ -1,60 +1,53 @@
 # DevJoo — Project Checklist
 
-## Phase 0 — Foundation
+## Phase 0 — Foundation ✓
 
-### Documentation
 - [x] AGENTS.md
 - [x] PROJECT_STATE.md
 - [x] TODO.md
-- [ ] SEO_PLAN.md
-- [ ] ARCHITECTURE.md
-- [ ] DATABASE.md
-- [ ] DESIGN_SYSTEM.md
-- [ ] API_STATUS.md
-- [ ] CHANGELOG.md
-- [ ] DECISIONS.md
-
-### Infrastructure
+- [x] SEO_PLAN.md
+- [x] ARCHITECTURE.md
+- [x] DATABASE.md
+- [x] DESIGN_SYSTEM.md
+- [x] API_STATUS.md
+- [x] CHANGELOG.md
+- [x] DECISIONS.md
 - [x] Project directory structure
-- [ ] Prisma schema — User, Role, Session, OAuth, Profile entities
-- [ ] Prisma schema — Category, Skill, UserSkill entities
-- [ ] Prisma schema — Project, Proposal, MatchScore entities
-- [ ] Prisma schema — remaining entities (notifications, messaging, etc.)
-- [ ] Prisma migration applied
-- [ ] .env.example created
-- [ ] Environment validation utility
-- [ ] Shared types package
-- [ ] Shared config (site config, feature flags)
-- [ ] Shared utilities (currency formatting, Persian normalization)
-- [ ] Zod validators for core entities
-
-### Design System & RTL
-- [ ] Vazirmatn font self-hosted and configured
-- [ ] RTL layout (html lang="fa" dir="rtl")
-- [ ] Purple design tokens in Tailwind
-- [ ] Dark mode configuration
-- [ ] Global CSS with design tokens
-- [ ] Layout component (Header, Footer)
-- [ ] RTL-aware component patterns
-
-### Verification
-- [ ] `bun run lint` passes
-- [ ] `bun run build` passes (or dev server starts)
-- [ ] DevJoo branding visible on homepage
+- [x] Prisma schema — User, Role, Session, OAuth, Profile entities
+- [x] Prisma schema — Category, Skill, UserSkill entities
+- [x] Prisma schema — Project, Proposal, MatchScore entities
+- [x] Prisma schema — remaining entities (notifications, messaging, etc.)
+- [x] Prisma database synced
+- [x] .env.example created
+- [x] Shared config (site config, feature flags)
+- [x] Shared utilities (currency formatting, Persian normalization)
+- [x] TypeScript enum constants
+- [x] Vazirmatn font self-hosted and configured
+- [x] RTL layout (html lang="fa" dir="rtl")
+- [x] Purple design tokens in Tailwind
+- [x] Dark mode configuration
+- [x] Global CSS with design tokens
+- [x] Layout components (Header, Footer)
+- [x] `bun run lint` passes
+- [x] Dev server starts and renders
+- [x] DevJoo branding visible on homepage
+- [x] Browser verification passed
 
 ---
 
-## Phase 1 — Design System + SEO Foundation
+## Phase 1 — Design System + SEO Foundation (IN PROGRESS)
 
-- [ ] Header component (logo, nav, auth actions)
-- [ ] Footer component
-- [ ] Metadata architecture (helpers for title, description, canonical, OG)
-- [ ] robots.txt (production-aware)
-- [ ] Sitemap architecture
-- [ ] Canonical URL helpers
-- [ ] Structured data helpers (JSON-LD)
-- [ ] Breadcrumb component with structured data
-- [ ] SEO page template
+- [x] Header component (logo, nav, auth actions)
+- [x] Footer component
+- [x] Metadata architecture (helpers for title, description, canonical, OG)
+- [x] robots.txt (production-aware)
+- [x] Sitemap architecture (sitemap-index + projects, categories, blog)
+- [x] Canonical URL helpers
+- [x] Structured data helpers (JSON-LD)
+- [x] Breadcrumb component with structured data
+- [x] SEO page template
+- [x] Homepage structured data (Organization, WebSite, ItemList)
+- [ ] Zod validators for core entities
 
 ---
 

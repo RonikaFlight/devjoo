@@ -31,3 +31,33 @@ Stage Summary:
 - DevJoo foundation is ready for Phase 1 (SEO Foundation + Design System refinement)
 - Homepage visible at preview with DevJoo branding, Persian content, purple design, RTL layout
 - Screenshot saved to /home/z/my-project/download/devjoo-homepage.png
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Phase 1 — SEO Foundation
+
+Work Log:
+- Created src/lib/seo/metadata.ts with generatePageMetadata(), generateFilterPageMetadata(), generatePrivatePageMetadata()
+- Created src/lib/seo/canonical.ts with buildCanonicalUrl() and getSiteUrl()
+- Created src/lib/seo/structured-data.ts with 6 JSON-LD generators: generateBreadcrumbLd, generateOrganizationLd, generateWebSiteLd, generateProfilePageLd, generateArticleLd, generateFaqLd, generateItemListLd
+- Created src/components/seo/structured-data.tsx (server component for <script type="application/ld+json">)
+- Created src/components/seo/breadcrumbs.tsx with visual breadcrumb nav + BreadcrumbList JSON-LD
+- Created src/components/seo/seo-page.tsx wrapper component
+- Created dynamic robots.txt route (blocks /api/, /dashboard/, /admin/, /auth/, /settings/, /messages/ in production; blocks all in dev)
+- Removed static public/robots.txt
+- Created dynamic sitemap-index.xml route
+- Created dynamic sitemap-projects.xml (queries published projects from DB)
+- Created dynamic sitemap-categories.xml (queries active categories + skills)
+- Created dynamic sitemap-blog.xml (queries published blog posts)
+- Integrated Organization + WebSite + ItemList structured data on homepage
+- Verified 3 JSON-LD scripts render on homepage via browser
+- Verified all sitemap routes return valid XML
+- Updated TODO.md: Phase 0 all checked, Phase 1 nearly complete
+- Updated CHANGELOG.md with v0.1.0
+- ESLint passes, all endpoints verified
+
+Stage Summary:
+- Phase 1 SEO Foundation is NEARLY COMPLETE
+- All SEO infrastructure is in place for building SEO landing pages in Phase 4
+- Next: Zod validators, then Phase 2 Authentication

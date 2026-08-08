@@ -3,6 +3,8 @@ import { ArrowLeft, Search, Sparkles, Users, Shield, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { StructuredData } from "@/components/seo/structured-data";
+import { generateOrganizationLd, generateWebSiteLd, generateItemListLd } from "@/lib/seo/structured-data";
 
 const popularSkills = [
   { name: 'React', slug: 'react' },
@@ -39,8 +41,23 @@ const differentiators = [
 ];
 
 export default function HomePage() {
+  const skillItemsLd = popularSkills.map((s, i) => ({
+    name: s.name,
+    url: `/projects/${s.slug}`,
+    position: i + 1,
+  }));
+
   return (
     <>
+      <StructuredData data={generateOrganizationLd()} />
+      <StructuredData data={generateWebSiteLd()} />
+      <StructuredData
+        data={generateItemListLd({
+          name: 'مهارت‌های پرطرفدار',
+          url: '/',
+          items: skillItemsLd,
+        })}
+      />
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
