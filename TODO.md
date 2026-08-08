@@ -35,7 +35,7 @@
 
 ---
 
-## Phase 1 — Design System + SEO Foundation (IN PROGRESS)
+## Phase 1 — Design System + SEO Foundation ✓
 
 - [x] Header component (logo, nav, auth actions)
 - [x] Footer component
@@ -47,25 +47,25 @@
 - [x] Breadcrumb component with structured data
 - [x] SEO page template
 - [x] Homepage structured data (Organization, WebSite, ItemList)
-- [ ] Zod validators for core entities
+- [x] Zod validators for core entities
 
 ---
 
-## Phase 2 — Authentication
+## Phase 2 — Authentication ✓
 
-- [ ] User database models
-- [ ] Session management (HttpOnly cookies)
-- [ ] Mobile OTP backend
-- [ ] Mobile OTP frontend
-- [ ] OTP rate limiting
-- [ ] Google OAuth backend
-- [ ] Google OAuth frontend
-- [ ] GitHub OAuth backend
-- [ ] GitHub OAuth frontend
-- [ ] Role selection flow
-- [ ] Progressive onboarding
-- [ ] Auth API routes
-- [ ] Auth middleware
+- [x] User database models (Phase 0)
+- [x] Session management (HttpOnly cookies, JWT via jose)
+- [x] Mobile OTP backend (request, verify, resend)
+- [x] Mobile OTP frontend (login page with phone/email tabs)
+- [x] OTP rate limiting (2 per minute, 5 attempts per code)
+- [x] Google OAuth backend (code exchange + user creation)
+- [x] Google OAuth frontend (button placeholder on login page)
+- [x] GitHub OAuth backend (code exchange + user creation)
+- [x] GitHub OAuth frontend (button placeholder on login page)
+- [x] Role selection flow (/auth/role-select)
+- [x] Progressive onboarding (register endpoint)
+- [x] Auth API routes (otp, oauth, register, me, logout, password)
+- [x] Auth middleware (JWT verification, route protection)
 - [ ] Authentication tests
 
 ---

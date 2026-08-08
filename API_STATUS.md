@@ -1,16 +1,17 @@
 # DevJoo — API Status
 
 ## Authentication
-[ ] POST /api/v1/auth/send-otp
-[ ] POST /api/v1/auth/verify-otp
-[ ] GET  /api/v1/auth/google
-[ ] GET  /api/v1/auth/google/callback
-[ ] GET  /api/v1/auth/github
-[ ] GET  /api/v1/auth/github/callback
-[ ] POST /api/v1/auth/logout
-[ ] POST /api/v1/auth/logout-all
-[ ] GET  /api/v1/auth/me
-[ ] POST /api/v1/auth/select-role
+[x] POST /api/v1/auth/otp/request — request OTP code (rate-limited)
+[x] POST /api/v1/auth/otp/verify — verify OTP, create session
+[x] POST /api/v1/auth/otp/resend — resend OTP code
+[x] POST /api/v1/auth/oauth/google — Google OAuth code exchange
+[x] POST /api/v1/auth/oauth/github — GitHub OAuth code exchange
+[x] POST /api/v1/auth/register — complete onboarding (displayName + role)
+[x] GET  /api/v1/auth/me — get current user info
+[x] POST /api/v1/auth/logout — destroy session
+[x] POST /api/v1/auth/password/set — set password (OTP/OAuth users)
+[x] POST /api/v1/auth/password/change — change password (requires current)
+[ ] POST /api/v1/auth/logout-all — destroy all sessions
 
 ## Projects
 [ ] GET    /api/v1/projects

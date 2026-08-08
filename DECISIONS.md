@@ -117,3 +117,40 @@ Use `cuid()` as ID generator in SQLite (dev) and `uuid` in PostgreSQL (productio
 CUID is compatible with SQLite and provides unique, non-sequential IDs. PostgreSQL's native UUID support is more efficient with uuid type.
 
 **Status:** Accepted
+
+---
+
+## ADR-011 — Custom JWT Sessions over NextAuth.js
+
+**Decision:**
+Build custom JWT session management using `jose` instead of using NextAuth.js v4.
+
+**Reason:**
+- NextAuth.js adds complexity for a custom marketplace with progressive onboarding
+- Custom JWT sessions allow full control over session lifecycle, rotation, and revocation
+- DB-backed sessions enable proper logout across all devices
+- The modular architecture allows migration to NextAuth.js or a custom OAuth server later
+- `jose` is edge-compatible, lightweight, and has no native dependencies
+
+**Consequences:**
+- More initial code to write (session management, helpers, middleware)
+- Full control over session behavior
+- Easy to debug and extend
+- OAuth flows (Google, GitHub) are manual but straightforward
+
+**Status:** Accepted
+
+---
+
+## ADR-012 — Edge/Node Session Split
+
+**Decision:**
+Split session utilities into two files: `session-edge.ts` (jose only, edge-compatible) and `session.ts` (jose + Prisma, Node.js only).
+
+**Reason:**
+- Next.js 16 middleware runs in Edge Runtime, which doesn't support Prisma (native dependencies)
+- Middleware only needs JWT verification (cryptographic), not DB session validation
+- API routes and server components can use the full `session.ts` with DB validation
+- This split prevents the entire auth system from breaking in Edge Runtime
+
+**Status:** Accepted

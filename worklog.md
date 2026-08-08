@@ -61,3 +61,33 @@ Stage Summary:
 - Phase 1 SEO Foundation is NEARLY COMPLETE
 - All SEO infrastructure is in place for building SEO landing pages in Phase 4
 - Next: Zod validators, then Phase 2 Authentication
+
+---
+Task ID: 3
+Agent: Main Agent
+Task: Phase 1 Completion (Zod Validators) + Phase 2 Authentication
+
+Work Log:
+- Created 6 Zod validator files: auth.ts, profile.ts, project.ts, proposal.ts, taxonomy.ts, common.ts
+- All validators use Persian error messages
+- Project validator includes refined schema with budget type cross-field validation
+- Installed bcryptjs, jose, @types/bcryptjs
+- Created auth module: password.ts (hash/verify), session-edge.ts (jose, edge-safe), session.ts (jose+Prisma), otp.ts (request/verify/resend with rate limiting), helpers.ts (requireAuth, requireRole, etc.), index.ts
+- Fixed critical Edge Runtime issue: middleware can't use Prisma, split session into edge/node files
+- Fixed db import: project uses `db` not `prisma` from @/lib/db
+- Fixed NextResponse.json for cookie-setting routes
+- Created 10 API routes: otp/request, otp/verify, otp/resend, oauth/google, oauth/github, register, me, logout, password/set, password/change
+- Created auth middleware (JWT verification, public route whitelist, page redirect)
+- Created login page (/auth/login) with phone OTP + email tabs, OAuth buttons
+- Created role selection page (/auth/role-select) with freelancer/employer cards
+- Created dashboard skeleton pages (/dashboard, /dashboard/freelancer, /dashboard/employer)
+- Updated .env with AUTH_SECRET, .env.example with auth vars
+- Full auth flow verified via curl: OTP request → verify (sets cookie) → /me → register → /me (updated) → logout → /me (401)
+- ESLint passes, all endpoints tested
+- Updated TODO.md, PROJECT_STATE.md, CHANGELOG.md, DECISIONS.md (added ADR-011, ADR-012)
+
+Stage Summary:
+- Phase 1 COMPLETE (Zod validators added)
+- Phase 2 COMPLETE (full authentication system)
+- 10 working API endpoints, 3 frontend pages, auth middleware
+- Ready for Phase 3 — Marketplace Core
