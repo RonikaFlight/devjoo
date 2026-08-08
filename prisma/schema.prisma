@@ -1,0 +1,542 @@
+// DevJoo Prisma Schema
+// Dev: SQLite | Prod: PostgreSQL
+// Enum constants are defined in src/types/enums.ts
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============ MODELS ============
+
+model User {
+  id           String    @id @default(cuid())
+  email        String?   @unique
+  phone        String?   @unique
+  passwordHash String?
+  displayName  String?
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  roles         UserRole[]
+  sessions      Session[]
+  oauthAccounts OAuthAccount[]
+  profile       Profile?
+  sentProposals Proposal[]       @relation("FreelancerProposals")
+  postedProjects Project[]       @relation("EmployerProjects")
+  savedProjects  SavedProject[]
+  notifications  Notification[]
+  notificationPrefs NotificationPreference[]
+
+  @@index([email])
+  @@index([phone])
+}
+
+model Role {
+  id   String @id @default(cuid())
+  name String @unique
+
+  users UserRole[]
+}
+
+model UserRole {
+  id     String @id @default(cuid())
+  userId String
+  roleId String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+}
+
+model OAuthAccount {
+  id                String  @id @default(cuid())
+  userId            String
+  provider          String
+  providerAccountId String
+  accessToken       String?
+  refreshToken      String?
+  createdAt         DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model OtpRequest {
+  id          String   @id @default(cuid())
+  phone       String
+  codeHash    String
+  expiresAt   DateTime
+  attempts    Int      @default(0)
+  maxAttempts Int      @default(5)
+  verified    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([phone, createdAt])
+}
+
+// ============ PROFILES ============
+
+model Profile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  displayName String?
+  bio         String?
+  avatarUrl   String?
+  city        String?
+  websiteUrl  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  freelancerProfile FreelancerProfile?
+  employerProfile   EmployerProfile?
+  userSkills        UserSkill[]
+  portfolioItems    PortfolioItem[]
+  receivedReviews   Review[]          @relation("ReceivedReviews")
+  givenReviews      Review[]          @relation("GivenReviews")
+
+  @@index([userId])
+}
+
+model FreelancerProfile {
+  id                  String   @id @default(cuid())
+  profileId           String   @unique
+  headline            String?
+  bio                 String?
+  hourlyRateRial      Int?
+  availability        String   @default("AVAILABLE")
+  hoursPerWeek        Int?
+  experienceLevel     String?
+  calculatedLevel    String?
+  availableFrom       DateTime?
+  totalCompletedProjects Int @default(0)
+  totalHires          Int      @default(0)
+  responseRate        Float?
+  averageRating       Float?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+model EmployerProfile {
+  id                     String  @id @default(cuid())
+  profileId              String  @unique
+  companyName            String?
+  companyLogoUrl         String?
+  companySize            String?
+  industry               String?
+  websiteUrl             String?
+  totalPosted            Int     @default(0)
+  totalHired             Int     @default(0)
+  hireRate               Float?
+  responseRate           Float?
+  averageResponseTimeHours Float?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+// ============ TAXONOMY ============
+
+model Category {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  description    String?
+  parentId       String?
+  icon           String?
+  displayOrder   Int      @default(0)
+  seoTitle       String?
+  seoDescription String?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  parent     Category?       @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children   Category[]       @relation("CategoryHierarchy")
+  skills     Skill[]
+  projects   Project[]
+
+  @@index([slug])
+  @@index([parentId])
+}
+
+model Skill {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  categoryId     String?
+  icon           String?
+  displayOrder   Int     @default(0)
+  seoTitle       String?
+  seoDescription String?
+  isActive       Boolean @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  category   Category?    @relation(fields: [categoryId], references: [id])
+  synonyms   SkillSynonym[]
+  userSkills UserSkill[]
+  projects   ProjectSkill[]
+
+  @@index([slug])
+  @@index([categoryId])
+}
+
+model SkillSynonym {
+  id        String  @id @default(cuid())
+  skillId   String
+  name      String
+  normalized String
+  createdAt DateTime @default(now())
+
+  skill Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([name])
+  @@index([normalized])
+}
+
+model UserSkill {
+  id              String    @id @default(cuid())
+  userId          String
+  skillId         String
+  proficiencyLevel String?
+  isVerified      Boolean   @default(false)
+  verifiedAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  profile Profile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill   Skill   @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skillId])
+  @@index([skillId])
+}
+
+// ============ PROJECTS ============
+
+model Project {
+  id                   String   @id @default(cuid())
+  employerId           String
+  title                String
+  slug                 String   @unique
+  description          String
+  categoryId           String?
+  budgetType           String   @default("FIXED")
+  budgetMinRial        Int?
+  budgetMaxRial        Int?
+  fixedPriceRial       Int?
+  estimatedDuration    String?
+  experienceLevel      String?
+  workType             String   @default("REMOTE")
+  city                 String?
+  deadline             DateTime?
+  proposalLimit        Int      @default(10)
+  currentProposalCount Int      @default(0)
+  status               String   @default("DRAFT")
+  isUrgent             Boolean  @default(false)
+  isFeatured           Boolean  @default(false)
+  qualityScore         Float?
+  publishedAt          DateTime?
+  expiresAt            DateTime?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  deletedAt            DateTime?
+
+  employer     User               @relation("EmployerProjects", fields: [employerId], references: [id])
+  category    Category?           @relation(fields: [categoryId], references: [id])
+  skills      ProjectSkill[]
+  statusEvents ProjectStatusEvent[]
+  proposals   Proposal[]
+  savedBy     SavedProject[]
+  matchScores MatchScore[]
+
+  @@index([employerId, createdAt])
+  @@index([status, createdAt])
+  @@index([categoryId, status])
+  @@index([publishedAt])
+}
+
+model ProjectSkill {
+  id        String @id @default(cuid())
+  projectId String
+  skillId   String
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  skill   Skill   @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, skillId])
+}
+
+model ProjectStatusEvent {
+  id        String   @id @default(cuid())
+  projectId String
+  status    String
+  actorId   String?
+  metadata  String?
+  createdAt DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, createdAt])
+}
+
+model SavedProject {
+  id        String   @id @default(cuid())
+  userId    String
+  projectId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, projectId])
+}
+
+// ============ PROPOSALS ============
+
+model Proposal {
+  id               String   @id @default(cuid())
+  projectId        String
+  freelancerId     String
+  priceRial        Int?
+  estimatedDuration String?
+  coverLetter      String
+  status           String   @default("SUBMITTED")
+  rejectionReason  String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  project      Project              @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  freelancer  User                 @relation("FreelancerProposals", fields: [freelancerId], references: [id])
+  statusEvents ProposalStatusEvent[]
+
+  @@unique([projectId, freelancerId])
+  @@index([freelancerId, createdAt])
+  @@index([projectId, status])
+}
+
+model ProposalStatusEvent {
+  id         String   @id @default(cuid())
+  proposalId String
+  status     String
+  actorId    String?
+  createdAt  DateTime @default(now())
+
+  proposal Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+
+  @@index([proposalId, createdAt])
+}
+
+// ============ MATCHING ============
+
+model MatchScore {
+  id           String   @id @default(cuid())
+  projectId    String
+  freelancerId String
+  score        Float
+  breakdown    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, freelancerId])
+  @@index([freelancerId, score(sort: Desc)])
+}
+
+// ============ PORTFOLIO & VERIFICATION ============
+
+model PortfolioItem {
+  id           String   @id @default(cuid())
+  freelancerId String
+  title        String
+  description  String?
+  imageUrl     String?
+  projectUrl   String?
+  displayOrder Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  profile Profile @relation(fields: [freelancerId], references: [id], onDelete: Cascade)
+
+  @@index([freelancerId, displayOrder])
+}
+
+model FreelancerVerification {
+  id         String    @id @default(cuid())
+  profileId  String
+  type       String
+  status     String    @default("PENDING")
+  evidence    String?
+  verifiedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([profileId, type])
+}
+
+model EmployerVerification {
+  id         String    @id @default(cuid())
+  profileId  String
+  type       String
+  status     String    @default("PENDING")
+  evidence    String?
+  verifiedAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([profileId, type])
+}
+
+// ============ REVIEWS ============
+
+model Review {
+  id            String   @id @default(cuid())
+  projectId     String
+  reviewerId     String
+  revieweeId    String
+  rating         Float
+  quality        Float?
+  communication  Float?
+  deadline       Float?
+  professionalism Float?
+  comment        String?
+  isHidden       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  reviewer Profile @relation("GivenReviews", fields: [reviewerId], references: [id])
+  reviewee Profile @relation("ReceivedReviews", fields: [revieweeId], references: [id])
+
+  @@unique([projectId, reviewerId])
+  @@index([revieweeId, createdAt])
+}
+
+// ============ NOTIFICATIONS ============
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  title     String
+  body      String?
+  data      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead, createdAt])
+}
+
+model NotificationPreference {
+  id      String  @id @default(cuid())
+  userId  String
+  type    String
+  channel String
+  enabled Boolean @default(true)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type, channel])
+}
+
+// ============ INVITATIONS ============
+
+model ProjectInvitation {
+  id           String   @id @default(cuid())
+  projectId    String
+  freelancerId String
+  message      String?
+  status       String   @default("SENT")
+  viewedAt     DateTime?
+  respondedAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([projectId, freelancerId])
+  @@index([freelancerId, status])
+}
+
+// ============ BLOG & CONTENT ============
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String?
+  body        String?
+  coverUrl    String?
+  authorId    String?
+  categoryId  String?
+  isPublished Boolean  @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  category BlogCategory? @relation(fields: [categoryId], references: [id])
+
+  @@index([slug])
+  @@index([isPublished, publishedAt])
+}
+
+model BlogCategory {
+  id   String @id @default(cuid())
+  name String @unique
+  slug String @unique
+
+  posts BlogPost[]
+}
+
+// ============ REDIRECTS ============
+
+model Redirect {
+  id       String   @id @default(cuid())
+  fromPath String   @unique
+  toPath   String
+  type     String   @default("301")
+  createdAt DateTime @default(now())
+}
+
+// ============ AUDIT ============
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  actorId      String?
+  action       String
+  resourceType String
+  resourceId   String?
+  metadata     String?
+  createdAt    DateTime @default(now())
+
+  @@index([actorId, createdAt])
+  @@index([resourceType, resourceId])
+}

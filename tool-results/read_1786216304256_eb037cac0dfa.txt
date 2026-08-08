@@ -1,0 +1,2002 @@
+     1→     1→# DEVJOO — MASTER FULL-STACK PRODUCT SPECIFICATION
+     2→     2→
+     3→     3→You are the lead software architect, senior full-stack engineer, product designer, SEO engineer, security engineer, database designer, and QA engineer responsible for building **DevJoo**.
+     4→     4→
+     5→     5→You must actually IMPLEMENT the product.
+     6→     6→
+     7→     7→Do not only provide plans, pseudo-code, explanations, mockups, or static pages.
+     8→     8→
+     9→     9→The final result must be a real, production-ready, scalable, SEO-first Persian freelance marketplace.
+    10→    10→
+    11→    11→---
+    12→    12→
+    13→    13→# 1. PRODUCT NAME
+    14→    14→
+    15→    15→The permanent product name is:
+    16→    16→
+    17→    17→# DevJoo
+    18→    18→
+    19→    19→Always write the brand exactly as:
+    20→    20→
+    21→    21→```text
+    22→    22→DevJoo
+    23→    23→```
+    24→    24→
+    25→    25→Do not rename the product later.
+    26→    26→
+    27→    27→Do not invent temporary names such as:
+    28→    28→
+    29→    29→```text
+    30→    30→FreelanceHub
+    31→    31→TechMarket
+    32→    32→DevMarket
+    33→    33→FreelancerApp
+    34→    34→```
+    35→    35→
+    36→    36→DevJoo is final.
+    37→    37→
+    38→    38→For technical identifiers only, use:
+    39→    39→
+    40→    40→```text
+    41→    41→devjoo
+    42→    42→@devjoo/*
+    43→    43→```
+    44→    44→
+    45→    45→Potential production domain:
+    46→    46→
+    47→    47→```text
+    48→    48→devjoo.ir
+    49→    49→```
+    50→    50→
+    51→    51→Never hardcode the production domain.
+    52→    52→
+    53→    53→Use environment variables:
+    54→    54→
+    55→    55→```env
+    56→    56→NEXT_PUBLIC_SITE_URL=https://devjoo.ir
+    57→    57→API_URL=https://api.devjoo.ir
+    58→    58→```
+    59→    59→
+    60→    60→All canonical URLs, structured data, OpenGraph URLs, sitemap URLs and API URLs must be generated from configuration.
+    61→    61→
+    62→    62→---
+    63→    63→
+    64→    64→# 2. BRAND MEANING
+    65→    65→
+    66→    66→DevJoo represents:
+    67→    67→
+    68→    68→```text
+    69→    69→Dev + Joo
+    70→    70→```
+    71→    71→
+    72→    72→`Dev` represents:
+    73→    73→
+    74→    74→* developers
+    75→    75→* technology
+    76→    76→* software
+    77→    77→* digital professionals
+    78→    78→
+    79→    79→`Joo` is inspired by the Persian concept:
+    80→    80→
+    81→    81→```text
+    82→    82→جو / جوینده
+    83→    83→```
+    84→    84→
+    85→    85→meaning:
+    86→    86→
+    87→    87→> seeker
+    88→    88→
+    89→    89→The brand concept is:
+    90→    90→
+    91→    91→> A place where professionals find the right projects and employers find the right talent.
+    92→    92→
+    93→    93→DevJoo must NOT be restricted only to programmers.
+    94→    94→
+    95→    95→Development is the primary identity, but the marketplace also supports adjacent technology and digital skills.
+    96→    96→
+    97→    97→---
+    98→    98→
+    99→    99→# 3. PRODUCT POSITIONING
+   100→   100→
+   101→   101→Primary positioning:
+   102→   102→
+   103→   103→> The smart Persian marketplace for technology and digital projects.
+   104→   104→
+   105→   105→Persian positioning:
+   106→   106→
+   107→   107→```text
+   108→   108→بازار هوشمند پروژه‌های تکنولوژی و دیجیتال
+   109→   109→```
+   110→   110→
+   111→   111→Possible main slogan:
+   112→   112→
+   113→   113→```text
+   114→   114→پروژه مناسب، بدون رقابت بیهوده
+   115→   115→```
+   116→   116→
+   117→   117→Alternative:
+   118→   118→
+   119→   119→```text
+   120→   120→پروژه‌ای که مناسب توئه، پیدات می‌کنه.
+   121→   121→```
+   122→   122→
+   123→   123→Employer message:
+   124→   124→
+   125→   125→```text
+   126→   126→متخصص مناسب پروژه‌ات را سریع‌تر پیدا کن.
+   127→   127→```
+   128→   128→
+   129→   129→DevJoo must NOT look or behave like a generic marketplace containing unrelated categories such as typing, accounting, architecture, etc.
+   130→   130→
+   131→   131→Technology and digital work are the core identity.
+   132→   132→
+   133→   133→---
+   134→   134→
+   135→   135→# 4. ABSOLUTE PRIORITIES
+   136→   136→
+   137→   137→The priorities of the project, in order, are:
+   138→   138→
+   139→   139→1. SEO
+   140→   140→2. Product functionality
+   141→   141→3. User acquisition
+   142→   142→4. Fast onboarding
+   143→   143→5. User experience
+   144→   144→6. Performance
+   145→   145→7. Trust and safety
+   146→   146→8. Maintainable architecture
+   147→   147→9. Scalability
+   148→   148→10. Monetization
+   149→   149→
+   150→   150→SEO is not an afterthought.
+   151→   151→
+   152→   152→SEO must influence:
+   153→   153→
+   154→   154→* architecture
+   155→   155→* routing
+   156→   156→* database design
+   157→   157→* URL design
+   158→   158→* content structure
+   159→   159→* internal linking
+   160→   160→* rendering strategy
+   161→   161→* project pages
+   162→   162→* category pages
+   163→   163→* skill pages
+   164→   164→* freelancer pages
+   165→   165→* employer pages
+   166→   166→* blog
+   167→   167→* sitemap
+   168→   168→* metadata
+   169→   169→* structured data
+   170→   170→
+   171→   171→from DAY ONE.
+   172→   172→
+   173→   173→---
+   174→   174→
+   175→   175→# 5. CRITICAL CONTINUITY SYSTEM
+   176→   176→
+   177→   177→This project will be developed across many sessions.
+   178→   178→
+   179→   179→You MUST NOT restart from scratch every time.
+   180→   180→
+   181→   181→Immediately create these files in the repository root:
+   182→   182→
+   183→   183→```text
+   184→   184→AGENTS.md
+   185→   185→PROJECT_STATE.md
+   186→   186→TODO.md
+   187→   187→SEO_PLAN.md
+   188→   188→ARCHITECTURE.md
+   189→   189→DATABASE.md
+   190→   190→DESIGN_SYSTEM.md
+   191→   191→API_STATUS.md
+   192→   192→CHANGELOG.md
+   193→   193→DECISIONS.md
+   194→   194→```
+   195→   195→
+   196→   196→These files are mandatory.
+   197→   197→
+   198→   198→---
+   199→   199→
+   200→   200→# 6. AGENTS.md
+   201→   201→
+   202→   202→`AGENTS.md` is the permanent instruction file.
+   203→   203→
+   204→   204→It must summarize and preserve:
+   205→   205→
+   206→   206→* product name
+   207→   207→* product vision
+   208→   208→* architecture
+   209→   209→* frontend stack
+   210→   210→* backend stack
+   211→   211→* database rules
+   212→   212→* API rules
+   213→   213→* SEO rules
+   214→   214→* RTL rules
+   215→   215→* Persian language rules
+   216→   216→* design system
+   217→   217→* authentication architecture
+   218→   218→* security requirements
+   219→   219→* testing requirements
+   220→   220→* naming conventions
+   221→   221→* project directory conventions
+   222→   222→* Definition of Done
+   223→   223→* rules against fake/mock implementation
+   224→   224→* session continuation protocol
+   225→   225→
+   226→   226→Before starting any future task:
+   227→   227→
+   228→   228→READ `AGENTS.md`.
+   229→   229→
+   230→   230→Do not ignore it.
+   231→   231→
+   232→   232→---
+   233→   233→
+   234→   234→# 7. PROJECT_STATE.md
+   235→   235→
+   236→   236→This is the project memory.
+   237→   237→
+   238→   238→Keep it accurate.
+   239→   239→
+   240→   240→Use this exact structure:
+   241→   241→
+   242→   242→```md
+   243→   243→# Project
+   244→   244→DevJoo
+   245→   245→
+   246→   246→# Current Phase
+   247→   247→
+   248→   248→# Last Completed Task
+   249→   249→
+   250→   250→# Currently Working On
+   251→   251→
+   252→   252→# Completed Features
+   253→   253→
+   254→   254→# Partially Completed Features
+   255→   255→
+   256→   256→# Pending Features
+   257→   257→
+   258→   258→# Important Architecture Decisions
+   259→   259→
+   260→   260→# Database Status
+   261→   261→
+   262→   262→# Migration Status
+   263→   263→
+   264→   264→# API Status
+   265→   265→
+   266→   266→# Frontend Status
+   267→   267→
+   268→   268→# Authentication Status
+   269→   269→
+   270→   270→# SEO Status
+   271→   271→
+   272→   272→# Search Status
+   273→   273→
+   274→   274→# Matching Engine Status
+   275→   275→
+   276→   276→# Notification Status
+   277→   277→
+   278→   278→# Admin Panel Status
+   279→   279→
+   280→   280→# Testing Status
+   281→   281→
+   282→   282→# Production Readiness
+   283→   283→
+   284→   284→# Known Bugs
+   285→   285→
+   286→   286→# Technical Debt
+   287→   287→
+   288→   288→# Blockers
+   289→   289→
+   290→   290→# Last Successful Commands
+   291→   291→
+   292→   292→- pnpm lint
+   293→   293→- pnpm typecheck
+   294→   294→- pnpm test
+   295→   295→- pnpm build
+   296→   296→
+   297→   297→# Recently Modified Files
+   298→   298→
+   299→   299→# Next Recommended Task
+   300→   300→```
+   301→   301→
+   302→   302→Update it after every meaningful task.
+   303→   303→
+   304→   304→---
+   305→   305→
+   306→   306→# 8. TODO.md
+   307→   307→
+   308→   308→Create a permanent project checklist.
+   309→   309→
+   310→   310→Every major feature and every important sub-task must be represented by a checkbox.
+   311→   311→
+   312→   312→Example:
+   313→   313→
+   314→   314→```md
+   315→   315→## Authentication
+   316→   316→
+   317→   317→- [ ] Authentication database models
+   318→   318→- [ ] Google OAuth backend
+   319→   319→- [ ] Google OAuth frontend
+   320→   320→- [ ] GitHub OAuth backend
+   321→   321→- [ ] GitHub OAuth frontend
+   322→   322→- [ ] Mobile OTP backend
+   323→   323→- [ ] OTP rate limiting
+   324→   324→- [ ] Session management
+   325→   325→- [ ] Role selection
+   326→   326→- [ ] Progressive onboarding
+   327→   327→- [ ] Authentication tests
+   328→   328→```
+   329→   329→
+   330→   330→A checkbox may only become:
+   331→   331→
+   332→   332→```text
+   333→   333→[x]
+   334→   334→```
+   335→   335→
+   336→   336→when the functionality is actually implemented.
+   337→   337→
+   338→   338→A static UI is NOT an implemented feature.
+   339→   339→
+   340→   340→---
+   341→   341→
+   342→   342→# 9. DEFINITION OF DONE
+   343→   343→
+   344→   344→A feature is complete only if all relevant items are finished:
+   345→   345→
+   346→   346→* database schema exists
+   347→   347→* migrations exist
+   348→   348→* backend logic exists
+   349→   349→* API exists
+   350→   350→* authorization exists
+   351→   351→* validation exists
+   352→   352→* frontend exists
+   353→   353→* frontend uses the real API
+   354→   354→* loading state exists
+   355→   355→* empty state exists
+   356→   356→* error state exists
+   357→   357→* responsive design exists
+   358→   358→* RTL is correct
+   359→   359→* security concerns are addressed
+   360→   360→* tests exist where appropriate
+   361→   361→* lint passes
+   362→   362→* typecheck passes
+   363→   363→* build passes
+   364→   364→
+   365→   365→Never mark an unfinished feature as completed.
+   366→   366→
+   367→   367→---
+   368→   368→
+   369→   369→# 10. SESSION CONTINUATION PROTOCOL
+   370→   370→
+   371→   371→At the beginning of every future session:
+   372→   372→
+   373→   373→1. Read `AGENTS.md`
+   374→   374→2. Read `PROJECT_STATE.md`
+   375→   375→3. Read `TODO.md`
+   376→   376→4. Identify the first relevant unfinished task
+   377→   377→5. Read only files relevant to that task
+   378→   378→6. Continue implementation
+   379→   379→
+   380→   380→Do NOT re-read the entire repository every time.
+   381→   381→
+   382→   382→Do NOT recreate the project.
+   383→   383→
+   384→   384→Do NOT recreate already completed pages.
+   385→   385→
+   386→   386→Do NOT rewrite stable working modules simply because another approach is possible.
+   387→   387→
+   388→   388→Never restart Bootstrap/Foundation unless the project files do not exist.
+   389→   389→
+   390→   390→---
+   391→   391→
+   392→   392→# 11. END-OF-TASK PROTOCOL
+   393→   393→
+   394→   394→After every major implementation task:
+   395→   395→
+   396→   396→1. update `TODO.md`
+   397→   397→2. update `PROJECT_STATE.md`
+   398→   398→3. update relevant documentation
+   399→   399→4. run appropriate tests
+   400→   400→5. run typecheck
+   401→   401→6. run lint
+   402→   402→7. run build when relevant
+   403→   403→
+   404→   404→Record failures truthfully.
+   405→   405→
+   406→   406→Do not hide errors.
+   407→   407→
+   408→   408→Your final response after each coding task should be concise and contain:
+   409→   409→
+   410→   410→```text
+   411→   411→Completed:
+   412→   412→Files changed:
+   413→   413→Tests:
+   414→   414→Remaining:
+   415→   415→Next task:
+   416→   416→```
+   417→   417→
+   418→   418→Do NOT repeat the entire master prompt every session.
+   419→   419→
+   420→   420→---
+   421→   421→
+   422→   422→# 12. PROJECT ARCHITECTURE
+   423→   423→
+   424→   424→Use a TypeScript Monorepo.
+   425→   425→
+   426→   426→Recommended structure:
+   427→   427→
+   428→   428→```text
+   429→   429→devjoo/
+   430→   430→│
+   431→   431→├── apps/
+   432→   432→│   ├── web/
+   433→   433→│   └── api/
+   434→   434→│
+   435→   435→├── packages/
+   436→   436→│   ├── ui/
+   437→   437→│   ├── types/
+   438→   438→│   ├── config/
+   439→   439→│   ├── api-client/
+   440→   440→│   ├── eslint-config/
+   441→   441→│   └── typescript-config/
+   442→   442→│
+   443→   443→├── docker/
+   444→   444→├── docs/
+   445→   445→├── AGENTS.md
+   446→   446→├── PROJECT_STATE.md
+   447→   447→├── TODO.md
+   448→   448→├── SEO_PLAN.md
+   449→   449→├── ARCHITECTURE.md
+   450→   450→├── DATABASE.md
+   451→   451→├── DESIGN_SYSTEM.md
+   452→   452→└── package.json
+   453→   453→```
+   454→   454→
+   455→   455→Use:
+   456→   456→
+   457→   457→```text
+   458→   458→pnpm
+   459→   459→Turborepo
+   460→   460→TypeScript strict mode
+   461→   461→```
+   462→   462→
+   463→   463→Do not use `any` unless absolutely necessary and documented.
+   464→   464→
+   465→   465→---
+   466→   466→
+   467→   467→# 13. FRONTEND STACK
+   468→   468→
+   469→   469→Use:
+   470→   470→
+   471→   471→```text
+   472→   472→Next.js — latest stable
+   473→   473→React — stable compatible version
+   474→   474→App Router
+   475→   475→TypeScript
+   476→   476→Tailwind CSS
+   477→   477→shadcn/ui where appropriate
+   478→   478→Radix UI primitives where appropriate
+   479→   479→TanStack Query
+   480→   480→React Hook Form
+   481→   481→Zod
+   482→   482→Lucide Icons
+   483→   483→```
+   484→   484→
+   485→   485→Use Server Components by default.
+   486→   486→
+   487→   487→Use Client Components only when real client interaction is necessary.
+   488→   488→
+   489→   489→SEO-critical content must be rendered on the server.
+   490→   490→
+   491→   491→Do NOT create SEO pages where the important content only appears after client-side JavaScript fetches data.
+   492→   492→
+   493→   493→Use:
+   494→   494→
+   495→   495→* SSR
+   496→   496→* SSG
+   497→   497→* ISR
+   498→   498→
+   499→   499→appropriately.
+   500→   500→
+   501→   501→---
+   502→   502→
+   503→   503→# 14. BACKEND STACK
+   504→   504→
+   505→   505→Use:
+   506→   506→
+   507→   507→```text
+   508→   508→NestJS
+   509→   509→TypeScript
+   510→   510→REST API
+   511→   511→OpenAPI / Swagger
+   512→   512→```
+   513→   513→
+   514→   514→Backend architecture:
+   515→   515→
+   516→   516→# Modular Monolith
+   517→   517→
+   518→   518→Do NOT start with microservices.
+   519→   519→
+   520→   520→Create clean domain modules so services can be extracted later if necessary.
+   521→   521→
+   522→   522→Recommended modules:
+   523→   523→
+   524→   524→```text
+   525→   525→AuthModule
+   526→   526→UsersModule
+   527→   527→ProfilesModule
+   528→   528→FreelancersModule
+   529→   529→EmployersModule
+   530→   530→SkillsModule
+   531→   531→CategoriesModule
+   532→   532→ProjectsModule
+   533→   533→ProposalsModule
+   534→   534→MatchingModule
+   535→   535→SearchModule
+   536→   536→SavedModule
+   537→   537→InvitationsModule
+   538→   538→MessagingModule
+   539→   539→NotificationsModule
+   540→   540→ReviewsModule
+   541→   541→VerificationModule
+   542→   542→GithubModule
+   543→   543→PortfolioModule
+   544→   544→PricingModule
+   545→   545→AiModule
+   546→   546→ServicesModule
+   547→   547→TeamsModule
+   548→   548→ContractsModule
+   549→   549→MilestonesModule
+   550→   550→PaymentsModule
+   551→   551→AnalyticsModule
+   552→   552→ReportsModule
+   553→   553→SeoModule
+   554→   554→ContentModule
+   555→   555→AdminModule
+   556→   556→AuditModule
+   557→   557→```
+   558→   558→
+   559→   559→---
+   560→   560→
+   561→   561→# 15. DATABASE
+   562→   562→
+   563→   563→Use:
+   564→   564→
+   565→   565→```text
+   566→   566→PostgreSQL
+   567→   567→Prisma ORM
+   568→   568→```
+   569→   569→
+   570→   570→Use the latest stable compatible versions.
+   571→   571→
+   572→   572→Use actual migrations.
+   573→   573→
+   574→   574→Never store important business data in JSON files.
+   575→   575→
+   576→   576→Prefer UUID identifiers.
+   577→   577→
+   578→   578→Use timestamps:
+   579→   579→
+   580→   580→```text
+   581→   581→createdAt
+   582→   582→updatedAt
+   583→   583→deletedAt where required
+   584→   584→```
+   585→   585→
+   586→   586→Use soft deletes only where they make business sense.
+   587→   587→
+   588→   588→---
+   589→   589→
+   590→   590→# 16. MONEY
+   591→   591→
+   592→   592→Store money as integer values.
+   593→   593→
+   594→   594→Do NOT use floating point numbers for financial amounts.
+   595→   595→
+   596→   596→Store canonical monetary values in:
+   597→   597→
+   598→   598→```text
+   599→   599→IRR / Rial
+   600→   600→```
+   601→   601→
+   602→   602→For example:
+   603→   603→
+   604→   604→```text
+   605→   605→budgetMinRial
+   606→   606→budgetMaxRial
+   607→   607→amountRial
+   608→   608→```
+   609→   609→
+   610→   610→The frontend may display تومان when appropriate.
+   611→   611→
+   612→   612→Create centralized currency formatting utilities.
+   613→   613→
+   614→   614→---
+   615→   615→
+   616→   616→# 17. DATABASE ENTITIES
+   617→   617→
+   618→   618→Design proper relational entities for at least:
+   619→   619→
+   620→   620→```text
+   621→   621→User
+   622→   622→Role
+   623→   623→UserRole
+   624→   624→Session
+   625→   625→OAuthAccount
+   626→   626→OtpRequest
+   627→   627→
+   628→   628→Profile
+   629→   629→FreelancerProfile
+   630→   630→EmployerProfile
+   631→   631→
+   632→   632→Category
+   633→   633→Skill
+   634→   634→UserSkill
+   635→   635→SkillVerification
+   636→   636→
+   637→   637→Project
+   638→   638→ProjectSkill
+   639→   639→ProjectCategory
+   640→   640→ProjectStatusEvent
+   641→   641→SavedProject
+   642→   642→
+   643→   643→Proposal
+   644→   644→ProposalStatusEvent
+   645→   645→
+   646→   646→ProjectInvitation
+   647→   647→
+   648→   648→MatchScore
+   649→   649→MatchBreakdown
+   650→   650→
+   651→   651→PortfolioItem
+   652→   652→GithubConnection
+   653→   653→GithubRepository
+   654→   654→
+   655→   655→EmployerVerification
+   656→   656→FreelancerVerification
+   657→   657→
+   658→   658→Review
+   659→   659→ReputationScore
+   660→   660→
+   661→   661→Conversation
+   662→   662→ConversationMember
+   663→   663→Message
+   664→   664→
+   665→   665→Notification
+   666→   666→NotificationPreference
+   667→   667→
+   668→   668→ServiceListing
+   669→   669→ServiceOrder
+   670→   670→
+   671→   671→Team
+   672→   672→TeamMember
+   673→   673→
+   674→   674→Contract
+   675→   675→Milestone
+   676→   676→
+   677→   677→Payment
+   678→   678→PaymentTransaction
+   679→   679→
+   680→   680→ProjectView
+   681→   681→ProfileView
+   682→   682→ProposalAnalytics
+   683→   683→
+   684→   684→Report
+   685→   685→ModerationAction
+   686→   686→AuditLog
+   687→   687→
+   688→   688→BlogPost
+   689→   689→BlogCategory
+   690→   690→SeoLandingPage
+   691→   691→Redirect
+   692→   692→```
+   693→   693→
+   694→   694→Add indexes based on real query patterns.
+   695→   695→
+   696→   696→---
+   697→   697→
+   698→   698→# 18. REDIS & BACKGROUND JOBS
+   699→   699→
+   700→   700→Use:
+   701→   701→
+   702→   702→```text
+   703→   703→Redis
+   704→   704→BullMQ
+   705→   705→```
+   706→   706→
+   707→   707→Use Redis for:
+   708→   708→
+   709→   709→* cache
+   710→   710→* background tasks
+   711→   711→* throttling support
+   712→   712→* distributed rate-limit state
+   713→   713→* notification jobs
+   714→   714→* email jobs
+   715→   715→* SMS jobs
+   716→   716→* project expiry
+   717→   717→* matching calculations
+   718→   718→* analytics aggregation
+   719→   719→* AI processing
+   720→   720→
+   721→   721→Never perform slow external operations directly inside request-response paths when background processing is appropriate.
+   722→   722→
+   723→   723→---
+   724→   724→
+   725→   725→# 19. OBJECT STORAGE
+   726→   726→
+   727→   727→Create a storage abstraction.
+   728→   728→
+   729→   729→Production must support S3-compatible storage.
+   730→   730→
+   731→   731→Use it for:
+   732→   732→
+   733→   733→* avatars
+   734→   734→* portfolio images
+   735→   735→* attachments
+   736→   736→* company logos
+   737→   737→* verification files
+   738→   738→
+   739→   739→Do not store uploaded binary files directly in PostgreSQL.
+   740→   740→
+   741→   741→For local development use an S3-compatible local solution such as MinIO if useful.
+   742→   742→
+   743→   743→---
+   744→   744→
+   745→   745→# 20. PRIMARY ROLES
+   746→   746→
+   747→   747→Users can have:
+   748→   748→
+   749→   749→```text
+   750→   750→FREELANCER
+   751→   751→EMPLOYER
+   752→   752→ADMIN
+   753→   753→MODERATOR
+   754→   754→```
+   755→   755→
+   756→   756→A normal user can simultaneously be:
+   757→   757→
+   758→   758→```text
+   759→   759→FREELANCER + EMPLOYER
+   760→   760→```
+   761→   761→
+   762→   762→Do not force users to create separate accounts.
+   763→   763→
+   764→   764→---
+   765→   765→
+   766→   766→# 21. INSTANT JOIN — CRITICAL FEATURE
+   767→   767→
+   768→   768→Registration must feel extremely easy.
+   769→   769→
+   770→   770→The user must NOT see a giant registration form.
+   771→   771→
+   772→   772→Feature name:
+   773→   773→
+   774→   774→# Instant Join
+   775→   775→
+   776→   776→Support:
+   777→   777→
+   778→   778→```text
+   779→   779→Continue with Google
+   780→   780→Continue with GitHub
+   781→   781→Mobile OTP
+   782→   782→```
+   783→   783→
+   784→   784→The ideal flow:
+   785→   785→
+   786→   786→```text
+   787→   787→Login
+   788→   788→↓
+   789→   789→Choose role
+   790→   790→↓
+   791→   791→Enter application
+   792→   792→```
+   793→   793→
+   794→   794→Target onboarding time:
+   795→   795→
+   796→   796→```text
+   797→   797→under 30 seconds
+   798→   798→```
+   799→   799→
+   800→   800→---
+   801→   801→
+   802→   802→# 22. MOBILE OTP
+   803→   803→
+   804→   804→Flow:
+   805→   805→
+   806→   806→```text
+   807→   807→Phone number
+   808→   808→↓
+   809→   809→Send OTP
+   810→   810→↓
+   811→   811→Enter code
+   812→   812→↓
+   813→   813→Authenticated
+   814→   814→```
+   815→   815→
+   816→   816→Implement:
+   817→   817→
+   818→   818→* OTP expiry
+   819→   819→* resend timer
+   820→   820→* request rate limiting
+   821→   821→* brute-force protection
+   822→   822→* maximum verification attempts
+   823→   823→* securely hashed OTP codes
+   824→   824→* phone number normalization
+   825→   825→* audit logging
+   826→   826→
+   827→   827→Do not store OTP values as plaintext.
+   828→   828→
+   829→   829→Create an SMS provider abstraction.
+   830→   830→
+   831→   831→Never hardcode a specific Iranian SMS provider deeply into application logic.
+   832→   832→
+   833→   833→---
+   834→   834→
+   835→   835→# 23. GOOGLE & GITHUB LOGIN
+   836→   836→
+   837→   837→Implement secure OAuth.
+   838→   838→
+   839→   839→Use:
+   840→   840→
+   841→   841→* state protection
+   842→   842→* callback validation
+   843→   843→* secure sessions
+   844→   844→* account linking
+   845→   845→* duplicate-account prevention
+   846→   846→
+   847→   847→If the same verified email already exists, offer safe account linking logic rather than silently creating duplicate accounts.
+   848→   848→
+   849→   849→---
+   850→   850→
+   851→   851→# 24. SESSION SECURITY
+   852→   852→
+   853→   853→Do NOT store long-lived authentication tokens in `localStorage`.
+   854→   854→
+   855→   855→Prefer secure session architecture using:
+   856→   856→
+   857→   857→```text
+   858→   858→HttpOnly
+   859→   859→Secure
+   860→   860→SameSite
+   861→   861→```
+   862→   862→
+   863→   863→cookies.
+   864→   864→
+   865→   865→Implement:
+   866→   866→
+   867→   867→* session rotation
+   868→   868→* session revocation
+   869→   869→* logout
+   870→   870→* logout all devices
+   871→   871→* active sessions page if reasonable
+   872→   872→
+   873→   873→---
+   874→   874→
+   875→   875→# 25. PROGRESSIVE ONBOARDING
+   876→   876→
+   877→   877→Do not force full profile creation before allowing users to explore DevJoo.
+   878→   878→
+   879→   879→Initial question:
+   880→   880→
+   881→   881→```text
+   882→   882→برای چه کاری اینجایی؟
+   883→   883→```
+   884→   884→
+   885→   885→Options:
+   886→   886→
+   887→   887→```text
+   888→   888→دنبال پروژه‌ام
+   889→   889→دنبال متخصصم
+   890→   890→```
+   891→   891→
+   892→   892→Allow both roles later.
+   893→   893→
+   894→   894→For freelancers, profile completion should happen progressively.
+   895→   895→
+   896→   896→Example:
+   897→   897→
+   898→   898→Before first proposal:
+   899→   899→
+   900→   900→```text
+   901→   901→برای ارسال پیشنهاد، ۳ مهارت اصلی خود را انتخاب کنید.
+   902→   902→```
+   903→   903→
+   904→   904→Then later suggest:
+   905→   905→
+   906→   906→```text
+   907→   907→نمونه‌کار اضافه کنید
+   908→   908→GitHub خود را متصل کنید
+   909→   909→تجربه کاری را کامل کنید
+   910→   910→```
+   911→   911→
+   912→   912→Show profile completion percentage.
+   913→   913→
+   914→   914→Do not block the user unless the missing information is required for that specific action.
+   915→   915→
+   916→   916→---
+   917→   917→
+   918→   918→# 26. PUBLIC ACCESS
+   919→   919→
+   920→   920→Users must NOT be required to log in simply to view marketplace content.
+   921→   921→
+   922→   922→Anonymous users can:
+   923→   923→
+   924→   924→* browse projects
+   925→   925→* search projects
+   926→   926→* filter projects
+   927→   927→* view project detail
+   928→   928→* view budgets
+   929→   929→* view public freelancer profiles
+   930→   930→* view employer profiles where appropriate
+   931→   931→* view skills
+   932→   932→* view categories
+   933→   933→* read blog content
+   934→   934→* view service listings
+   935→   935→
+   936→   936→Require authentication only for actions such as:
+   937→   937→
+   938→   938→* send proposal
+   939→   939→* save
+   940→   940→* follow
+   941→   941→* send message
+   942→   942→* create project
+   943→   943→* invite freelancer
+   944→   944→* create service
+   945→   945→* purchase service
+   946→   946→* review
+   947→   947→
+   948→   948→---
+   949→   949→
+   950→   950→# 27. MAIN MARKETPLACE CATEGORIES
+   951→   951→
+   952→   952→## Development
+   953→   953→
+   954→   954→```text
+   955→   955→Frontend
+   956→   956→Backend
+   957→   957→Full Stack
+   958→   958→React
+   959→   959→Next.js
+   960→   960→Vue
+   961→   961→Angular
+   962→   962→JavaScript
+   963→   963→TypeScript
+   964→   964→Node.js
+   965→   965→Python
+   966→   966→Django
+   967→   967→FastAPI
+   968→   968→PHP
+   969→   969→Laravel
+   970→   970→Java
+   971→   971→.NET
+   972→   972→WordPress
+   973→   973→WooCommerce
+   974→   974→Mobile Development
+   975→   975→Flutter
+   976→   976→React Native
+   977→   977→Android
+   978→   978→iOS
+   979→   979→```
+   980→   980→
+   981→   981→## UI/UX & Design
+   982→   982→
+   983→   983→```text
+   984→   984→UI Design
+   985→   985→UX Design
+   986→   986→UI/UX
+   987→   987→Figma
+   988→   988→Web Design
+   989→   989→Product Design
+   990→   990→Graphic Design
+   991→   991→Design System
+   992→   992→```
+   993→   993→
+   994→   994→## AI & Data
+   995→   995→
+   996→   996→```text
+   997→   997→Artificial Intelligence
+   998→   998→Machine Learning
+   999→   999→AI Automation
+  1000→  1000→Chatbots
+  1001→  1001→Data Analysis
+  1002→  1002→Data Engineering
+  1003→  1003→Data Science
+  1004→  1004→```
+  1005→  1005→
+  1006→  1006→## DevOps & Infrastructure
+  1007→  1007→
+  1008→  1008→```text
+  1009→  1009→Linux
+  1010→  1010→Docker
+  1011→  1011→Kubernetes
+  1012→  1012→CI/CD
+  1013→  1013→Cloud
+  1014→  1014→Server Administration
+  1015→  1015→Infrastructure
+  1016→  1016→```
+  1017→  1017→
+  1018→  1018→## QA
+  1019→  1019→
+  1020→  1020→```text
+  1021→  1021→QA
+  1022→  1022→Manual Testing
+  1023→  1023→Automation Testing
+  1024→  1024→Performance Testing
+  1025→  1025→```
+  1026→  1026→
+  1027→  1027→## Digital
+  1028→  1028→
+  1029→  1029→```text
+  1030→  1030→SEO
+  1031→  1031→Technical SEO
+  1032→  1032→Content SEO
+  1033→  1033→Digital Marketing
+  1034→  1034→Performance Marketing
+  1035→  1035→Analytics
+  1036→  1036→```
+  1037→  1037→
+  1038→  1038→Development should receive the most prominence.
+  1039→  1039→
+  1040→  1040→---
+  1041→  1041→
+  1042→  1042→# 28. PROJECT CREATION
+  1043→  1043→
+  1044→  1044→Employers must be able to create a project.
+  1045→  1045→
+  1046→  1046→Project fields may include:
+  1047→  1047→
+  1048→  1048→```text
+  1049→  1049→title
+  1050→  1050→description
+  1051→  1051→category
+  1052→  1052→skills
+  1053→  1053→budget type
+  1054→  1054→minimum budget
+  1055→  1055→maximum budget
+  1056→  1056→fixed/hourly
+  1057→  1057→estimated duration
+  1058→  1058→experience level
+  1059→  1059→remote/on-site/hybrid
+  1060→  1060→city if relevant
+  1061→  1061→deadline
+  1062→  1062→attachments
+  1063→  1063→proposal limit
+  1064→  1064→visibility
+  1065→  1065→```
+  1066→  1066→
+  1067→  1067→Project creation must support:
+  1068→  1068→
+  1069→  1069→```text
+  1070→  1070→Draft
+  1071→  1071→Preview
+  1072→  1072→Publish
+  1073→  1073→```
+  1074→  1074→
+  1075→  1075→Validate everything.
+  1076→  1076→
+  1077→  1077→---
+  1078→  1078→
+  1079→  1079→# 29. PROJECT STATUS
+  1080→  1080→
+  1081→  1081→Use a real project state machine.
+  1082→  1082→
+  1083→  1083→Possible statuses:
+  1084→  1084→
+  1085→  1085→```text
+  1086→  1086→DRAFT
+  1087→  1087→PENDING_REVIEW
+  1088→  1088→PUBLISHED
+  1089→  1089→PAUSED
+  1090→  1090→IN_PROGRESS
+  1091→  1091→COMPLETED
+  1092→  1092→CANCELLED
+  1093→  1093→EXPIRED
+  1094→  1094→REJECTED
+  1095→  1095→```
+  1096→  1096→
+  1097→  1097→Prevent invalid status transitions.
+  1098→  1098→
+  1099→  1099→Track status history.
+  1100→  1100→
+  1101→  1101→---
+  1102→  1102→
+  1103→  1103→# 30. PROPOSALS
+  1104→  1104→
+  1105→  1105→Freelancers can send a proposal containing:
+  1106→  1106→
+  1107→  1107→```text
+  1108→  1108→price
+  1109→  1109→estimated duration
+  1110→  1110→cover message
+  1111→  1111→milestone proposal if appropriate
+  1112→  1112→optional attachments
+  1113→  1113→```
+  1114→  1114→
+  1115→  1115→Proposal statuses:
+  1116→  1116→
+  1117→  1117→```text
+  1118→  1118→SUBMITTED
+  1119→  1119→VIEWED
+  1120→  1120→SHORTLISTED
+  1121→  1121→REJECTED
+  1122→  1122→ACCEPTED
+  1123→  1123→WITHDRAWN
+  1124→  1124→```
+  1125→  1125→
+  1126→  1126→Track status history.
+  1127→  1127→
+  1128→  1128→---
+  1129→  1129→
+  1130→  1130→# 31. MAX 10 QUALIFIED PROPOSALS
+  1131→  1131→
+  1132→  1132→One of DevJoo's core differentiators.
+  1133→  1133→
+  1134→  1134→Default project proposal limit:
+  1135→  1135→
+  1136→  1136→```text
+  1137→  1137→10 qualified proposals
+  1138→  1138→```
+  1139→  1139→
+  1140→  1140→Example:
+  1141→  1141→
+  1142→  1142→```text
+  1143→  1143→6 / 10 پیشنهاد
+  1144→  1144→```
+  1145→  1145→
+  1146→  1146→Do NOT automatically allow hundreds of low-quality proposals.
+  1147→  1147→
+  1148→  1148→A proposal should only consume a qualified slot if it passes platform rules.
+  1149→  1149→
+  1150→  1150→Admin can configure:
+  1151→  1151→
+  1152→  1152→```text
+  1153→  1153→default proposal limit
+  1154→  1154→minimum proposal limit
+  1155→  1155→maximum proposal limit
+  1156→  1156→```
+  1157→  1157→
+  1158→  1158→Employers may optionally choose other allowed limits.
+  1159→  1159→
+  1160→  1160→---
+  1161→  1161→
+  1162→  1162→# 32. NO TOKEN BIDDING
+  1163→  1163→
+  1164→  1164→Do NOT create a system where freelancers must buy tokens simply to send ordinary proposals.
+  1165→  1165→
+  1166→  1166→DevJoo's core positioning includes:
+  1167→  1167→
+  1168→  1168→```text
+  1169→  1169→بدون خرید توکن برای ارسال پیشنهاد
+  1170→  1170→```
+  1171→  1171→
+  1172→  1172→Combat spam using:
+  1173→  1173→
+  1174→  1174→* qualification rules
+  1175→  1175→* rate limits
+  1176→  1176→* reputation
+  1177→  1177→* project relevance
+  1178→  1178→* verification
+  1179→  1179→* proposal limits
+  1180→  1180→* anti-spam systems
+  1181→  1181→
+  1182→  1182→not artificial proposal tokens.
+  1183→  1183→
+  1184→  1184→---
+  1185→  1185→
+  1186→  1186→# 33. DEVJOO MATCH
+  1187→  1187→
+  1188→  1188→Implement a real Match Score.
+  1189→  1189→
+  1190→  1190→Example:
+  1191→  1191→
+  1192→  1192→```text
+  1193→  1193→92% Match
+  1194→  1194→```
+  1195→  1195→
+  1196→  1196→This must NOT be random.
+  1197→  1197→
+  1198→  1198→Create a dedicated matching engine.
+  1199→  1199→
+  1200→  1200→Initial score components can include:
+  1201→  1201→
+  1202→  1202→```text
+  1203→  1203→Required skills match          40%
+  1204→  1204→Category relevance             15%
+  1205→  1205→Experience level               10%
+  1206→  1206→Budget compatibility           10%
+  1207→  1207→Availability                   10%
+  1208→  1208→Verified skills                10%
+  1209→  1209→Reputation                     5%
+  1210→  1210→```
+  1211→  1211→
+  1212→  1212→Keep weights configurable.
+  1213→  1213→
+  1214→  1214→Store useful calculated results.
+  1215→  1215→
+  1216→  1216→Show an understandable breakdown:
+  1217→  1217→
+  1218→  1218→```text
+  1219→  1219→React             ✓
+  1220→  1220→Next.js           ✓
+  1221→  1221→TypeScript        ✓
+  1222→  1222→Experience        ✓
+  1223→  1223→Budget            ✓
+  1224→  1224→Availability      ✕
+  1225→  1225→```
+  1226→  1226→
+  1227→  1227→Do not expose sensitive algorithm internals that enable abuse.
+  1228→  1228→
+  1229→  1229→---
+  1230→  1230→
+  1231→  1231→# 34. SMART FEED
+  1232→  1232→
+  1233→  1233→Each freelancer should receive a personalized project feed.
+  1234→  1234→
+  1235→  1235→Default ordering should not simply be:
+  1236→  1236→
+  1237→  1237→```text
+  1238→  1238→newest project first
+  1239→  1239→```
+  1240→  1240→
+  1241→  1241→Consider:
+  1242→  1242→
+  1243→  1243→* Match Score
+  1244→  1244→* freshness
+  1245→  1245→* budget
+  1246→  1246→* preferred skills
+  1247→  1247→* project quality
+  1248→  1248→* employer quality
+  1249→  1249→* user behavior
+  1250→  1250→* saved skills
+  1251→  1251→
+  1252→  1252→Tabs can include:
+  1253→  1253→
+  1254→  1254→```text
+  1255→  1255→برای شما
+  1256→  1256→جدیدترین
+  1257→  1257→بالاترین تطابق
+  1258→  1258→بودجه بالا
+  1259→  1259→فوری
+  1260→  1260→```
+  1261→  1261→
+  1262→  1262→---
+  1263→  1263→
+  1264→  1264→# 35. DEVJOO VERIFIED
+  1265→  1265→
+  1266→  1266→Implement verification layers.
+  1267→  1267→
+  1268→  1268→Possible badges:
+  1269→  1269→
+  1270→  1270→```text
+  1271→  1271→GitHub Connected
+  1272→  1272→Email Verified
+  1273→  1273→Phone Verified
+  1274→  1274→Identity Verified
+  1275→  1275→Employer Verified
+  1276→  1276→React Verified
+  1277→  1277→Next.js Verified
+  1278→  1278→WordPress Verified
+  1279→  1279→```
+  1280→  1280→
+  1281→  1281→Never display a verification badge unless the verification actually occurred.
+  1282→  1282→
+  1283→  1283→---
+  1284→  1284→
+  1285→  1285→# 36. GITHUB INTEGRATION
+  1286→  1286→
+  1287→  1287→Allow users to connect GitHub.
+  1288→  1288→
+  1289→  1289→With authorization and user consent, retrieve relevant public profile/repository information.
+  1290→  1290→
+  1291→  1291→Possible use cases:
+  1292→  1292→
+  1293→  1293→* GitHub connection badge
+  1294→  1294→* repository portfolio
+  1295→  1295→* technology signals
+  1296→  1296→* activity signals
+  1297→  1297→* profile enrichment
+  1298→  1298→
+  1299→  1299→Never falsely claim that GitHub activity automatically proves seniority.
+  1300→  1300→
+  1301→  1301→Do not automatically expose private repositories.
+  1302→  1302→
+  1303→  1303→---
+  1304→  1304→
+  1305→  1305→# 37. GITHUB PORTFOLIO
+  1306→  1306→
+  1307→  1307→Allow freelancers to selectively add repositories to their portfolio.
+  1308→  1308→
+  1309→  1309→Show appropriate information such as:
+  1310→  1310→
+  1311→  1311→* repository name
+  1312→  1312→* description
+  1313→  1313→* languages
+  1314→  1314→* stars if useful
+  1315→  1315→* public URL
+  1316→  1316→* last activity
+  1317→  1317→
+  1318→  1318→Users decide which repositories appear.
+  1319→  1319→
+  1320→  1320→---
+  1321→  1321→
+  1322→  1322→# 38. SKILL BADGES
+  1323→  1323→
+  1324→  1324→Create skill verification architecture.
+  1325→  1325→
+  1326→  1326→Examples:
+  1327→  1327→
+  1328→  1328→```text
+  1329→  1329→React Verified
+  1330→  1330→Next.js Verified
+  1331→  1331→TypeScript Verified
+  1332→  1332→WordPress Verified
+  1333→  1333→```
+  1334→  1334→
+  1335→  1335→Verification sources may eventually include:
+  1336→  1336→
+  1337→  1337→* GitHub evidence
+  1338→  1338→* portfolio evidence
+  1339→  1339→* tests
+  1340→  1340→* completed DevJoo projects
+  1341→  1341→* manual verification
+  1342→  1342→
+  1343→  1343→Keep source information internally.
+  1344→  1344→
+  1345→  1345→---
+  1346→  1346→
+  1347→  1347→# 39. DEVELOPER LEVEL
+  1348→  1348→
+  1349→  1349→Support:
+  1350→  1350→
+  1351→  1351→```text
+  1352→  1352→Junior
+  1353→  1353→Mid-Level
+  1354→  1354→Senior
+  1355→  1355→Expert
+  1356→  1356→```
+  1357→  1357→
+  1358→  1358→Do not blindly trust self-reported level.
+  1359→  1359→
+  1360→  1360→Store:
+  1361→  1361→
+  1362→  1362→```text
+  1363→  1363→selfDeclaredLevel
+  1364→  1364→calculatedLevel
+  1365→  1365→verifiedLevel
+  1366→  1366→```
+  1367→  1367→
+  1368→  1368→separately where appropriate.
+  1369→  1369→
+  1370→  1370→If insufficient evidence exists, do not present algorithmic level as fact.
+  1371→  1371→
+  1372→  1372→---
+  1373→  1373→
+  1374→  1374→# 40. DEVELOPER REPUTATION
+  1375→  1375→
+  1376→  1376→Create a reputation score based on genuine platform behavior.
+  1377→  1377→
+  1378→  1378→Potential signals:
+  1379→  1379→
+  1380→  1380→* completed projects
+  1381→  1381→* ratings
+  1382→  1382→* response rate
+  1383→  1383→* deadline reliability
+  1384→  1384→* dispute history
+  1385→  1385→* profile verification
+  1386→  1386→* employer feedback
+  1387→  1387→* repeat clients
+  1388→  1388→
+  1389→  1389→Prevent review manipulation.
+  1390→  1390→
+  1391→  1391→---
+  1392→  1392→
+  1393→  1393→# 41. CLIENT SCORE
+  1394→  1394→
+  1395→  1395→Freelancers must be able to evaluate employers before spending time on proposals.
+  1396→  1396→
+  1397→  1397→Display useful employer metrics such as:
+  1398→  1398→
+  1399→  1399→```text
+  1400→  1400→Hire Rate
+  1401→  1401→Response Rate
+  1402→  1402→Projects Posted
+  1403→  1403→Projects Hired
+  1404→  1404→Completed Projects
+  1405→  1405→Average Response Time
+  1406→  1406→Verified Status
+  1407→  1407→Member Since
+  1408→  1408→```
+  1409→  1409→
+  1410→  1410→Example:
+  1411→  1411→
+  1412→  1412→```text
+  1413→  1413→Hire Rate: 78%
+  1414→  1414→Response Rate: 93%
+  1415→  1415→9 hires from 12 projects
+  1416→  1416→```
+  1417→  1417→
+  1418→  1418→Never fabricate values.
+  1419→  1419→
+  1420→  1420→Hide metrics when insufficient data exists.
+  1421→  1421→
+  1422→  1422→---
+  1423→  1423→
+  1424→  1424→# 42. EMPLOYER VERIFICATION
+  1425→  1425→
+  1426→  1426→Support employer verification.
+  1427→  1427→
+  1428→  1428→Possible levels:
+  1429→  1429→
+  1430→  1430→```text
+  1431→  1431→Phone Verified
+  1432→  1432→Email Verified
+  1433→  1433→Identity Verified
+  1434→  1434→Company Verified
+  1435→  1435→Payment Verified
+  1436→  1436→```
+  1437→  1437→
+  1438→  1438→Verification details must be stored securely.
+  1439→  1439→
+  1440→  1440→Do not expose private documents.
+  1441→  1441→
+  1442→  1442→---
+  1443→  1443→
+  1444→  1444→# 43. LIVE PROJECT STATUS
+  1445→  1445→
+  1446→  1446→Freelancers should understand what is happening after submitting a proposal.
+  1447→  1447→
+  1448→  1448→Possible visible states:
+  1449→  1449→
+  1450→  1450→```text
+  1451→  1451→پیشنهاد ارسال شد
+  1452→  1452→کارفرما پیشنهاد را مشاهده کرد
+  1453→  1453→به لیست منتخب اضافه شدید
+  1454→  1454→فریلنسر انتخاب شد
+  1455→  1455→پروژه بسته شد
+  1456→  1456→```
+  1457→  1457→
+  1458→  1458→Do not expose private information about other freelancers.
+  1459→  1459→
+  1460→  1460→---
+  1461→  1461→
+  1462→  1462→# 44. GHOST PROTECTION
+  1463→  1463→
+  1464→  1464→Projects must not remain active forever.
+  1465→  1465→
+  1466→  1466→Implement inactivity detection.
+  1467→  1467→
+  1468→  1468→Example rules:
+  1469→  1469→
+  1470→  1470→If an employer:
+  1471→  1471→
+  1472→  1472→* never views proposals
+  1473→  1473→* does not log in
+  1474→  1474→* does not interact with the project
+  1475→  1475→
+  1476→  1476→for a configurable period, mark the project appropriately.
+  1477→  1477→
+  1478→  1478→Possible state:
+  1479→  1479→
+  1480→  1480→```text
+  1481→  1481→Inactive
+  1482→  1482→```
+  1483→  1483→
+  1484→  1484→Eventually:
+  1485→  1485→
+  1486→  1486→```text
+  1487→  1487→Expired
+  1488→  1488→```
+  1489→  1489→
+  1490→  1490→Notify the employer before expiration.
+  1491→  1491→
+  1492→  1492→This prevents the marketplace from feeling dead.
+  1493→  1493→
+  1494→  1494→---
+  1495→  1495→
+  1496→  1496→# 45. PROJECT QUALITY SCORE
+  1497→  1497→
+  1498→  1498→Calculate an internal Project Quality Score.
+  1499→  1499→
+  1500→  1500→Potential signals:
+  1501→  1501→
+  1502→  1502→* detailed description
+  1503→  1503→* realistic budget
+  1504→  1504→* verified employer
+  1505→  1505→* complete skills
+  1506→  1506→* reasonable deadline
+  1507→  1507→* employer history
+  1508→  1508→* duplicate content
+  1509→  1509→* suspicious behavior
+  1510→  1510→
+  1511→  1511→May display a simplified indicator:
+  1512→  1512→
+  1513→  1513→```text
+  1514→  1514→کیفیت آگهی: بالا
+  1515→  1515→```
+  1516→  1516→
+  1517→  1517→Do not expose anti-fraud internals.
+  1518→  1518→
+  1519→  1519→---
+  1520→  1520→
+  1521→  1521→# 46. DUPLICATE PROJECT DETECTION
+  1522→  1522→
+  1523→  1523→Detect duplicate or near-duplicate project postings.
+  1524→  1524→
+  1525→  1525→Start using:
+  1526→  1526→
+  1527→  1527→* normalized title similarity
+  1528→  1528→* description similarity
+  1529→  1529→* employer history
+  1530→  1530→* skill overlap
+  1531→  1531→* recent posting similarity
+  1532→  1532→
+  1533→  1533→The architecture may later use embeddings or AI.
+  1534→  1534→
+  1535→  1535→Flag suspicious duplicates for moderation.
+  1536→  1536→
+  1537→  1537→Do not automatically delete without appropriate confidence.
+  1538→  1538→
+  1539→  1539→---
+  1540→  1540→
+  1541→  1541→# 47. REVERSE HIRING
+  1542→  1542→
+  1543→  1543→Employers should not always need to wait for proposals.
+  1544→  1544→
+  1545→  1545→After posting a project:
+  1546→  1546→
+  1547→  1547→DevJoo should identify suitable freelancers.
+  1548→  1548→
+  1549→  1549→Example:
+  1550→  1550→
+  1551→  1551→```text
+  1552→  1552→5 متخصص مناسب پروژه شما
+  1553→  1553→```
+  1554→  1554→
+  1555→  1555→Employer can:
+  1556→  1556→
+  1557→  1557→```text
+  1558→  1558→Invite to Project
+  1559→  1559→```
+  1560→  1560→
+  1561→  1561→Freelancers receive:
+  1562→  1562→
+  1563→  1563→```text
+  1564→  1564→این پروژه 94٪ با پروفایل شما تطابق دارد.
+  1565→  1565→```
+  1566→  1566→
+  1567→  1567→---
+  1568→  1568→
+  1569→  1569→# 48. PROJECT INVITATIONS
+  1570→  1570→
+  1571→  1571→Employers can invite freelancers directly.
+  1572→  1572→
+  1573→  1573→Track:
+  1574→  1574→
+  1575→  1575→```text
+  1576→  1576→SENT
+  1577→  1577→VIEWED
+  1578→  1578→ACCEPTED
+  1579→  1579→DECLINED
+  1580→  1580→EXPIRED
+  1581→  1581→```
+  1582→  1582→
+  1583→  1583→Prevent invitation spam.
+  1584→  1584→
+  1585→  1585→---
+  1586→  1586→
+  1587→  1587→# 49. AVAILABILITY
+  1588→  1588→
+  1589→  1589→Freelancers can select:
+  1590→  1590→
+  1591→  1591→```text
+  1592→  1592→Available
+  1593→  1593→Limited Availability
+  1594→  1594→Busy
+  1595→  1595→Unavailable
+  1596→  1596→```
+  1597→  1597→
+  1598→  1598→Optionally allow:
+  1599→  1599→
+  1600→  1600→```text
+  1601→  1601→availableFrom
+  1602→  1602→hoursPerWeek
+  1603→  1603→```
+  1604→  1604→
+  1605→  1605→Match Score can use this data.
+  1606→  1606→
+  1607→  1607→---
+  1608→  1608→
+  1609→  1609→# 50. AI PROJECT BUILDER
+  1610→  1610→
+  1611→  1611→Create an AI-assisted project creation flow.
+  1612→  1612→
+  1613→  1613→Example employer input:
+  1614→  1614→
+  1615→  1615→```text
+  1616→  1616→I need an admin dashboard like this website.
+  1617→  1617→```
+  1618→  1618→
+  1619→  1619→AI can help generate:
+  1620→  1620→
+  1621→  1621→* project title
+  1622→  1622→* structured description
+  1623→  1623→* scope
+  1624→  1624→* suggested skills
+  1625→  1625→* estimated complexity
+  1626→  1626→* deliverables
+  1627→  1627→* missing questions
+  1628→  1628→
+  1629→  1629→The employer MUST review and approve before publication.
+  1630→  1630→
+  1631→  1631→AI must never automatically publish a project.
+  1632→  1632→
+  1633→  1633→Create an `AIProvider` abstraction.
+  1634→  1634→
+  1635→  1635→Do not hardcode one AI company deeply into business logic.
+  1636→  1636→
+  1637→  1637→Environment variables hold API credentials.
+  1638→  1638→
+  1639→  1639→---
+  1640→  1640→
+  1641→  1641→# 51. AI PROPOSAL ASSISTANT
+  1642→  1642→
+  1643→  1643→Allow freelancers to improve proposal wording.
+  1644→  1644→
+  1645→  1645→AI may help with:
+  1646→  1646→
+  1647→  1647→* clarity
+  1648→  1648→* professionalism
+  1649→  1649→* structure
+  1650→  1650→* grammar
+  1651→  1651→* relevance
+  1652→  1652→
+  1653→  1653→AI must not:
+  1654→  1654→
+  1655→  1655→* invent experience
+  1656→  1656→* invent portfolio projects
+  1657→  1657→* invent credentials
+  1658→  1658→* automatically send proposals
+  1659→  1659→
+  1660→  1660→The freelancer approves the final content.
+  1661→  1661→
+  1662→  1662→---
+  1663→  1663→
+  1664→  1664→# 52. PRICE RADAR
+  1665→  1665→
+  1666→  1666→Create:
+  1667→  1667→
+  1668→  1668→# Price Radar
+  1669→  1669→
+  1670→  1670→Purpose:
+  1671→  1671→
+  1672→  1672→Help employers and freelancers understand realistic project pricing.
+  1673→  1673→
+  1674→  1674→Initially use real DevJoo historical data.
+  1675→  1675→
+  1676→  1676→Consider:
+  1677→  1677→
+  1678→  1678→* category
+  1679→  1679→* skills
+  1680→  1680→* complexity
+  1681→  1681→* project duration
+  1682→  1682→* experience level
+  1683→  1683→* similar completed projects
+  1684→  1684→
+  1685→  1685→Example:
+  1686→  1686→
+  1687→  1687→```text
+  1688→  1688→بودجه این پروژه نسبت به پروژه‌های مشابه پایین است.
+  1689→  1689→```
+  1690→  1690→
+  1691→  1691→or:
+  1692→  1692→
+  1693→  1693→```text
+  1694→  1694→پیشنهاد شما نزدیک به میانگین پروژه‌های مشابه است.
+  1695→  1695→```
+  1696→  1696→
+  1697→  1697→CRITICAL:
+  1698→  1698→
+  1699→  1699→If there is insufficient data:
+  1700→  1700→
+  1701→  1701→DO NOT fabricate market prices.
+  1702→  1702→
+  1703→  1703→Show:
+  1704→  1704→
+  1705→  1705→```text
+  1706→  1706→داده کافی برای تخمین دقیق قیمت وجود ندارد.
+  1707→  1707→```
+  1708→  1708→
+  1709→  1709→---
+  1710→  1710→
+  1711→  1711→# 53. HIRING PROBABILITY
+  1712→  1712→
+  1713→  1713→Create an optional hiring likelihood indicator based on genuine employer history.
+  1714→  1714→
+  1715→  1715→Possible signals:
+  1716→  1716→
+  1717→  1717→* employer hire rate
+  1718→  1718→* project completeness
+  1719→  1719→* verified status
+  1720→  1720→* recent activity
+  1721→  1721→* proposal viewing behavior
+  1722→  1722→
+  1723→  1723→Example:
+  1724→  1724→
+  1725→  1725→```text
+  1726→  1726→احتمال استخدام: بالا
+  1727→  1727→```
+  1728→  1728→
+  1729→  1729→Never claim certainty.
+  1730→  1730→
+  1731→  1731→If there is insufficient data, hide the metric.
+  1732→  1732→
+  1733→  1733→---
+  1734→  1734→
+  1735→  1735→# 54. SIMILAR PROJECTS
+  1736→  1736→
+  1737→  1737→Every public project page should display related projects.
+  1738→  1738→
+  1739→  1739→Use:
+  1740→  1740→
+  1741→  1741→* category
+  1742→  1742→* skills
+  1743→  1743→* semantic similarity
+  1744→  1744→* budget
+  1745→  1745→* project type
+  1746→  1746→
+  1747→  1747→Benefits:
+  1748→  1748→
+  1749→  1749→* UX
+  1750→  1750→* user retention
+  1751→  1751→* internal linking
+  1752→  1752→* SEO crawl depth
+  1753→  1753→
+  1754→  1754→---
+  1755→  1755→
+  1756→  1756→# 55. STRUCTURED REJECTION
+  1757→  1757→
+  1758→  1758→When rejecting a proposal, employers may optionally choose a reason:
+  1759→  1759→
+  1760→  1760→```text
+  1761→  1761→بودجه نامناسب
+  1762→  1762→تجربه کافی نیست
+  1763→  1763→مهارت‌های موردنیاز کامل نیست
+  1764→  1764→فریلنسر دیگری انتخاب شد
+  1765→  1765→زمان‌بندی مناسب نیست
+  1766→  1766→سایر
+  1767→  1767→```
+  1768→  1768→
+  1769→  1769→Do not allow abusive custom rejection content.
+  1770→  1770→
+  1771→  1771→Freelancers can use anonymized aggregate rejection feedback to improve.
+  1772→  1772→
+  1773→  1773→---
+  1774→  1774→
+  1775→  1775→# 56. PROPOSAL ANALYTICS
+  1776→  1776→
+  1777→  1777→Freelancers should have useful analytics.
+  1778→  1778→
+  1779→  1779→Examples:
+  1780→  1780→
+  1781→  1781→```text
+  1782→  1782→Proposal submitted
+  1783→  1783→Proposal viewed
+  1784→  1784→Profile viewed
+  1785→  1785→Shortlisted
+  1786→  1786→Accepted
+  1787→  1787→```
+  1788→  1788→
+  1789→  1789→Dashboard statistics:
+  1790→  1790→
+  1791→  1791→```text
+  1792→  1792→View Rate
+  1793→  1793→Shortlist Rate
+  1794→  1794→Hire Rate
+  1795→  1795→```
+  1796→  1796→
+  1797→  1797→Avoid vanity metrics that do not help users.
+  1798→  1798→
+  1799→  1799→---
+  1800→  1800→
+  1801→  1801→# 57. PAID TRIAL
+  1802→  1802→
+  1803→  1803→For suitable larger projects, employers can create a small paid trial task before the main contract.
+  1804→  1804→
+  1805→  1805→The system must make clear:
+  1806→  1806→
+  1807→  1807→```text
+  1808→  1808→تست پولی
+  1809→  1809→```
+  1810→  1810→
+  1811→  1811→Do not encourage unpaid speculative work.
+  1812→  1812→
+  1813→  1813→Paid Trial should later integrate with payment/milestone infrastructure.
+  1814→  1814→
+  1815→  1815→---
+  1816→  1816→
+  1817→  1817→# 58. MILESTONES
+  1818→  1818→
+  1819→  1819→Support contracts divided into milestones.
+  1820→  1820→
+  1821→  1821→Each milestone can contain:
+  1822→  1822→
+  1823→  1823→```text
+  1824→  1824→title
+  1825→  1825→description
+  1826→  1826→amount
+  1827→  1827→due date
+  1828→  1828→status
+  1829→  1829→```
+  1830→  1830→
+  1831→  1831→Statuses:
+  1832→  1832→
+  1833→  1833→```text
+  1834→  1834→DRAFT
+  1835→  1835→FUNDED
+  1836→  1836→IN_PROGRESS
+  1837→  1837→SUBMITTED
+  1838→  1838→APPROVED
+  1839→  1839→DISPUTED
+  1840→  1840→PAID
+  1841→  1841→CANCELLED
+  1842→  1842→```
+  1843→  1843→
+  1844→  1844→Implement architecture carefully.
+  1845→  1845→
+  1846→  1846→---
+  1847→  1847→
+  1848→  1848→# 59. PAYMENT ARCHITECTURE
+  1849→  1849→
+  1850→  1850→Create a provider-based payment architecture.
+  1851→  1851→
+  1852→  1852→Do NOT tightly couple the platform to one payment provider.
+  1853→  1853→
+  1854→  1854→Example:
+  1855→  1855→
+  1856→  1856→```ts
+  1857→  1857→interface PaymentProvider {}
+  1858→  1858→```
+  1859→  1859→
+  1860→  1860→Production payment functionality must be feature-flagged if real credentials or required legal/compliance setup is unavailable.
+  1861→  1861→
+  1862→  1862→Never fake successful production payments.
+  1863→  1863→
+  1864→  1864→Development mode may use a clearly labeled fake provider.
+  1865→  1865→
+  1866→  1866→Potential future functionality:
+  1867→  1867→
+  1868→  1868→* escrow-like payment
+  1869→  1869→* milestone payment
+  1870→  1870→* service order payment
+  1871→  1871→* refunds
+  1872→  1872→* commissions
+  1873→  1873→* platform fees
+  1874→  1874→
+  1875→  1875→---
+  1876→  1876→
+  1877→  1877→# 60. SERVICE MARKETPLACE
+  1878→  1878→
+  1879→  1879→Freelancers should also be able to sell predefined services.
+  1880→  1880→
+  1881→  1881→Examples:
+  1882→  1882→
+  1883→  1883→```text
+  1884→  1884→تبدیل Figma به React
+  1885→  1885→طراحی Landing Page با Next.js
+  1886→  1886→رفع مشکل Performance سایت
+  1887→  1887→طراحی UI Dashboard
+  1888→  1888→بهینه‌سازی Technical SEO
+  1889→  1889→```
+  1890→  1890→
+  1891→  1891→Each service can contain:
+  1892→  1892→
+  1893→  1893→* title
+  1894→  1894→* description
+  1895→  1895→* category
+  1896→  1896→* skills
+  1897→  1897→* price
+  1898→  1898→* delivery time
+  1899→  1899→* revisions
+  1900→  1900→* requirements
+  1901→  1901→* portfolio
+  1902→  1902→* FAQ
+  1903→  1903→
+  1904→  1904→Public service pages must also be SEO-friendly.
+  1905→  1905→
+  1906→  1906→---
+  1907→  1907→
+  1908→  1908→# 61. TEAM MODE
+  1909→  1909→
+  1910→  1910→Allow freelancers to create teams.
+  1911→  1911→
+  1912→  1912→Examples:
+  1913→  1913→
+  1914→  1914→```text
+  1915→  1915→Frontend + Backend
+  1916→  1916→UI/UX + Frontend
+  1917→  1917→Full product team
+  1918→  1918→```
+  1919→  1919→
+  1920→  1920→Team entities:
+  1921→  1921→
+  1922→  1922→```text
+  1923→  1923→Team
+  1924→  1924→TeamMember
+  1925→  1925→TeamRole
+  1926→  1926→```
+  1927→  1927→
+  1928→  1928→Employers may invite:
+  1929→  1929→
+  1930→  1930→```text
+  1931→  1931→individual freelancer
+  1932→  1932→or
+  1933→  1933→team
+  1934→  1934→```
+  1935→  1935→
+  1936→  1936→---
+  1937→  1937→
+  1938→  1938→# 62. MESSAGING
+  1939→  1939→
+  1940→  1940→Build real messaging.
+  1941→  1941→
+  1942→  1942→Features:
+  1943→  1943→
+  1944→  1944→* conversations
+  1945→  1945→* messages
+  1946→  1946→* unread counters
+  1947→  1947→* timestamps
+  1948→  1948→* attachments if enabled
+  1949→  1949→* read status if appropriate
+  1950→  1950→* moderation/report tools
+  1951→  1951→
+  1952→  1952→Use WebSocket or another appropriate real-time approach.
+  1953→  1953→
+  1954→  1954→NestJS WebSocket Gateway is acceptable.
+  1955→  1955→
+  1956→  1956→Use Redis adapter if necessary for horizontal scaling.
+  1957→  1957→
+  1958→  1958→Protect messaging from:
+  1959→  1959→
+  1960→  1960→* spam
+  1961→  1961→* abuse
+  1962→  1962→* unauthorized conversation access
+  1963→  1963→* IDOR vulnerabilities
+  1964→  1964→
+  1965→  1965→---
+  1966→  1966→
+  1967→  1967→# 63. NOTIFICATIONS
+  1968→  1968→
+  1969→  1969→Support:
+  1970→  1970→
+  1971→  1971→```text
+  1972→  1972→In-app
+  1973→  1973→Email
+  1974→  1974→SMS where appropriate
+  1975→  1975→```
+  1976→  1976→
+  1977→  1977→Notification examples:
+  1978→  1978→
+  1979→  1979→* new matching project
+  1980→  1980→* new proposal
+  1981→  1981→* proposal viewed
+  1982→  1982→* shortlisted
+  1983→  1983→* project invitation
+  1984→  1984→* message
+  1985→  1985→* project expiring
+  1986→  1986→* proposal accepted
+  1987→  1987→* milestone update
+  1988→  1988→* review reminder
+  1989→  1989→
+  1990→  1990→Allow notification preferences.
+  1991→  1991→
+  1992→  1992→Use background jobs.
+  1993→  1993→
+  1994→  1994→---
+  1995→  1995→
+  1996→  1996→# 64. INSTANT PROJECT ALERT
+  1997→  1997→
+  1998→  1998→Freelancers may subscribe to selected skills.
+  1999→  1999→
+  2000→  2000→Examples:
+
+[showing lines 1-2000 of 2002; use offset=2001 with limit to continue reading]
