@@ -1,5 +1,53 @@
 # DevJoo — Changelog
 
+## [0.7.0] — 2026-08-09
+
+### Added
+- **Messaging System**:
+  - Prisma models: Conversation, ConversationMember, Message
+  - Messaging service: findOrCreateConversation, listConversations (with unread count + last message), getConversation, sendMessage, listMessages (auto mark-read), getUnreadMessageCount
+  - Conversation types: DIRECT, PROJECT, GROUP
+  - Message types: TEXT, SYSTEM, FILE, PROPOSAL_REFERENCE, PROJECT_REFERENCE
+  - GET/POST /api/v1/conversations
+  - GET /api/v1/conversations/[id]
+  - GET/POST /api/v1/conversations/[id]/messages
+  - GET /api/v1/me/messages/unread
+- **Notification System**:
+  - Notification service: create, createBatch, list, markRead (single/all), getUnreadCount, getPreferences, initializeDefaults, updatePreferences (batch upsert)
+  - 12 notification types: PROJECT_PUBLISHED, PROPOSAL_RECEIVED, PROPOSAL_STATUS_CHANGED, INVITATION_RECEIVED, INVITATION_RESPONDED, REVIEW_RECEIVED, VERIFICATION_STATUS_CHANGED, MESSAGE_RECEIVED, PROJECT_STATUS_CHANGED, PAYMENT_RECEIVED, MILESTONE_COMPLETED, SYSTEM
+  - 4 notification channels: IN_APP, EMAIL, SMS, PUSH
+  - Preference-aware: checks NotificationPreference before creating notifications
+  - GET/PATCH /api/v1/me/notifications
+  - GET /api/v1/me/notifications/unread
+  - GET/PUT /api/v1/me/notifications/preferences
+- **Notification Dispatcher** (event-driven, non-blocking):
+  - dispatchProjectPublished: notifies freelancers with matching skills
+  - dispatchProposalReceived: notifies employer
+  - dispatchProposalStatusChanged: notifies freelancer
+  - dispatchInvitationReceived: notifies freelancer
+  - dispatchInvitationResponded: notifies employer
+  - dispatchReviewReceived: notifies reviewee
+  - dispatchMessageReceived: notifies other conversation members
+  - dispatchProjectStatusChanged: notifies all proposaled freelancers
+- **Instant Project Alerts**: integrated into project publish flow
+- **Email Job Queue**: in-process queue with enqueueEmail/processEmailQueue (console log in dev)
+- **SMS Job Queue**: in-process queue with enqueueSms/processSmsQueue (console log in dev)
+- **SSE Endpoint**: GET /api/v1/me/notifications/stream for real-time notification push (3s polling)
+- **New Enums**: CONVERSATION_TYPE, MESSAGE_TYPE, NOTIFICATION_TYPE, NOTIFICATION_CHANNEL + Persian labels
+- **Zod Validators**: conversation.ts, message.ts, notification.ts
+
+### Decisions
+- ADR-017: Event-driven notification dispatch (non-blocking, centralized dispatcher, in-process queues)
+
+### Changed
+- Project publish now dispatches notifications to matching freelancers
+- Proposal submit/status change now dispatches notifications
+- Invitation create/respond now dispatches notifications
+- Review create now dispatches notifications
+- Message send now dispatches notifications to other members
+
+---
+
 ## [0.6.0] — 2026-08-09
 
 ### Added

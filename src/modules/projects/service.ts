@@ -3,6 +3,7 @@ import { VALID_PROJECT_TRANSITIONS, PROJECT_STATUS } from '@/types/enums';
 import { generateSlug, uniqueSlug } from '@/lib/utils/slug';
 import type { ProjectCreateInput, ProjectUpdateInput, ProjectFiltersInput } from '@/lib/validators/project';
 import { computeProjectQualityScore } from '@/modules/matching/quality';
+import { dispatchProjectPublished, dispatchProjectStatusChanged } from '@/modules/notifications/dispatcher';
 
 /**
  * Create a new project.
@@ -228,6 +229,15 @@ export async function transitionProjectStatus(
       data,
     });
   });
+
+  // Dispatch notifications after successful transition
+  if (newStatus === 'PUBLISHED') {
+    dispatchProjectPublished(projectId).catch(() => {
+      // Non-blocking: notification dispatch failure should not break publish
+    });
+  } else if (['IN_PROGRESS', 'COMPLETED', 'PAUSED', 'CANCELLED', 'EXPIRED'].includes(newStatus)) {
+    dispatchProjectStatusChanged(projectId, newStatus).catch(() => {});
+  }
 
   return { project: updated };
 }

@@ -93,8 +93,17 @@
 [x] PATCH  /api/v1/me/availability — update freelancer availability
 
 ## Notifications
-[ ] GET    /api/v1/notifications
-[ ] PATCH  /api/v1/notifications/:id/read
-[ ] PATCH  /api/v1/notifications/read-all
-[ ] GET    /api/v1/notifications/preferences
-[ ] PATCH  /api/v1/notifications/preferences
+[x] GET    /api/v1/me/notifications — list user notifications (filters: isRead, type, pagination)
+[x] PATCH  /api/v1/me/notifications — mark notifications read (single IDs or all)
+[x] GET    /api/v1/me/notifications/unread — unread notification count
+[x] GET    /api/v1/me/notifications/preferences — get notification preferences
+[x] PUT    /api/v1/me/notifications/preferences — update notification preferences (batch)
+[x] GET    /api/v1/me/notifications/stream — SSE real-time notification stream
+
+## Messaging
+[x] GET    /api/v1/conversations — list user conversations (with unread count + last message)
+[x] POST   /api/v1/conversations — create or find conversation (direct or project)
+[x] GET    /api/v1/conversations/[id] — conversation details
+[x] GET    /api/v1/conversations/[id]/messages — list messages (auto mark-read)
+[x] POST   /api/v1/conversations/[id]/messages — send message
+[x] GET    /api/v1/me/messages/unread — total unread message count

@@ -1,6 +1,7 @@
 import { db } from '@/lib/db';
 import { PROJECT_STATUS, INVITATION_STATUS } from '@/types/enums';
 import type { InvitationCreateInput, InvitationRespondInput, InvitationFiltersInput } from '@/lib/validators/invitation';
+import { dispatchInvitationReceived, dispatchInvitationResponded } from '@/modules/notifications/dispatcher';
 
 /**
  * Create a project invitation (employer invites a freelancer).
@@ -68,6 +69,9 @@ export async function createInvitation(
     },
   });
 
+  // Notify freelancer (non-blocking)
+  dispatchInvitationReceived(invitation.id).catch(() => {});
+
   return { invitation };
 }
 
@@ -96,6 +100,9 @@ export async function respondToInvitation(
     where: { id: invitationId },
     data: { status: data.status, respondedAt: new Date() },
   });
+
+  // Notify employer (non-blocking)
+  dispatchInvitationResponded(invitationId, data.status).catch(() => {});
 
   return { invitation: updated };
 }

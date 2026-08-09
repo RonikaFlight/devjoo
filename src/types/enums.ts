@@ -225,3 +225,87 @@ export const BUDGET_TYPE_LABELS: Record<BudgetType, string> = {
   FIXED: 'ثابت',
   HOURLY: 'ساعتی',
 };
+
+// ============ COMMUNICATION ============
+
+export const CONVERSATION_TYPE = {
+  DIRECT: 'DIRECT',
+  PROJECT: 'PROJECT',
+  GROUP: 'GROUP',
+} as const;
+
+export type ConversationType = (typeof CONVERSATION_TYPE)[keyof typeof CONVERSATION_TYPE];
+
+export const MESSAGE_TYPE = {
+  TEXT: 'TEXT',
+  SYSTEM: 'SYSTEM',
+  FILE: 'FILE',
+  PROPOSAL_REFERENCE: 'PROPOSAL_REFERENCE',
+  PROJECT_REFERENCE: 'PROJECT_REFERENCE',
+} as const;
+
+export type MessageType = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE];
+
+export const CONVERSATION_TYPE_LABELS: Record<ConversationType, string> = {
+  DIRECT: 'مستقیم',
+  PROJECT: 'پروژه‌ای',
+  GROUP: 'گروهی',
+};
+
+export const MESSAGE_TYPE_LABELS: Record<MessageType, string> = {
+  TEXT: 'متن',
+  SYSTEM: 'سیستمی',
+  FILE: 'فایل',
+  PROPOSAL_REFERENCE: 'ارجاع به پیشنهاد',
+  PROJECT_REFERENCE: 'ارجاع به پروژه',
+};
+
+// ============ NOTIFICATIONS ============
+
+export const NOTIFICATION_TYPE = {
+  PROJECT_PUBLISHED: 'PROJECT_PUBLISHED',
+  PROPOSAL_RECEIVED: 'PROPOSAL_RECEIVED',
+  PROPOSAL_STATUS_CHANGED: 'PROPOSAL_STATUS_CHANGED',
+  INVITATION_RECEIVED: 'INVITATION_RECEIVED',
+  INVITATION_RESPONDED: 'INVITATION_RESPONDED',
+  REVIEW_RECEIVED: 'REVIEW_RECEIVED',
+  VERIFICATION_STATUS_CHANGED: 'VERIFICATION_STATUS_CHANGED',
+  MESSAGE_RECEIVED: 'MESSAGE_RECEIVED',
+  PROJECT_STATUS_CHANGED: 'PROJECT_STATUS_CHANGED',
+  PAYMENT_RECEIVED: 'PAYMENT_RECEIVED',
+  MILESTONE_COMPLETED: 'MILESTONE_COMPLETED',
+  SYSTEM: 'SYSTEM',
+} as const;
+
+export type NotificationType = (typeof NOTIFICATION_TYPE)[keyof typeof NOTIFICATION_TYPE];
+
+export const NOTIFICATION_CHANNEL = {
+  IN_APP: 'IN_APP',
+  EMAIL: 'EMAIL',
+  SMS: 'SMS',
+  PUSH: 'PUSH',
+} as const;
+
+export type NotificationChannel = (typeof NOTIFICATION_CHANNEL)[keyof typeof NOTIFICATION_CHANNEL];
+
+export const NOTIFICATION_TYPE_LABELS: Record<NotificationType, string> = {
+  PROJECT_PUBLISHED: 'پروژه جدید',
+  PROPOSAL_RECEIVED: 'پیشنهاد جدید',
+  PROPOSAL_STATUS_CHANGED: 'تغییر وضعیت پیشنهاد',
+  INVITATION_RECEIVED: 'دعوت‌نامه جدید',
+  INVITATION_RESPONDED: 'پاسخ به دعوت‌نامه',
+  REVIEW_RECEIVED: 'نظر جدید',
+  VERIFICATION_STATUS_CHANGED: 'تغییر وضعیت تایید',
+  MESSAGE_RECEIVED: 'پیام جدید',
+  PROJECT_STATUS_CHANGED: 'تغییر وضعیت پروژه',
+  PAYMENT_RECEIVED: 'پرداخت جدید',
+  MILESTONE_COMPLETED: 'تکمیل مرحله',
+  SYSTEM: 'اعلان سیستمی',
+};
+
+export const NOTIFICATION_CHANNEL_LABELS: Record<NotificationChannel, string> = {
+  IN_APP: 'درون‌برنامه‌ای',
+  EMAIL: 'ایمیل',
+  SMS: 'پیامک',
+  PUSH: 'اعلان پوش',
+};

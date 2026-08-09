@@ -1,6 +1,7 @@
 import { db } from '@/lib/db';
 import { PROJECT_STATUS } from '@/types/enums';
 import type { ReviewCreateInput, ReviewFiltersInput } from '@/lib/validators/review';
+import { dispatchReviewReceived } from '@/modules/notifications/dispatcher';
 
 /**
  * Submit a review for a completed project.
@@ -93,6 +94,9 @@ export async function createReview(
       return created;
     });
 
+    // Notify the reviewed freelancer (non-blocking)
+    dispatchReviewReceived(review.id).catch(() => {});
+
     return { review };
   } else {
     // Freelancer reviews employer
@@ -143,6 +147,9 @@ export async function createReview(
         project: { select: { id: true, title: true, slug: true } },
       },
     });
+
+    // Notify the reviewed employer (non-blocking)
+    dispatchReviewReceived(review.id).catch(() => {});
 
     return { review };
   }

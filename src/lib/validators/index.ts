@@ -9,3 +9,6 @@ export * from './review';
 export * from './verification';
 export * from './invitation';
 export * from './availability';
+export * from './conversation';
+export * from './message';
+export * from './notification';

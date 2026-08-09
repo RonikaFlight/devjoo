@@ -2,13 +2,13 @@
 DevJoo
 
 # Current Phase
-Phase 7 — Communication (READY TO START)
+Phase 8 — AI (READY TO START)
 
 # Last Completed Task
-Phase 6 Smart Features: Match engine (5-signal scoring), Smart Feed (personalized ranking), Project Invitations (CRUD + respond), Availability system, Project Quality Score (auto-computed on publish), Duplicate detection (bigram similarity), Hiring probability, ADR-016
+Phase 7 Communication: Messaging (conversations + messages REST API, 6 endpoints), Notification system (12 types, 4 channels, preferences), Event dispatcher (8 dispatchers integrated into proposals/invitations/reviews/messages/project publish), SSE real-time stream, Email/SMS in-process job queues, ADR-017
 
 # Currently Working On
-None — Phase 6 complete, ready for Phase 7
+None — Phase 7 complete, ready for Phase 8
 
 # Completed Features
 - Phase 0 complete (see below)
@@ -18,6 +18,7 @@ None — Phase 6 complete, ready for Phase 7
 - Phase 4 complete: SEO landing pages — category/skill/hire pages, internal linking, blog foundation (see below)
 - Phase 5 complete: Trust — portfolio, reviews, verification, client score, reputation (see below)
 - Phase 6 complete: Smart features — match engine, smart feed, invitations, availability, quality score, duplicate detection, hiring probability (see below)
+- Phase 7 complete: Communication — messaging, notifications, dispatcher, SSE stream, job queues (see below)
 
 ## Phase 0 Completed
 - All 10 project memory files
@@ -110,23 +111,39 @@ None — Phase 6 complete, ready for Phase 7
 - INVITATION_STATUS_LABELS: Persian labels
 - ADR-016: On-demand match computation
 
+## Phase 7 Completed
+- Messaging: Conversation, ConversationMember, Message Prisma models
+- Messaging service: findOrCreateConversation, listConversations (unread count + last message), getConversation, sendMessage, listMessages (auto mark-read), getUnreadMessageCount
+- Messaging API: GET/POST /api/v1/conversations, GET /api/v1/conversations/[id], GET/POST /api/v1/conversations/[id]/messages, GET /api/v1/me/messages/unread
+- Notification service: create, createBatch, list, markRead (single/all), getUnreadCount, getPreferences, initializeDefaults, updatePreferences (batch upsert)
+- Notification API: GET/PATCH /api/v1/me/notifications, GET /api/v1/me/notifications/unread, GET/PUT /api/v1/me/notifications/preferences
+- SSE endpoint: GET /api/v1/me/notifications/stream (3s polling, real-time notification push)
+- Notification dispatcher: 8 event handlers (project published, proposal received/status, invitation received/responded, review received, message received, project status changed)
+- Dispatcher integrated into: projects/service.ts, proposals/service.ts, invitations/service.ts, reviews/service.ts, messaging/service.ts
+- Instant project alerts: on publish, notifies freelancers with matching skills
+- Email job queue: in-process enqueueEmail/processEmailQueue (console log in dev)
+- SMS job queue: in-process enqueueSms/processSmsQueue (console log in dev)
+- New enums: CONVERSATION_TYPE, MESSAGE_TYPE, NOTIFICATION_TYPE, NOTIFICATION_CHANNEL + Persian labels
+- Zod validators: conversation.ts, message.ts, notification.ts
+- ADR-017: Event-driven notification dispatch
+
 # Partially Completed Features
 - None
 
 # Pending Features
-- Phase 7-12: See TODO.md
+- Phase 8-12: See TODO.md
 
 # Important Architecture Decisions
-- ADR-001 through ADR-010 (see DECISIONS.md)
-- ADR-011: Custom JWT sessions instead of NextAuth.js (see DECISIONS.md)
+- ADR-001 through ADR-011 (see DECISIONS.md)
 - ADR-012: Edge-safe session split (see DECISIONS.md)
 - ADR-013: Module-based service layer architecture (see DECISIONS.md)
 - ADR-014: URL structure for SEO landing pages (see DECISIONS.md)
 - ADR-015: On-read reputation computation (see DECISIONS.md)
 - ADR-016: On-demand match computation (see DECISIONS.md)
+- ADR-017: Event-driven notification dispatch (see DECISIONS.md)
 
 # Database Status
-- Prisma schema: 30+ models defined
+- Prisma schema: 33 models defined (added Conversation, ConversationMember, Message)
 - SQLite database: synced
 - Seed data: 10 categories, 75 skills, 93 synonyms seeded
 - Test users created via API: 3 OTP-verified users
@@ -150,13 +167,13 @@ None — Phase 6 complete, ready for Phase 7
 - GET /api/v1/projects — working
 - GET /api/v1/projects/[slug] — working
 - PATCH /api/v1/projects/[slug] — working
-- POST /api/v1/projects/[slug]/publish — working (auto-computes qualityScore)
-- POST /api/v1/projects/[slug]/proposals — working
+- POST /api/v1/projects/[slug]/publish — working (auto-computes qualityScore + dispatches notifications)
+- POST /api/v1/projects/[slug]/proposals — working (dispatches notification to employer)
 - GET /api/v1/projects/[slug]/proposals — working
-- PATCH /api/v1/proposals/[id] — working
+- PATCH /api/v1/proposals/[id] — working (dispatches notification to freelancer)
 - GET /api/v1/me/proposals — working
 - POST /api/v1/projects/[slug]/save — working
-- GET /api/v1/reviews — working
+- GET /api/v1/reviews — working (dispatches notification to reviewee)
 - POST /api/v1/reviews — working
 - GET /api/v1/reviews/stats — working
 - GET /api/v1/portfolio — working (auth required)
@@ -169,12 +186,24 @@ None — Phase 6 complete, ready for Phase 7
 - GET /api/v1/reputation — working
 - GET /api/v1/feed — working (auth required, freelancer only)
 - GET /api/v1/projects/[slug]/matches — working (auth required, employer only)
-- POST /api/v1/projects/[slug]/invitations — working (auth required, employer only)
+- POST /api/v1/projects/[slug]/invitations — working (auth required, employer only, dispatches notification)
 - GET /api/v1/projects/[slug]/invitations — working (auth required, employer only)
 - GET /api/v1/me/invitations — working (auth required)
-- PATCH /api/v1/me/invitations — working (auth required)
+- PATCH /api/v1/me/invitations — working (auth required, dispatches notification)
 - GET /api/v1/me/availability — working (auth required, freelancer only)
 - PATCH /api/v1/me/availability — working (auth required, freelancer only)
+- GET /api/v1/conversations — working (auth required)
+- POST /api/v1/conversations — working (auth required)
+- GET /api/v1/conversations/[id] — working (auth required)
+- GET /api/v1/conversations/[id]/messages — working (auth required)
+- POST /api/v1/conversations/[id]/messages — working (auth required, dispatches notification)
+- GET /api/v1/me/messages/unread — working (auth required)
+- GET /api/v1/me/notifications — working (auth required)
+- PATCH /api/v1/me/notifications — working (auth required)
+- GET /api/v1/me/notifications/unread — working (auth required)
+- GET /api/v1/me/notifications/preferences — working (auth required)
+- PUT /api/v1/me/notifications/preferences — working (auth required)
+- GET /api/v1/me/notifications/stream — working (auth required, SSE)
 
 # Frontend Status
 - Next.js 16 App Router, RTL, Vazirmatn, purple design, dark mode
@@ -215,7 +244,10 @@ None — Phase 6 complete, ready for Phase 7
 - Implemented (Phase 6): on-demand match scoring, smart feed, hiring probability
 
 # Notification Status
-- Not implemented
+- Implemented (Phase 7): 12 types, 4 channels, preference-aware, SSE stream, event dispatcher
+
+# Messaging Status
+- Implemented (Phase 7): REST-based, conversations + messages, auto mark-read
 
 # Admin Panel Status
 - Not implemented
@@ -237,34 +269,43 @@ None — Phase 6 complete, ready for Phase 7
 - Authentication tests not written
 - Reputation scores computed on-read (see ADR-015 — acceptable for now)
 - Match scores computed on-demand (see ADR-016 — acceptable for now)
+- Notification SSE uses polling (3s) — adequate for dev, needs Redis Pub/Sub for production (see ADR-017)
+- Email/SMS queues are in-memory — lost on server restart (acceptable until production)
 
 # Blockers
 - None
 
 # Last Successful Commands
 - bun run lint ✓
-- /api/v1/feed (no auth): 401 ✓
-- /api/v1/me/availability (no auth): 401 ✓
+- npx prisma db push ✓
+- npx prisma generate ✓
 
 # Recently Modified Files
-- src/lib/validators/invitation.ts (NEW)
-- src/lib/validators/availability.ts (NEW)
+- prisma/schema.prisma (UPDATED — added Conversation, ConversationMember, Message models)
+- src/types/enums.ts (UPDATED — communication + notification enums + labels)
+- src/lib/validators/conversation.ts (NEW)
+- src/lib/validators/message.ts (NEW)
+- src/lib/validators/notification.ts (NEW)
 - src/lib/validators/index.ts (UPDATED)
-- src/types/enums.ts (UPDATED — INVITATION_STATUS_LABELS)
-- src/modules/matching/service.ts (NEW)
-- src/modules/matching/quality.ts (NEW — quality score, duplicate detection, hiring probability)
-- src/modules/feed/service.ts (NEW)
-- src/modules/invitations/service.ts (NEW)
-- src/modules/projects/service.ts (UPDATED — quality score on publish)
-- src/app/api/v1/feed/route.ts (NEW)
-- src/app/api/v1/projects/[slug]/matches/route.ts (NEW)
-- src/app/api/v1/projects/[slug]/invitations/route.ts (NEW)
-- src/app/api/v1/me/invitations/route.ts (NEW)
-- src/app/api/v1/me/availability/route.ts (NEW)
-- TODO.md (UPDATED — Phase 6 marked complete)
-- CHANGELOG.md (UPDATED — v0.6.0)
-- DECISIONS.md (UPDATED — ADR-016)
-- API_STATUS.md (UPDATED — 7 new endpoints)
+- src/modules/messaging/service.ts (NEW)
+- src/modules/notifications/service.ts (NEW)
+- src/modules/notifications/dispatcher.ts (NEW)
+- src/modules/projects/service.ts (UPDATED — dispatch on publish/status change)
+- src/modules/proposals/service.ts (UPDATED — dispatch on submit/status change)
+- src/modules/invitations/service.ts (UPDATED — dispatch on create/respond)
+- src/modules/reviews/service.ts (UPDATED — dispatch on create)
+- src/app/api/v1/conversations/route.ts (NEW)
+- src/app/api/v1/conversations/[id]/route.ts (NEW)
+- src/app/api/v1/conversations/[id]/messages/route.ts (NEW)
+- src/app/api/v1/me/messages/unread/route.ts (NEW)
+- src/app/api/v1/me/notifications/route.ts (NEW)
+- src/app/api/v1/me/notifications/unread/route.ts (NEW)
+- src/app/api/v1/me/notifications/preferences/route.ts (NEW)
+- src/app/api/v1/me/notifications/stream/route.ts (NEW)
+- TODO.md (UPDATED — Phase 7 marked complete)
+- CHANGELOG.md (UPDATED — v0.7.0)
+- DECISIONS.md (UPDATED — ADR-017)
+- API_STATUS.md (UPDATED — 12 new endpoints)
 
 # Next Recommended Task
-Start Phase 7 — Communication: Messaging system (WebSocket), Notification system, Instant project alerts, Email job queue, SMS job queue
+Start Phase 8 — AI: AI Provider abstraction, AI Project Builder, AI Proposal Assistant

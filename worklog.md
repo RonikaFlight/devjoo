@@ -224,3 +224,57 @@ Stage Summary:
 - Duplicate Detection: bigram similarity with Persian normalization
 - Hiring Probability: 0-100 estimation from multiple signals
 - Ready for Phase 7 (Communication)
+
+---
+Task ID: 7
+Agent: Main Agent
+Task: Phase 7 — Communication (Messaging, Notifications, Dispatcher, SSE, Job Queues)
+
+Work Log:
+- Added Conversation, ConversationMember, Message models to Prisma schema
+- Added conversations and sentMessages relations to User and Project models
+- Ran prisma db push + generate (3 new models)
+- Added 4 enum groups to enums.ts: CONVERSATION_TYPE, MESSAGE_TYPE, NOTIFICATION_TYPE, NOTIFICATION_CHANNEL + Persian labels
+- Created 3 Zod validators: conversation.ts, message.ts, notification.ts
+- Created messaging service (messaging/service.ts): findOrCreateConversation (dedup by members+type+project), listConversations (with lastMessage+unreadCount per conversation), getConversation, sendMessage (with dispatch), listMessages (auto mark-read via lastReadAt), getUnreadMessageCount
+- Created notification service (notifications/service.ts): create (preference-aware), createBatch, list (with isRead+type filters), markNotificationsRead (single IDs or markAll), getUnreadNotificationCount, getNotificationPreferences, initializeDefaultPreferences, updateNotificationPreferences (batch upsert)
+- Created notification dispatcher (notifications/dispatcher.ts): 8 dispatch functions:
+  - dispatchProjectPublished: finds freelancers with matching skills, creates notifications
+  - dispatchProposalReceived: notifies employer with freelancer name
+  - dispatchProposalStatusChanged: notifies freelancer with Persian status message
+  - dispatchInvitationReceived: notifies freelancer
+  - dispatchInvitationResponded: notifies employer
+  - dispatchReviewReceived: notifies reviewee
+  - dispatchMessageReceived: notifies other conversation members
+  - dispatchProjectStatusChanged: notifies all proposaled freelancers
+- In-process email queue: enqueueEmail/processEmailQueue (console log in dev, ready for BullMQ swap)
+- In-process SMS queue: enqueueSms/processSmsQueue (same pattern)
+- Integrated dispatcher into 5 domain services:
+  - projects/service.ts: dispatchProjectPublished + dispatchProjectStatusChanged on transitionProjectStatus
+  - proposals/service.ts: dispatchProposalReceived on submit, dispatchProposalStatusChanged on status update
+  - invitations/service.ts: dispatchInvitationReceived on create, dispatchInvitationResponded on respond
+  - reviews/service.ts: dispatchReviewReceived on create (both employer→freelancer and freelancer→employer paths)
+  - messaging/service.ts: dispatchMessageReceived on sendMessage (TEXT type only)
+- Created 7 API route files (12 endpoints):
+  - GET/POST /api/v1/conversations
+  - GET /api/v1/conversations/[id]
+  - GET/POST /api/v1/conversations/[id]/messages
+  - GET /api/v1/me/messages/unread
+  - GET/PATCH /api/v1/me/notifications
+  - GET /api/v1/me/notifications/unread
+  - GET/PUT /api/v1/me/notifications/preferences
+  - GET /api/v1/me/notifications/stream (SSE with 3s polling)
+- Added ADR-017: Event-Driven Notification Dispatch
+- Updated TODO.md (Phase 7 complete), CHANGELOG.md (v0.7.0), DECISIONS.md (ADR-017), API_STATUS.md (12 new endpoints), PROJECT_STATE.md
+- ESLint clean, prisma db push + generate successful
+
+Stage Summary:
+- Phase 7 Communication is COMPLETE
+- 12 new API endpoints operational
+- 2 new Prisma models (Conversation, ConversationMember, Message)
+- Full messaging system with conversation management and message CRUD
+- Full notification system with 12 types, 4 channels, user preferences
+- Event-driven dispatcher integrated into 5 domain services
+- SSE endpoint for real-time notification push
+- Email/SMS job queue stubs ready for production swap
+- Ready for Phase 8 (AI)

@@ -145,13 +145,13 @@
 
 ---
 
-## Phase 7 — Communication
+## Phase 7 — Communication ✓
 
-- [ ] Messaging system (WebSocket)
-- [ ] Notification system
-- [ ] Instant project alerts
-- [ ] Email job queue
-- [ ] SMS job queue
+- [x] Messaging system (REST + SSE polling)
+- [x] Notification system
+- [x] Instant project alerts
+- [x] Email job queue
+- [x] SMS job queue
 
 ---
 

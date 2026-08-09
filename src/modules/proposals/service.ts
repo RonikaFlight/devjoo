@@ -1,5 +1,6 @@
 import { db } from '@/lib/db';
 import type { ProposalSubmitInput, ProposalFiltersInput } from '@/lib/validators/proposal';
+import { dispatchProposalReceived, dispatchProposalStatusChanged } from '@/modules/notifications/dispatcher';
 
 /**
  * Submit a proposal for a project.
@@ -50,6 +51,9 @@ export async function submitProposal(
     });
     return created;
   });
+
+  // Notify employer (non-blocking)
+  dispatchProposalReceived(proposal.id).catch(() => {});
 
   return { proposal };
 }
@@ -131,6 +135,9 @@ export async function updateProposalStatus(
       data: { status, rejectionReason },
     });
   });
+
+  // Notify freelancer (non-blocking)
+  dispatchProposalStatusChanged(proposalId, status).catch(() => {});
 
   return { success: true };
 }

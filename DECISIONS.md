@@ -245,3 +245,30 @@ The match engine computes scores on-demand when an employer requests matches for
 - Smart feed uses a faster inline scoring function (no DB calls per item) instead of the full match engine
 
 **Status:** Accepted
+
+---
+
+## ADR-017 — Event-Driven Notification Dispatch
+
+**Decision:**
+Use a centralized notification dispatcher with non-blocking fire-and-forget pattern. Domain services call dispatch functions (e.g., `dispatchProposalReceived`) which create in-app notifications and optionally enqueue email/SMS jobs.
+
+**Reason:**
+- Decoupling: domain services (proposals, invitations, reviews, messaging) don't need to know about notification implementation
+- Non-blocking: all dispatch calls use `.catch(() => {})` so notification failures never break the primary operation
+- Centralized: all notification logic lives in `src/modules/notifications/dispatcher.ts` — easy to audit, modify, or extend
+- Preferences respected: dispatcher checks `NotificationPreference` before creating notifications or enqueueing email/SMS
+- In-process job queues (email/SMS) use simple arrays in dev mode, ready to swap to BullMQ + Redis in production
+
+**Architecture:**
+- `notifications/service.ts` — CRUD operations (create, list, mark read, preferences)
+- `notifications/dispatcher.ts` — event handlers + email/SMS queue stubs
+- SSE endpoint (`/api/v1/me/notifications/stream`) for real-time push via polling
+- Messaging uses REST + polling (WebSocket upgrade path documented for future)
+
+**Consequences:**
+- Notification dispatch adds ~50-200ms latency to primary operations (non-blocking, so user doesn't wait)
+- SSE endpoint uses polling (3s interval) — adequate for dev, Redis Pub/Sub for production
+- Email/SMS queues are in-memory — lost on server restart (acceptable until production)
+
+**Status:** Accepted
