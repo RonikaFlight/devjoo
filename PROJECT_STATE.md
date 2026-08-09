@@ -2,19 +2,20 @@
 DevJoo
 
 # Current Phase
-Phase 3 — Marketplace Core (NEARLY COMPLETE)
+Phase 5 — Trust (READY TO START)
 
 # Last Completed Task
-Phase 3 Marketplace Core: Seed data (10 categories, 75 skills, 93 synonyms), 8 new API routes (categories, skills, projects CRUD, proposals, bookmarks), module-based service layer (projects/service.ts, proposals/service.ts), ProjectCard shared component, /projects listing page with category filters and pagination, /project/[slug] detail page with SEO breadcrumbs, dashboard skeleton pages for freelancer and employer. All 18 API endpoints verified working via curl.
+Phase 4 SEO Landing Pages: /categories index, /projects/[slug] category pages, /projects/skills/[slug] skill pages, /hire landing, 15 /hire/[role] role pages, /blog foundation, internal linking on project detail/footer/homepage, updated sitemaps.
 
 # Currently Working On
-None — Phase 3 complete, ready for Phase 4
+None — Phase 4 complete, ready for Phase 5
 
 # Completed Features
 - Phase 0 complete (see below)
 - Phase 1 complete: SEO infrastructure, structured data, sitemaps, Zod validators
 - Phase 2 complete: Full authentication system (see below)
 - Phase 3 complete: Marketplace core — seed data, categories/skills/projects/proposals APIs, project pages, dashboard skeletons (see below)
+- Phase 4 complete: SEO landing pages — category/skill/hire pages, internal linking, blog foundation (see below)
 
 ## Phase 0 Completed
 - All 10 project memory files
@@ -65,17 +66,29 @@ None — Phase 3 complete, ready for Phase 4
 - /project/[slug] detail page with SEO breadcrumbs
 - Dashboard skeletons: /dashboard (role-based redirect), /dashboard/freelancer, /dashboard/employer
 
+## Phase 4 Completed
+- /categories index page: grid with icons, skill counts, project counts, SEO breadcrumbs
+- /projects/[slug] category pages: projects filtered by category, skill sub-filter, search, pagination, seoTitle/seoDescription metadata
+- /projects/skills/[slug] skill pages: projects by skill, related skills, hire CTA, synonyms, generateStaticParams
+- /hire landing page: hire-by-skill links, category grid, employer CTA
+- /hire/[role] role pages: 15 SEO-optimized pages (react-developer, nextjs-developer, seo-specialist, etc.)
+- /blog foundation: empty state with internal links
+- Internal linking: project detail → skill/category pages, footer categories + skill pages, homepage skill links
+- Sitemap updated: all category, skill, hire, and static pages
+- Breadcrumb key fix (unique keys)
+
 # Partially Completed Features
 - None
 
 # Pending Features
-- Phase 4-12: See TODO.md
+- Phase 5-12: See TODO.md
 
 # Important Architecture Decisions
 - ADR-001 through ADR-010 (see DECISIONS.md)
 - ADR-011: Custom JWT sessions instead of NextAuth.js (see DECISIONS.md)
 - ADR-012: Edge-safe session split (see DECISIONS.md)
 - ADR-013: Module-based service layer architecture (see DECISIONS.md)
+- ADR-014: URL structure for SEO landing pages (see DECISIONS.md)
 
 # Database Status
 - Prisma schema: 30+ models defined
@@ -118,17 +131,27 @@ None — Phase 3 complete, ready for Phase 4
 - Dashboard pages (/dashboard, /dashboard/freelancer, /dashboard/employer)
 - ProjectCard shared component
 - /projects page with category filters and pagination
-- /project/[slug] detail page with SEO breadcrumbs
+- /project/[slug] detail page with SEO breadcrumbs + internal links
+- /categories index page with category grid
+- /projects/[slug] category project pages with skill filter
+- /projects/skills/[slug] skill project pages with related skills
+- /hire landing page with hire-by-skill links
+- /hire/[role] role-specific hire pages (15 roles)
+- /blog foundation page
 
 # SEO Status
 - Homepage metadata configured
 - robots.txt: dynamic route (production-aware)
-- Sitemap: sitemap-index.xml + 3 dynamic sub-sitemaps
+- Sitemap: sitemap-index.xml + 3 dynamic sub-sitemaps (updated for Phase 4 pages)
 - Structured data: Organization, WebSite, ItemList on homepage
-- Breadcrumbs: component ready
+- Breadcrumbs: component ready, all public pages have breadcrumbs
 - Metadata helpers: generatePageMetadata, generateFilterPageMetadata, generatePrivatePageMetadata
 - Canonical helpers: buildCanonicalUrl
-- Project detail page with SEO breadcrumbs
+- Project detail page with SEO breadcrumbs + category breadcrumb
+- Category pages with seoTitle/seoDescription metadata
+- Skill pages with dynamic metadata (title + description from skill name)
+- Hire pages with hand-written SEO metadata per role
+- Internal linking: project → skills/categories, footer → categories/skills, homepage → skill pages
 
 # Search Status
 - Not implemented
@@ -154,60 +177,44 @@ None — Phase 3 complete, ready for Phase 4
 # Technical Debt
 - OAuth frontend buttons are placeholders (show "coming soon" message)
 - Email/password login shows "coming soon" message
+- Project creation page not built (only API exists)
+- Proposal pages (freelancer/employer) not built (only APIs exist)
+- Authentication tests not written
 
 # Blockers
 - None
 
 # Last Successful Commands
 - bun run lint ✓
-- dev server: HTTP 200 ✓
-- POST /api/v1/auth/otp/request: 200, returns devCode ✓
-- POST /api/v1/auth/otp/verify: 200, sets cookie, returns user + needsOnboarding ✓
-- GET /api/v1/auth/me: 200 with cookie, 401 without ✓
-- POST /api/v1/auth/register: 201, assigns role + creates profile ✓
-- POST /api/v1/auth/logout: 200, clears session ✓
-- GET /api/v1/auth/me after logout: 401 ✓
-- GET /api/v1/categories: 200, returns 10 categories ✓
-- GET /api/v1/skills: 200, returns 75 skills ✓
-- POST /api/v1/projects: 201, creates draft project ✓
-- POST /api/v1/projects/[slug]/publish: 200, DRAFT→PENDING_APPROVAL ✓
-- GET /api/v1/projects: 200, list with pagination ✓
-- GET /api/v1/projects/[slug]: 200, full project detail ✓
-- POST /api/v1/projects/[slug]/proposals: 201, submit proposal ✓
-- GET /api/v1/projects/[slug]/proposals: 200, employer proposal list ✓
-- POST /api/v1/projects/[slug]/save: 200, bookmark toggle ✓
-- /robots.txt: dynamic, dev blocks all ✓
-- /sitemap-index.xml: valid XML ✓
-- 3 JSON-LD scripts on homepage ✓
-- /projects: renders with category filters ✓
-- /project/[slug]: renders with breadcrumbs ✓
+- dev server: HTTP 200 on all new pages ✓
+- /categories: 200 ✓
+- /projects/web-development: 200 ✓
+- /projects/skills/react: 200 ✓
+- /hire: 200 ✓
+- /hire/react-developer: 200 ✓
+- /hire/seo-specialist: 200 ✓
+- /blog: 200 ✓
+- /sitemap-categories.xml: 200, valid XML ✓
 
 # Recently Modified Files
-- prisma/seed.ts (NEW — seed runner)
-- prisma/seed/data/categories.ts (NEW — 10 categories, 75 skills, 93 synonyms)
-- src/modules/projects/service.ts (NEW — project CRUD service layer)
-- src/modules/proposals/service.ts (NEW — proposal service layer)
-- src/app/api/v1/categories/route.ts (NEW — GET categories list)
-- src/app/api/v1/categories/[slug]/route.ts (NEW — GET category by slug)
-- src/app/api/v1/skills/route.ts (NEW — GET skills with search & filter)
-- src/app/api/v1/skills/[slug]/route.ts (NEW — GET skill by slug)
-- src/app/api/v1/projects/route.ts (NEW — POST create, GET list)
-- src/app/api/v1/projects/[slug]/route.ts (NEW — GET detail, PATCH update)
-- src/app/api/v1/projects/[slug]/publish/route.ts (NEW — POST publish state machine)
-- src/app/api/v1/projects/[slug]/save/route.ts (NEW — POST bookmark toggle)
-- src/app/api/v1/projects/[slug]/proposals/route.ts (NEW — POST submit, GET list)
-- src/app/api/v1/proposals/[id]/route.ts (NEW — PATCH status update)
-- src/app/api/v1/me/proposals/route.ts (NEW — GET freelancer proposals)
-- src/components/shared/project-card.tsx (NEW — shared project card component)
-- src/app/projects/page.tsx (NEW — projects listing page)
-- src/app/projects/projects-client.tsx (NEW — projects client component)
-- src/app/project/[slug]/page.tsx (NEW — project detail page)
-- src/app/project/[slug]/project-detail-client.tsx (NEW — project detail client)
-- TODO.md (updated Phase 3 status)
-- PROJECT_STATE.md (updated)
-- CHANGELOG.md (updated)
-- DECISIONS.md (updated, added ADR-013)
-- API_STATUS.md (updated Phase 3 routes)
+- src/app/categories/page.tsx (NEW — categories index)
+- src/app/projects/[slug]/page.tsx (NEW — category project page)
+- src/app/projects/[slug]/category-projects-client.tsx (NEW)
+- src/app/projects/skills/[slug]/page.tsx (NEW — skill project page)
+- src/app/projects/skills/[slug]/skill-projects-client.tsx (NEW)
+- src/app/hire/page.tsx (NEW — hire landing)
+- src/app/hire/[role]/page.tsx (NEW — hire role page)
+- src/app/hire/[role]/hire-role-client.tsx (NEW)
+- src/app/blog/page.tsx (NEW — blog foundation)
+- src/components/layout/footer.tsx (UPDATED — categories column + skill links)
+- src/components/seo/breadcrumbs.tsx (FIXED — unique keys)
+- src/app/page.tsx (UPDATED — skill links to /projects/skills/)
+- src/app/project/[slug]/page.tsx (UPDATED — category in breadcrumb)
+- src/app/project/[slug]/project-detail-client.tsx (UPDATED — skill/category internal links)
+- src/app/sitemap-categories.xml/route.ts (UPDATED — skill URLs + hire pages)
+- TODO.md (UPDATED — Phase 3 + 4 marked complete)
+- PROJECT_STATE.md (UPDATED)
+- CHANGELOG.md (UPDATED — v0.4.0)
 
 # Next Recommended Task
-Start Phase 4 — SEO Landing Pages: category pages, skill pages, hire landing pages, internal linking
+Start Phase 5 — Trust: Client Score (employer metrics), verification systems, portfolio, reviews, reputation score

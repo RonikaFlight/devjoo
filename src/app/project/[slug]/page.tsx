@@ -55,11 +55,24 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const breadcrumbLd = generateBreadcrumbLd([
-    { name: 'خانه', href: '/' },
-    { name: 'پروژه‌ها', href: '/projects' },
-    { name: project.title, href: `/project/${slug}` },
-  ]);
+      const breadcrumbItems = [
+        { label: 'خانه', href: '/' },
+        { label: 'پروژه‌ها', href: '/projects' },
+      ];
+      if (project.category) {
+        breadcrumbItems.push({
+          label: project.category.name,
+          href: `/projects/${project.category.slug}`,
+        });
+      }
+      breadcrumbItems.push({ label: project.title });
+
+      const breadcrumbLd = generateBreadcrumbLd(
+        breadcrumbItems.map((item, i) => ({
+          name: item.label,
+          href: item.href,
+        }))
+      );
 
   const serialized = JSON.parse(JSON.stringify(project));
 

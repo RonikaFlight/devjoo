@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import Link from 'next/link';
 import {
   MapPin,
   Clock,
@@ -123,7 +124,7 @@ export function ProjectDetailClient({ project }: { project: ProjectData }) {
             </CardContent>
           </Card>
 
-          {/* Skills Card */}
+          {/* Skills Card with internal links */}
           {project.skills.length > 0 && (
             <Card>
               <CardHeader className="pb-3">
@@ -132,14 +133,32 @@ export function ProjectDetailClient({ project }: { project: ProjectData }) {
               <CardContent>
                 <div className="flex flex-wrap gap-2">
                   {project.skills.map((ps) => (
-                    <span
+                    <Link
                       key={ps.skill.id}
-                      className="rounded-full bg-primary-soft px-2.5 py-0.5 text-sm text-primary"
+                      href={`/projects/skills/${ps.skill.slug}`}
+                      className="rounded-full bg-primary-soft px-2.5 py-0.5 text-sm text-primary hover:bg-primary hover:text-white transition-colors"
                     >
                       {ps.skill.name}
-                    </span>
+                    </Link>
                   ))}
                 </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Category & Related Links */}
+          {project.category && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">دسته‌بندی</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Link
+                  href={`/projects/${project.category.slug}`}
+                  className="text-sm text-primary hover:underline"
+                >
+                  مشاهده همه پروژه‌های {project.category.name}
+                </Link>
               </CardContent>
             </Card>
           )}

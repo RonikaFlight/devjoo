@@ -32,19 +32,55 @@ export function Footer() {
             </nav>
           </div>
 
-          {/* Popular Skills */}
+          {/* Popular Skills — linked to skill pages */}
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-text-primary">مهارت‌های پرطرفدار</h3>
             <nav className="flex flex-col gap-2">
-              {siteConfig.footer.popularSkills.map((skill) => (
-                <Link
-                  key={skill}
-                  href={`/projects/${skill.toLowerCase()}`}
-                  className="text-sm text-text-secondary hover:text-primary transition-colors"
-                >
-                  {skill}
-                </Link>
-              ))}
+              {siteConfig.footer.popularSkills.map((skill) => {
+                const slugMap: Record<string, string> = {
+                  'React': 'react', 'Next.js': 'nextjs', 'WordPress': 'wordpress',
+                  'Python': 'python', 'UI/UX': 'ui-design', 'SEO': 'seo',
+                  'Node.js': 'nodejs', 'AI': 'llm',
+                };
+                const slug = slugMap[skill] || skill.toLowerCase().replace(/[^a-z0-9-]/g, '');
+                return (
+                  <Link
+                    key={skill}
+                    href={`/projects/skills/${slug}`}
+                    className="text-sm text-text-secondary hover:text-primary transition-colors"
+                  >
+                    پروژه‌های {skill}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* Categories */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-text-primary">دسته‌بندی‌ها</h3>
+            <nav className="flex flex-col gap-2">
+              <Link href="/categories" className="text-sm text-text-secondary hover:text-primary transition-colors">
+                همه دسته‌بندی‌ها
+              </Link>
+              <Link href="/projects/web-development" className="text-sm text-text-secondary hover:text-primary transition-colors">
+                برنامه‌نویسی وب
+              </Link>
+              <Link href="/projects/mobile-app-development" className="text-sm text-text-secondary hover:text-primary transition-colors">
+                اپلیکیشن موبایل
+              </Link>
+              <Link href="/projects/ui-ux-design" className="text-sm text-text-secondary hover:text-primary transition-colors">
+                طراحی UI/UX
+              </Link>
+              <Link href="/projects/ai-machine-learning" className="text-sm text-text-secondary hover:text-primary transition-colors">
+                هوش مصنوعی
+              </Link>
+              <Link href="/projects/seo-digital-marketing" className="text-sm text-text-secondary hover:text-primary transition-colors">
+                سئو و دیجیتال مارکتینگ
+              </Link>
+              <Link href="/hire" className="text-sm text-text-secondary hover:text-primary transition-colors">
+                استخدام فریلنسر
+              </Link>
             </nav>
           </div>
 

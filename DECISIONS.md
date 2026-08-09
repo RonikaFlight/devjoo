@@ -176,3 +176,30 @@ Place business logic in `src/modules/<domain>/service.ts` files, keeping API rou
 - Route handlers call service functions, wrapping results in `NextResponse.json()`
 
 **Status:** Accepted
+
+---
+
+## ADR-014 — URL Structure for SEO Landing Pages
+
+**Decision:**
+Use the following URL patterns for SEO landing pages:
+- `/categories` — categories index
+- `/projects/[category-slug]` — category project listing (e.g., `/projects/web-development`)
+- `/projects/skills/[skill-slug]` — skill project listing (e.g., `/projects/skills/react`)
+- `/hire` — general hire landing
+- `/hire/[role-slug]` — role-specific hire page (e.g., `/hire/react-developer`)
+- `/project/[slug]` — individual project detail (singular, no 's')
+
+**Reason:**
+- Category slugs use `/projects/[slug]` to match SEO_PLAN.md target URLs (e.g., `/projects/frontend`)
+- Skill pages use `/projects/skills/[slug]` to distinguish from category pages and avoid route collision
+- Hire pages use `/hire/[role]` for clean, memorable URLs targeting Persian hiring keywords
+- The singular `/project/[slug]` for project detail prevents collision with the plural `/projects/[slug]` for category pages
+- All URLs use English slugs (URL-safe) while displaying Persian content
+
+**Consequences:**
+- `generateStaticParams` works for all category and skill pages
+- Sitemap includes all landing page URLs with correct paths
+- Internal linking connects project details to their category and skill pages
+
+**Status:** Accepted

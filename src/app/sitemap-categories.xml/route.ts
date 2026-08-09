@@ -2,11 +2,12 @@ import { db } from '@/lib/db';
 import { siteConfig } from '@/config/site';
 
 /**
- * Sitemap for categories and skills.
- * Skill pages are indexable SEO landing pages per spec §81.
+ * Sitemap for category pages, skill pages, hire pages, and static pages.
+ * Per spec §81: skill pages are indexable SEO landing pages.
  */
 export async function GET() {
   const siteUrl = siteConfig.url;
+  const now = new Date().toISOString();
 
   const [categories, skills] = await Promise.all([
     db.category.findMany({
@@ -21,16 +22,32 @@ export async function GET() {
     }),
   ]);
 
+  // Hire role slugs (static, known at build time)
+  const hireRoles = [
+    'react-developer', 'nextjs-developer', 'nodejs-developer', 'python-developer',
+    'wordpress-developer', 'laravel-developer', 'flutter-developer', 'javascript-developer',
+    'typescript-developer', 'ui-ux-designer', 'figma-designer', 'graphic-designer',
+    'seo-specialist', 'frontend-developer', 'mobile-developer',
+  ];
+
   const entries: { loc: string; lastmod: string }[] = [
-    // Category pages
+    // Static pages
+    { loc: `${siteUrl}/categories`, lastmod: now },
+    { loc: `${siteUrl}/hire`, lastmod: now },
+    // Category pages: /projects/[slug]
     ...categories.map((c) => ({
       loc: `${siteUrl}/projects/${c.slug}`,
       lastmod: c.updatedAt.toISOString(),
     })),
-    // Skill pages
+    // Skill pages: /projects/skills/[slug]
     ...skills.map((s) => ({
-      loc: `${siteUrl}/projects/${s.slug}`,
+      loc: `${siteUrl}/projects/skills/${s.slug}`,
       lastmod: s.updatedAt.toISOString(),
+    })),
+    // Hire pages: /hire/[role]
+    ...hireRoles.map((role) => ({
+      loc: `${siteUrl}/hire/${role}`,
+      lastmod: now,
     })),
   ];
 

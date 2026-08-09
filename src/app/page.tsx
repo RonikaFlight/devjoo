@@ -11,10 +11,10 @@ const popularSkills = [
   { name: 'Next.js', slug: 'nextjs' },
   { name: 'WordPress', slug: 'wordpress' },
   { name: 'Python', slug: 'python' },
-  { name: 'UI/UX', slug: 'ui-ux' },
+  { name: 'UI/UX', slug: 'ui-design' },
   { name: 'SEO', slug: 'seo' },
   { name: 'Node.js', slug: 'nodejs' },
-  { name: 'AI', slug: 'ai' },
+  { name: 'AI', slug: 'llm' },
 ];
 
 const differentiators = [
@@ -43,7 +43,7 @@ const differentiators = [
 export default function HomePage() {
   const skillItemsLd = popularSkills.map((s, i) => ({
     name: s.name,
-    url: `/projects/${s.slug}`,
+    url: `/projects/skills/${s.slug}`,
     position: i + 1,
   }));
 
@@ -133,7 +133,7 @@ export default function HomePage() {
           <h2 className="text-xl font-bold mb-8 text-center">مهارت‌های پرطرفدار</h2>
           <div className="flex flex-wrap justify-center gap-3">
             {popularSkills.map((skill) => (
-              <Link key={skill.slug} href={`/projects/${skill.slug}`}>
+              <Link key={skill.slug} href={`/projects/skills/${skill.slug}`}>
                 <Badge
                   variant="secondary"
                   className="px-4 py-2 text-sm cursor-pointer hover:bg-primary-soft hover:text-primary transition-colors"

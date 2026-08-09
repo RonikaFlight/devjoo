@@ -70,50 +70,53 @@
 
 ---
 
-## Phase 3 — Marketplace Core (IN PROGRESS)
+## Phase 3 — Marketplace Core ✓
 
 ### Categories & Skills
-- [ ] Categories CRUD API
-- [ ] Skills CRUD API
-- [ ] Category seed data
-- [ ] Skill seed data (with synonyms)
-- [ ] Skill synonym system
+- [x] Categories CRUD API
+- [x] Skills CRUD API
+- [x] Category seed data
+- [x] Skill seed data (with synonyms)
+- [x] Skill synonym system
 
 ### Projects
-- [ ] Project creation API
-- [ ] Project listing API (with filters)
-- [ ] Project detail API
-- [ ] Project state machine
-- [ ] Project save/bookmark API
+- [x] Project creation API
+- [x] Project listing API (with filters)
+- [x] Project detail API
+- [x] Project state machine
+- [x] Project save/bookmark API
 - [ ] Project creation page
-- [ ] Project listing page (/projects)
-- [ ] Project detail page (/project/[slug])
-- [ ] Project card component
-- [ ] Project filters (category, skills, budget, etc.)
-- [ ] Project search
+- [x] Project listing page (/projects)
+- [x] Project detail page (/project/[slug])
+- [x] Project card component
+- [x] Project filters (category, skills, budget, etc.)
+- [x] Project search
 
 ### Proposals
-- [ ] Proposal submission API
-- [ ] Proposal listing (employer) API
-- [ ] Proposal status workflow
-- [ ] Proposal limit enforcement (max 10 qualified)
+- [x] Proposal submission API
+- [x] Proposal listing (employer) API
+- [x] Proposal status workflow
+- [x] Proposal limit enforcement (max 10 qualified)
 - [ ] Proposal page (freelancer)
 - [ ] Proposal page (employer)
 
 ### Dashboards
-- [ ] Freelancer dashboard skeleton
-- [ ] Employer dashboard skeleton
+- [x] Freelancer dashboard skeleton
+- [x] Employer dashboard skeleton
 
 ---
 
-## Phase 4 — SEO Landing Pages
+## Phase 4 — SEO Landing Pages ✓
 
-- [ ] Category pages (/projects/[category])
-- [ ] Skill pages (/projects/[skill])
-- [ ] Hire landing pages (/hire/[skill]-developer)
-- [ ] Internal linking implementation
-- [ ] Breadcrumbs on all public pages
-- [ ] Blog foundation
+- [x] Categories index page (/categories)
+- [x] Category project pages (/projects/[slug])
+- [x] Skill project pages (/projects/skills/[slug])
+- [x] Hire landing page (/hire)
+- [x] Hire role pages (/hire/[role]) — 15 role-specific SEO pages
+- [x] Internal linking (project detail → skills/categories, footer categories/skills)
+- [x] Breadcrumbs on all public pages
+- [x] Blog foundation (/blog)
+- [x] Sitemap updated for new pages
 
 ---
 

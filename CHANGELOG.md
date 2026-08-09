@@ -1,5 +1,29 @@
 # DevJoo — Changelog
 
+## [0.4.0] — 2026-08-09
+
+### Added
+- **Categories Index Page**: /categories — grid of 10 categories with icons, skill counts, project counts, SEO breadcrumbs, internal linking
+- **Category Project Pages**: /projects/[slug] — projects filtered by category, skill sub-filter bar, search, pagination, SEO metadata from seoTitle/seoDescription
+- **Skill Project Pages**: /projects/skills/[slug] — projects filtered by skill name, related skills section, hire CTA, synonym display, generateStaticParams for all 75 skills
+- **Hire Landing Page**: /hire — categorized hire links, popular hire links by skill, category grid, employer CTA
+- **Hire Role Pages**: /hire/[role] — 15 SEO-optimized role-specific pages (react-developer, nextjs-developer, seo-specialist, ui-ux-designer, etc.) with how-it-works, benefits, related skills
+- **Blog Foundation**: /blog — empty state with internal linking to projects and categories
+- **Internal Linking**:
+  - Project detail: skills link to /projects/skills/[slug], category link to /projects/[slug]
+  - Project detail: breadcrumbs include category when available
+  - Footer: skill links to /projects/skills/[slug], added categories column
+  - Homepage: popular skills link to /projects/skills/[slug] (was /projects/[slug])
+- **Sitemap**: Updated sitemap-categories.xml with /categories, /hire, all /projects/skills/*, all /hire/* pages
+- **Breadcrumb Fix**: Unique keys for breadcrumb items (fixed React key warning)
+
+### Changed
+- Homepage popular skills now link to /projects/skills/[slug] instead of /projects/[slug]
+- Footer popular skills now link to skill pages with "پروژه‌های" prefix
+- Fixed sitemap skill URLs from /projects/[slug] to /projects/skills/[slug]
+
+---
+
 ## [0.3.0] — 2026-08-09
 
 ### Added
