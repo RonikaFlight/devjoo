@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node.js 20+ or Bun latest
+- Node.js 20+
 - PostgreSQL 15+ (production) / SQLite (development)
 - A reverse proxy (Nginx/Caddy) with SSL termination
 - Domain: devjoo.ir
@@ -39,13 +39,13 @@
 DATABASE_URL=postgresql://devjoo:password@localhost:5432/devjoo
 
 # 2. Generate Prisma client with PostgreSQL adapter
-bun run db:generate
+npm run db:generate
 
 # 3. Run migrations
-bun run db:migrate
+npm run db:migrate
 
 # 4. Seed initial data
-bun prisma db seed
+npx prisma db seed
 ```
 
 ### Database Migrations
@@ -66,19 +66,19 @@ npx prisma migrate reset
 ### Development
 
 ```bash
-bun install
-bun run db:generate
-bun run db:push
-bun run dev
+npm install
+npm run db:generate
+npm run db:push
+npm run dev
 ```
 
 ### Production Build
 
 ```bash
-bun install
-bun run db:generate
-bun run build
-bun run start
+npm install
+npm run db:generate
+npm run build
+npm run start
 ```
 
 ### Docker
@@ -89,16 +89,15 @@ FROM node:20-alpine AS base
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
-COPY package.json bun.lockb* ./
-RUN corepack enable && bun install --frozen-lockfile --production
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
 
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN corepack enable \
-    && bun run db:generate \
-    && bun run build
+RUN npm run db:generate \
+    && npm run build
 
 FROM base AS runner
 WORKDIR /app
