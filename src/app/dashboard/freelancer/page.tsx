@@ -41,6 +41,11 @@ export default async function FreelancerDashboardPage() {
           href="/dashboard/freelancer/proposals"
         />
         <DashboardCard
+          title="نمونه‌کارها"
+          description="نمونه‌کارهای خود را مدیریت کنید"
+          href="/dashboard/freelancer/portfolio"
+        />
+        <DashboardCard
           title="پروفایل"
           description="پروفایل خود را تکمیل کنید تا بیشتر دیده شوید"
           href="/settings/profile"

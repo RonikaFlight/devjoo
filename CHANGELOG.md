@@ -1,5 +1,37 @@
 # DevJoo — Changelog
 
+## [0.5.0] — 2026-08-09
+
+### Added
+- **Portfolio System**:
+  - Zod validators: portfolioCreateSchema, portfolioUpdateSchema, portfolioReorderSchema
+  - Portfolio service: CRUD, reorder, max 20 items per freelancer
+  - Portfolio API: GET/POST /api/v1/portfolio, PATCH/DELETE /api/v1/portfolio/[id], POST /api/v1/portfolio/reorder
+  - Portfolio frontend: /dashboard/freelancer/portfolio with create/edit/delete dialog, image preview, empty state
+- **Review System**:
+  - Zod validators: reviewCreateSchema, reviewFiltersSchema, reviewReplySchema
+  - Review service: create (employer↔freelancer), list received, review stats with category averages and rating distribution
+  - Reviews API: GET/POST /api/v1/reviews, GET /api/v1/reviews/stats
+- **Verification System**:
+  - Zod validators: verificationRequestSchema, verificationUpdateSchema
+  - Verification service: request (freelancer/employer), list, summary, admin update status
+  - Verification API: GET/POST /api/v1/verification
+- **Client Score (Employer Metrics)**:
+  - getClientScore: totalPosted, totalHired, hireRate, responseRate, averageResponseTimeHours, totalSpentRial, verifications
+  - computeClientScore: 0-100 numeric score (weighted: hire rate, rating, reviews, spend, verifications, response rate)
+  - refreshEmployerMetrics: updates EmployerProfile counters after project status changes
+- **Freelancer Reputation**:
+  - getFreelancerReputation: totalCompletedProjects, totalHires, averageRating, responseRate, verifications, repeatHireRate
+  - computeReputationScore: 0-100 numeric score (weighted: rating, completion, reviews, verifications, repeat hire, response rate)
+  - refreshFreelancerMetrics: updates FreelancerProfile counters
+- **New Enums & Labels**: VERIFICATION_TYPE_LABELS, VERIFICATION_STATUS_LABELS, COMPANY_SIZE, COMPANY_SIZE_LABELS, PROFICIENCY_LEVEL, PROFICIENCY_LEVEL_LABELS, REVIEW_CATEGORIES
+- **Dashboard Update**: Freelancer dashboard now links to portfolio page
+
+### Decisions
+- ADR-015: On-read reputation computation (no cached scores table — compute on demand, can add caching layer later)
+
+---
+
 ## [0.4.0] — 2026-08-09
 
 ### Added

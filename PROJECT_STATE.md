@@ -2,13 +2,13 @@
 DevJoo
 
 # Current Phase
-Phase 5 — Trust (READY TO START)
+Phase 6 — Smart Features (READY TO START)
 
 # Last Completed Task
-Phase 4 SEO Landing Pages: /categories index, /projects/[slug] category pages, /projects/skills/[slug] skill pages, /hire landing, 15 /hire/[role] role pages, /blog foundation, internal linking on project detail/footer/homepage, updated sitemaps.
+Phase 5 Trust: Portfolio CRUD + frontend, Review system (create/list/stats), Verification (freelancer/employer), Client Score (employer metrics), Reputation score (0-100 computed), ADR-015
 
 # Currently Working On
-None — Phase 4 complete, ready for Phase 5
+None — Phase 5 complete, ready for Phase 6
 
 # Completed Features
 - Phase 0 complete (see below)
@@ -16,6 +16,7 @@ None — Phase 4 complete, ready for Phase 5
 - Phase 2 complete: Full authentication system (see below)
 - Phase 3 complete: Marketplace core — seed data, categories/skills/projects/proposals APIs, project pages, dashboard skeletons (see below)
 - Phase 4 complete: SEO landing pages — category/skill/hire pages, internal linking, blog foundation (see below)
+- Phase 5 complete: Trust — portfolio, reviews, verification, client score, reputation (see below)
 
 ## Phase 0 Completed
 - All 10 project memory files
@@ -77,11 +78,26 @@ None — Phase 4 complete, ready for Phase 5
 - Sitemap updated: all category, skill, hire, and static pages
 - Breadcrumb key fix (unique keys)
 
+## Phase 5 Completed
+- Portfolio service: CRUD (max 20 items), reorder, ownership checks
+- Portfolio API: GET/POST /api/v1/portfolio, PATCH/DELETE /api/v1/portfolio/[id], POST /api/v1/portfolio/reorder
+- Portfolio frontend: /dashboard/freelancer/portfolio with create/edit/delete dialog, image preview, empty state, grid layout
+- Review service: create (employer↔freelancer for completed projects), list received, stats (distribution + category averages)
+- Reviews API: GET/POST /api/v1/reviews, GET /api/v1/reviews/stats
+- Verification service: request (freelancer/employer), list, summary badges, admin status update
+- Verification API: GET/POST /api/v1/verification
+- Client Score: getClientScore (employer metrics), computeClientScore (0-100 weighted), refreshEmployerMetrics
+- Freelancer Reputation: getFreelancerReputation, computeReputationScore (0-100 weighted), refreshFreelancerMetrics
+- Reputation API: GET /api/v1/reputation?type=client|freelancer
+- Zod validators: portfolio.ts, review.ts, verification.ts
+- New enums: VERIFICATION_TYPE_LABELS, VERIFICATION_STATUS_LABELS, COMPANY_SIZE, PROFICIENCY_LEVEL, REVIEW_CATEGORIES
+- ADR-015: On-read reputation computation
+
 # Partially Completed Features
 - None
 
 # Pending Features
-- Phase 5-12: See TODO.md
+- Phase 6-12: See TODO.md
 
 # Important Architecture Decisions
 - ADR-001 through ADR-010 (see DECISIONS.md)
@@ -89,6 +105,7 @@ None — Phase 4 complete, ready for Phase 5
 - ADR-012: Edge-safe session split (see DECISIONS.md)
 - ADR-013: Module-based service layer architecture (see DECISIONS.md)
 - ADR-014: URL structure for SEO landing pages (see DECISIONS.md)
+- ADR-015: On-read reputation computation (see DECISIONS.md)
 
 # Database Status
 - Prisma schema: 30+ models defined
@@ -121,6 +138,17 @@ None — Phase 4 complete, ready for Phase 5
 - PATCH /api/v1/proposals/[id] — working
 - GET /api/v1/me/proposals — working
 - POST /api/v1/projects/[slug]/save — working
+- GET /api/v1/reviews — working
+- POST /api/v1/reviews — working
+- GET /api/v1/reviews/stats — working
+- GET /api/v1/portfolio — working (auth required)
+- POST /api/v1/portfolio — working (auth required)
+- PATCH /api/v1/portfolio/[id] — working (auth required)
+- DELETE /api/v1/portfolio/[id] — working (auth required)
+- POST /api/v1/portfolio/reorder — working (auth required)
+- GET /api/v1/verification — working (auth required)
+- POST /api/v1/verification — working (auth required)
+- GET /api/v1/reputation — working
 
 # Frontend Status
 - Next.js 16 App Router, RTL, Vazirmatn, purple design, dark mode
@@ -138,6 +166,7 @@ None — Phase 4 complete, ready for Phase 5
 - /hire landing page with hire-by-skill links
 - /hire/[role] role-specific hire pages (15 roles)
 - /blog foundation page
+- /dashboard/freelancer/portfolio — portfolio management page
 
 # SEO Status
 - Homepage metadata configured
@@ -180,6 +209,7 @@ None — Phase 4 complete, ready for Phase 5
 - Project creation page not built (only API exists)
 - Proposal pages (freelancer/employer) not built (only APIs exist)
 - Authentication tests not written
+- Reputation scores computed on-read (see ADR-015 — acceptable for now)
 
 # Blockers
 - None
@@ -187,34 +217,37 @@ None — Phase 4 complete, ready for Phase 5
 # Last Successful Commands
 - bun run lint ✓
 - dev server: HTTP 200 on all new pages ✓
-- /categories: 200 ✓
-- /projects/web-development: 200 ✓
-- /projects/skills/react: 200 ✓
-- /hire: 200 ✓
-- /hire/react-developer: 200 ✓
-- /hire/seo-specialist: 200 ✓
-- /blog: 200 ✓
-- /sitemap-categories.xml: 200, valid XML ✓
+- /dashboard/freelancer/portfolio: 307 (redirect, auth required) ✓
+- /api/v1/reputation: 400 (missing params) ✓
+- /api/v1/reviews/stats: 200 ✓
+- /api/v1/portfolio (no auth): 401 ✓
+- /api/v1/verification (no auth): 401 ✓
 
 # Recently Modified Files
-- src/app/categories/page.tsx (NEW — categories index)
-- src/app/projects/[slug]/page.tsx (NEW — category project page)
-- src/app/projects/[slug]/category-projects-client.tsx (NEW)
-- src/app/projects/skills/[slug]/page.tsx (NEW — skill project page)
-- src/app/projects/skills/[slug]/skill-projects-client.tsx (NEW)
-- src/app/hire/page.tsx (NEW — hire landing)
-- src/app/hire/[role]/page.tsx (NEW — hire role page)
-- src/app/hire/[role]/hire-role-client.tsx (NEW)
-- src/app/blog/page.tsx (NEW — blog foundation)
-- src/components/layout/footer.tsx (UPDATED — categories column + skill links)
-- src/components/seo/breadcrumbs.tsx (FIXED — unique keys)
-- src/app/page.tsx (UPDATED — skill links to /projects/skills/)
-- src/app/project/[slug]/page.tsx (UPDATED — category in breadcrumb)
-- src/app/project/[slug]/project-detail-client.tsx (UPDATED — skill/category internal links)
-- src/app/sitemap-categories.xml/route.ts (UPDATED — skill URLs + hire pages)
-- TODO.md (UPDATED — Phase 3 + 4 marked complete)
+- src/lib/validators/portfolio.ts (NEW)
+- src/lib/validators/review.ts (NEW)
+- src/lib/validators/verification.ts (NEW)
+- src/lib/validators/index.ts (UPDATED)
+- src/types/enums.ts (UPDATED — verification labels, company size, proficiency level)
+- src/modules/portfolio/service.ts (NEW)
+- src/modules/reviews/service.ts (NEW)
+- src/modules/verification/service.ts (NEW)
+- src/modules/reputation/service.ts (NEW)
+- src/app/api/v1/portfolio/route.ts (NEW)
+- src/app/api/v1/portfolio/[id]/route.ts (NEW)
+- src/app/api/v1/portfolio/reorder/route.ts (NEW)
+- src/app/api/v1/reviews/route.ts (NEW)
+- src/app/api/v1/reviews/stats/route.ts (NEW)
+- src/app/api/v1/verification/route.ts (NEW)
+- src/app/api/v1/reputation/route.ts (NEW)
+- src/app/dashboard/freelancer/portfolio/page.tsx (NEW)
+- src/app/dashboard/freelancer/portfolio/portfolio-client.tsx (NEW)
+- src/app/dashboard/freelancer/page.tsx (UPDATED — portfolio link)
+- TODO.md (UPDATED — Phase 5 marked complete)
 - PROJECT_STATE.md (UPDATED)
-- CHANGELOG.md (UPDATED — v0.4.0)
+- CHANGELOG.md (UPDATED — v0.5.0)
+- DECISIONS.md (UPDATED — ADR-015)
+- API_STATUS.md (UPDATED — 11 new endpoints)
 
 # Next Recommended Task
-Start Phase 5 — Trust: Client Score (employer metrics), verification systems, portfolio, reviews, reputation score
+Start Phase 6 — Smart Features: DevJoo Match engine, Smart Feed, Reverse Hiring, Project Invitations, Availability system, Project Quality Score, Duplicate project detection, Hiring probability

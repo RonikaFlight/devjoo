@@ -4,3 +4,6 @@ export * from './project';
 export * from './proposal';
 export * from './taxonomy';
 export * from './common';
+export * from './portfolio';
+export * from './review';
+export * from './verification';

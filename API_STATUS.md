@@ -56,6 +56,26 @@
 [ ] DELETE /api/v1/projects/[slug]/save — remove bookmark
 [ ] GET    /api/v1/me/saved-projects — list saved projects
 
+## Reviews
+[x] POST   /api/v1/reviews — submit review (employer↔freelancer)
+[x] GET    /api/v1/reviews?profileId=xxx — list received reviews
+[x] GET    /api/v1/reviews/stats?profileId=xxx — review statistics
+
+## Portfolio
+[x] GET    /api/v1/portfolio — list freelancer portfolio items
+[x] POST   /api/v1/portfolio — create portfolio item (max 20)
+[x] PATCH  /api/v1/portfolio/[id] — update portfolio item
+[x] DELETE /api/v1/portfolio/[id] — delete portfolio item
+[x] POST   /api/v1/portfolio/reorder — reorder portfolio items
+
+## Verification
+[x] GET    /api/v1/verification — list user verifications + summary
+[x] POST   /api/v1/verification — request verification
+
+## Reputation
+[x] GET    /api/v1/reputation?userId=xxx&type=client — employer client score
+[x] GET    /api/v1/reputation?userId=xxx&type=freelancer — freelancer reputation score
+
 ## Invitations
 [ ] POST   /api/v1/projects/:id/invitations
 [ ] GET    /api/v1/me/invitations
@@ -67,7 +87,3 @@
 [ ] PATCH  /api/v1/notifications/read-all
 [ ] GET    /api/v1/notifications/preferences
 [ ] PATCH  /api/v1/notifications/preferences
-
-## Reviews
-[ ] POST   /api/v1/projects/:id/reviews
-[ ] GET    /api/v1/profiles/:username/reviews

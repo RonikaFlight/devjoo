@@ -149,3 +149,38 @@ Stage Summary:
 - Comprehensive internal linking network established
 - Sitemap covers all new landing pages
 - Ready for Phase 5 (Trust)
+
+---
+Task ID: 6
+Agent: Main Agent
+Task: Phase 5 — Trust
+
+Work Log:
+- Created Zod validators: portfolio.ts (create/update/reorder), review.ts (create/filters/reply), verification.ts (request/update)
+- Updated validators/index.ts to export new validators
+- Updated enums.ts: added VERIFICATION_TYPE_LABELS, VERIFICATION_STATUS_LABELS, COMPANY_SIZE, COMPANY_SIZE_LABELS, PROFICIENCY_LEVEL, PROFICIENCY_LEVEL_LABELS, REVIEW_CATEGORIES
+- Created 4 module services: portfolio/service.ts, reviews/service.ts, verification/service.ts, reputation/service.ts
+- Portfolio service: CRUD with max 20 items, reorder via transaction, ownership validation
+- Reviews service: create (employer→freelancer + freelancer→employer for completed projects), list received, stats (rating distribution + category averages), auto-updates FreelancerProfile.averageRating on employer review
+- Verification service: request (freelancer/employer), prevents duplicate pending/approved, list, summary badges, admin status update
+- Reputation service: getClientScore (totalPosted, totalHired, hireRate, responseRate, avgResponseTime, totalSpent, verifications), computeClientScore (0-100 weighted), getFreelancerReputation (completions, hires, rating, responseRate, verifications, repeatHireRate), computeReputationScore (0-100 weighted), refreshEmployerMetrics, refreshFreelancerMetrics
+- Created 8 API route files: portfolio (GET/POST), portfolio/[id] (PATCH/DELETE), portfolio/reorder (POST), reviews (GET/POST), reviews/stats (GET), verification (GET/POST), reputation (GET)
+- Created portfolio frontend page: /dashboard/freelancer/portfolio with create/edit dialog, delete, image preview, empty state, grid layout
+- Updated freelancer dashboard: added portfolio link card
+- Fixed typo in reviews service (fریلancer → فریلنسر)
+- Fixed unused imports (ReviewReplyInput, GripVertical, ReviewWithDetails interface)
+- Fixed avg() type safety in review stats
+- Added ADR-015: On-Read Reputation Computation
+- Updated TODO.md (Phase 5 complete), PROJECT_STATE.md, CHANGELOG.md (v0.5.0), DECISIONS.md (ADR-015), API_STATUS.md (11 new endpoints)
+- ESLint clean, dev server verified, API endpoints tested (200/400/401)
+
+Stage Summary:
+- Phase 5 Trust is COMPLETE
+- 11 new API endpoints operational
+- 4 domain service modules created
+- Portfolio frontend page with full CRUD
+- Client Score: 0-100 weighted employer trust metric
+- Reputation Score: 0-100 weighted freelancer reputation metric
+- Verification system for both roles
+- Review system with category breakdowns
+- Ready for Phase 6 (Smart Features)

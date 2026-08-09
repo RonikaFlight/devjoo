@@ -114,6 +114,63 @@ export const INVITATION_STATUS = {
   EXPIRED: 'EXPIRED',
 } as const;
 
+export type InvitationStatus = (typeof INVITATION_STATUS)[keyof typeof INVITATION_STATUS];
+
+export const REVIEW_CATEGORIES = {
+  QUALITY: 'کیفیت کار',
+  COMMUNICATION: 'ارتباطات',
+  DEADLINE: 'رعایت زمان‌بندی',
+  PROFESSIONALISM: 'حرفه‌ای‌گری',
+} as const;
+
+export const VERIFICATION_TYPE_LABELS: Record<VerificationType, string> = {
+  PHONE: 'تایید شماره تلفن',
+  EMAIL: 'تایید ایمیل',
+  IDENTITY: 'تایید هویت',
+  COMPANY: 'تایید شرکت',
+  PAYMENT: 'تایید اطلاعات پرداخت',
+};
+
+export const VERIFICATION_STATUS_LABELS: Record<VerificationStatus, string> = {
+  PENDING: 'در انتظار بررسی',
+  APPROVED: 'تایید شده',
+  REJECTED: 'رد شده',
+};
+
+export const COMPANY_SIZE = {
+  MICRO: 'MICRO',
+  SMALL: 'SMALL',
+  MEDIUM: 'MEDIUM',
+  LARGE: 'LARGE',
+  ENTERPRISE: 'ENTERPRISE',
+} as const;
+
+export type CompanySize = (typeof COMPANY_SIZE)[keyof typeof COMPANY_SIZE];
+
+export const COMPANY_SIZE_LABELS: Record<CompanySize, string> = {
+  MICRO: '۱ تا ۱۰ نفر',
+  SMALL: '۱۱ تا ۵۰ نفر',
+  MEDIUM: '۵۱ تا ۲۰۰ نفر',
+  LARGE: '۲۰۱ تا ۵۰۰ نفر',
+  ENTERPRISE: 'بیش از ۵۰۰ نفر',
+};
+
+export const PROFICIENCY_LEVEL = {
+  BEGINNER: 'BEGINNER',
+  INTERMEDIATE: 'INTERMEDIATE',
+  ADVANCED: 'ADVANCED',
+  EXPERT: 'EXPERT',
+} as const;
+
+export type ProficiencyLevel = (typeof PROFICIENCY_LEVEL)[keyof typeof PROFICIENCY_LEVEL];
+
+export const PROFICIENCY_LEVEL_LABELS: Record<ProficiencyLevel, string> = {
+  BEGINNER: 'مبتدی',
+  INTERMEDIATE: 'متوسط',
+  ADVANCED: 'پیشرفته',
+  EXPERT: 'حرفه‌ای',
+};
+
 // Persian labels
 export const PROJECT_STATUS_LABELS: Record<ProjectStatus, string> = {
   DRAFT: 'پیش‌نویس',

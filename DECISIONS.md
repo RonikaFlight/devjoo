@@ -203,3 +203,24 @@ Use the following URL patterns for SEO landing pages:
 - Internal linking connects project details to their category and skill pages
 
 **Status:** Accepted
+
+---
+
+## ADR-015 — On-Read Reputation Computation
+
+**Decision:**
+Compute reputation and client scores on-read (query-time) rather than maintaining a cached `ReputationScore` table. The `ReputationScore` model exists in the schema for future use but is not written to during Phase 5.
+
+**Reason:**
+- The platform has no traffic yet — premature optimization of score caching adds complexity without benefit
+- On-read computation is simpler to implement and reason about
+- The `refreshEmployerMetrics` and `refreshFreelancerMetrics` functions keep denormalized counters on profiles up to date
+- A caching layer (Redis, materialized view, or cron-computed scores) can be added in Phase 9 (Analytics) or Phase 12 (Production Hardening) when traffic warrants it
+- The `ReputationScore` model with `signalsJson` field is ready for when cached computation is needed
+
+**Consequences:**
+- `/api/v1/reputation` may be slower at scale (multiple DB queries per request)
+- Scores are always fresh (no stale cache)
+- Adding caching later is a non-breaking change (same API contract)
+
+**Status:** Accepted

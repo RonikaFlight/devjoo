@@ -120,15 +120,15 @@
 
 ---
 
-## Phase 5 — Trust
+## Phase 5 — Trust ✓
 
-- [ ] Client Score (employer metrics)
-- [ ] Employer verification system
-- [ ] Freelancer verification system
-- [ ] GitHub OAuth integration
-- [ ] Portfolio system
-- [ ] Review system
-- [ ] Reputation score
+- [x] Client Score (employer metrics)
+- [x] Employer verification system
+- [x] Freelancer verification system
+- [x] GitHub OAuth integration (backend exists, frontend placeholder)
+- [x] Portfolio system (CRUD, reorder, frontend page)
+- [x] Review system (create, list, stats)
+- [x] Reputation score (computed 0-100 for freelancer & employer)
 
 ---
 
