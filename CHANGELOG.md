@@ -1,5 +1,42 @@
 # DevJoo — Changelog
 
+## [0.11.0] — 2026-08-09
+
+### Added
+- **Admin Panel**:
+  - Admin layout with sidebar navigation, auth guard (ADMIN role), mobile-responsive
+  - Admin dashboard with stats cards (users, projects, verifications, contracts, services)
+  - User management: list, view, activate/deactivate, role assignment (ADD/REMOVE roles)
+  - Project moderation: list with filters (status, category, search), status transitions, featured toggle
+  - Category management: list, create, update, delete (with dependency check)
+  - Skill management: list (with category filter), create, update, delete, synonym management
+  - Verification management: list pending/approved/rejected, approve/reject actions
+  - Blog post CRUD: list, create, update, delete, publish/unpublish
+  - Blog category CRUD: list, create, update, delete
+  - Redirect management: list, create, update, delete (301/302)
+  - Feature flag info endpoint (read-only, env-backed)
+  - Audit log: automatic logging of all admin actions, filterable log viewer
+- **Admin API Routes** (20 endpoints, all ADMIN-role gated):
+  - GET /api/v1/admin/stats — dashboard statistics
+  - GET/PATCH /api/v1/admin/users, GET/PATCH /api/v1/admin/users/[id]
+  - GET/PATCH /api/v1/admin/projects, PATCH /api/v1/admin/projects/[id]
+  - GET/POST /api/v1/admin/categories, PATCH/DELETE /api/v1/admin/categories/[id]
+  - GET/POST /api/v1/admin/skills, PATCH/DELETE /api/v1/admin/skills/[id]
+  - GET/POST /api/v1/admin/skills/synonyms
+  - GET/PATCH /api/v1/admin/verifications, PATCH /api/v1/admin/verifications/[id]
+  - GET/POST /api/v1/admin/blog/posts, PATCH/DELETE /api/v1/admin/blog/posts/[id]
+  - GET/POST /api/v1/admin/blog/categories, PATCH/DELETE /api/v1/admin/blog/categories/[id]
+  - GET/POST /api/v1/admin/redirects, PATCH/DELETE /api/v1/admin/redirects/[id]
+  - GET /api/v1/admin/feature-flags
+  - GET /api/v1/admin/audit-log
+- **Admin Enums & Labels**:
+  - ADMIN_ACTION (21 actions with Persian labels)
+  - ADMIN_RESOURCE_TYPE (9 resource types with Persian labels)
+- **Admin Validators**: adminUserListSchema, adminUserUpdateSchema, adminProjectListSchema, adminProjectModerateSchema, adminVerificationListSchema, adminBlogPostSchema, adminBlogCategorySchema, adminRedirectSchema, adminFeatureFlagSchema, adminAuditLogListSchema
+- **Audit Logging**: Non-blocking audit log writer for all admin CRUD operations
+- **Middleware**: /admin/ routes added to protected page routes (redirect to login if unauthenticated)
+- ADR-021: Role-based admin access via requireRole('ADMIN')
+
 ## [0.10.0] — 2026-08-09
 
 ### Added

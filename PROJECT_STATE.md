@@ -2,13 +2,13 @@
 DevJoo
 
 # Current Phase
-Phase 11 — Admin (READY TO START)
+Phase 12 — Production Hardening (READY TO START)
 
 # Last Completed Task
-Phase 10 Advanced Marketplace: Contracts & milestones, service marketplace, team mode, paid trial, payment abstraction, 9 new Prisma models, 18 API endpoints, ADR-020
+Phase 11 Admin: Admin dashboard, user/project/taxonomy/verification management, SEO & content management, feature flags, audit logging, 20 API endpoints, 7 admin pages, ADR-021
 
 # Currently Working On
-None — Phase 10 complete, ready for Phase 11
+None — Phase 11 complete, ready for Phase 12
 
 # Completed Features
 - Phase 0 complete (see below)
@@ -22,6 +22,7 @@ None — Phase 10 complete, ready for Phase 11
 - Phase 8 complete: AI — provider abstraction, project builder, proposal assistant (see below)
 - Phase 9 complete: Analytics — proposal analytics, project analytics, employer dashboard, price radar (see below)
 - Phase 10 complete: Advanced marketplace — contracts, milestones, service marketplace, teams, paid trial, payment abstraction (see below)
+- Phase 11 complete: Admin — dashboard, user management, project moderation, taxonomy, verifications, SEO/content, feature flags, audit logging, ADR-021 (see below)
 
 ## Phase 0 Completed
 - All 10 project memory files
@@ -142,6 +143,25 @@ None — Phase 10 complete, ready for Phase 11
 - POST /api/v1/ai/generate-proposal (freelancer-only, security: can only generate for self)
 - ADR-018: Provider-agnostic AI with structured output parsing
 
+## Phase 11 Completed
+- Admin dashboard: 7 stat cards (users, projects, pending review, verifications, proposals, contracts, services)
+- User management: list with filters (search, role, status), view detail, activate/deactivate, add/remove roles
+- Project moderation: list with filters (status, category, search), approve/reject/pause, featured toggle
+- Category management: list (ordered), create, update, delete (dependency check on skills)
+- Skill management: list (with category filter), create, update, delete, synonym CRUD
+- Verification management: list pending (default), approve/reject for freelancer & employer
+- Blog management: post CRUD (with publish/unpublish), blog category CRUD
+- Redirect management: list, create, update, delete (301/302)
+- Feature flag display: read-only list of all flags with env key and Persian description
+- Audit logging: non-blocking writer for all admin mutations, filterable log viewer (by actor, action, resource, date)
+- Zod validators: admin.ts (10 schemas)
+- Admin enums: ADMIN_ACTION (21 actions), ADMIN_RESOURCE_TYPE (9 types) with Persian labels
+- 20 API endpoints: stats (1), users (3), projects (2), categories (3), skills (4), verifications (2), blog/posts (3), blog/categories (3), redirects (3), feature-flags (1), audit-log (1)
+- 7 admin pages: dashboard, users, projects, taxonomy, verifications, seo, settings
+- Admin layout: sidebar with 7 nav items, mobile-responsive, role guard (redirect non-admins to /dashboard)
+- Middleware: /admin/ routes added to protected page routes
+- ADR-021: Role-based admin access via requireRole('ADMIN')
+
 ## Phase 10 Completed
 - Contracts: create from accepted proposal, status state machine (DRAFT→ACTIVE→IN_PROGRESS→COMPLETED, with CANCELLED/DISPUTED), project status sync
 - Milestones: add to contract, status state machine (PENDING→IN_PROGRESS→SUBMITTED→APPROVED/REJECTED), role-based authorization
@@ -180,9 +200,10 @@ None — Phase 10 complete, ready for Phase 11
 - ADR-018: Provider-agnostic AI with structured output parsing (see DECISIONS.md)
 - ADR-019: On-demand analytics computation (see DECISIONS.md)
 - ADR-020: Provider-agnostic payment abstraction (see DECISIONS.md)
+- ADR-021: Role-based admin access (see DECISIONS.md)
 
 # Database Status
-- Prisma schema: 42 models defined (added Contract, Milestone, Payment, PaymentTransaction, ServiceListing, ServiceListingSkill, ServiceOrder, Team, TeamMember)
+- Prisma schema: 42 models defined (no new models in Phase 11 — used existing AuditLog, BlogPost, BlogCategory, Redirect)
 - SQLite database: synced
 - Seed data: 10 categories, 75 skills, 93 synonyms seeded
 - Test users created via API: 3 OTP-verified users
@@ -270,6 +291,26 @@ None — Phase 10 complete, ready for Phase 11
 - POST /api/v1/payments — working (auth required, employer only)
 - GET /api/v1/payments/me — working (auth required)
 - GET /api/v1/payments/[id] — working (auth required, parties only)
+- GET /api/v1/admin/stats — working (auth required, admin only)
+- GET /api/v1/admin/users — working (auth required, admin only)
+- GET/PATCH /api/v1/admin/users/[id] — working (auth required, admin only)
+- GET /api/v1/admin/projects — working (auth required, admin only)
+- PATCH /api/v1/admin/projects/[id] — working (auth required, admin only)
+- GET/POST /api/v1/admin/categories — working (auth required, admin only)
+- PATCH/DELETE /api/v1/admin/categories/[id] — working (auth required, admin only)
+- GET/POST /api/v1/admin/skills — working (auth required, admin only)
+- PATCH/DELETE /api/v1/admin/skills/[id] — working (auth required, admin only)
+- GET/POST /api/v1/admin/skills/synonyms — working (auth required, admin only)
+- GET /api/v1/admin/verifications — working (auth required, admin only)
+- PATCH /api/v1/admin/verifications/[id] — working (auth required, admin only)
+- GET/POST /api/v1/admin/blog/posts — working (auth required, admin only)
+- PATCH/DELETE /api/v1/admin/blog/posts/[id] — working (auth required, admin only)
+- GET/POST /api/v1/admin/blog/categories — working (auth required, admin only)
+- PATCH/DELETE /api/v1/admin/blog/categories/[id] — working (auth required, admin only)
+- GET/POST /api/v1/admin/redirects — working (auth required, admin only)
+- PATCH/DELETE /api/v1/admin/redirects/[id] — working (auth required, admin only)
+- GET /api/v1/admin/feature-flags — working (auth required, admin only)
+- GET /api/v1/admin/audit-log — working (auth required, admin only)
 
 # Frontend Status
 - Next.js 16 App Router, RTL, Vazirmatn, purple design, dark mode
@@ -288,6 +329,7 @@ None — Phase 10 complete, ready for Phase 11
 - /hire/[role] role-specific hire pages (15 roles)
 - /blog foundation page
 - /dashboard/freelancer/portfolio — portfolio management page
+- /admin/* — 7 admin pages (dashboard, users, projects, taxonomy, verifications, seo, settings) with sidebar layout
 
 # SEO Status
 - Homepage metadata configured
@@ -316,7 +358,7 @@ None — Phase 10 complete, ready for Phase 11
 - Implemented (Phase 7): REST-based, conversations + messages, auto mark-read
 
 # Admin Panel Status
-- Not implemented
+- Implemented (Phase 11): 20 API endpoints, 7 server-rendered pages, sidebar layout, role-based access, audit logging
 
 # Testing Status
 - No tests written
@@ -341,6 +383,10 @@ None — Phase 10 complete, ready for Phase 11
 - Analytics computed on-demand (see ADR-019 — acceptable until traffic warrants caching)
 - Payments use internal dev provider (see ADR-020 — ZarinPal/IDPay needed for production)
 - Service marketplace, teams, contracts have no frontend pages (APIs only)
+- Admin pages are server-rendered v1 — no client-side search/pagination/filters yet
+- Admin feature flags are read-only (env-backed, no runtime toggle)
+- First admin user must be created manually (assign ADMIN role via DB or API)
+- AuditLog has no User relation — actor shown as truncated ID in admin UI
 
 # Blockers
 - None
@@ -351,27 +397,25 @@ None — Phase 10 complete, ready for Phase 11
 - npx prisma generate ✓
 
 # Recently Modified Files
-- src/modules/contracts/service.ts (NEW)
-- src/modules/services/service.ts (NEW)
-- src/modules/teams/service.ts (NEW)
-- src/modules/payments/provider.ts (NEW)
-- src/modules/payments/service.ts (NEW)
-- src/lib/validators/contract.ts (NEW)
-- src/lib/validators/service.ts (NEW)
-- src/lib/validators/team.ts (NEW)
-- src/lib/validators/payment.ts (NEW)
+- src/modules/admin/service.ts (NEW)
+- src/modules/admin/audit.ts (NEW)
+- src/lib/validators/admin.ts (NEW)
+- src/types/enums.ts (UPDATED — ADMIN_ACTION, ADMIN_RESOURCE_TYPE + labels)
 - src/lib/validators/index.ts (UPDATED)
-- src/types/enums.ts (UPDATED — contracts, milestones, payments, services, teams enums)
-- src/app/api/v1/contracts/ (NEW — 5 routes)
-- src/app/api/v1/services/ (NEW — 8 routes)
-- src/app/api/v1/teams/ (NEW — 5 routes)
-- src/app/api/v1/payments/ (NEW — 3 routes)
-- prisma/schema.prisma (UPDATED — 9 new models)
-- .env (UPDATED — marketplace feature flags, PAYMENT_PROVIDER)
-- TODO.md (UPDATED — Phase 10 marked complete)
-- CHANGELOG.md (UPDATED — v0.10.0)
-- DECISIONS.md (UPDATED — ADR-020)
+- src/middleware.ts (UPDATED — /admin/ route protection)
+- src/app/admin/layout.tsx (NEW)
+- src/app/admin/page.tsx (NEW — dashboard)
+- src/app/admin/users/page.tsx (NEW)
+- src/app/admin/projects/page.tsx (NEW)
+- src/app/admin/taxonomy/page.tsx (NEW)
+- src/app/admin/verifications/page.tsx (NEW)
+- src/app/admin/seo/page.tsx (NEW)
+- src/app/admin/settings/page.tsx (NEW)
+- src/app/api/v1/admin/ (NEW — 20 routes across 10 directories)
+- TODO.md (UPDATED — Phase 11 marked complete)
+- CHANGELOG.md (UPDATED — v0.11.0)
+- DECISIONS.md (UPDATED — ADR-021)
 - PROJECT_STATE.md (UPDATED)
 
 # Next Recommended Task
-Start Phase 11 — Admin: Admin dashboard, user management, project moderation, skill management, category management, SEO control panel, content management, feature flag configuration
+Start Phase 12 — Production Hardening: Security audit, SEO audit, accessibility audit, performance optimization, test suite, CI pipeline, logging & monitoring, deployment documentation

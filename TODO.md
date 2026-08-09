@@ -191,16 +191,20 @@
 
 ---
 
-## Phase 11 — Admin
+## Phase 11 — Admin ✓
 
-- [ ] Admin dashboard
-- [ ] User management
-- [ ] Project moderation
-- [ ] Skill management
-- [ ] Category management
-- [ ] SEO control panel
-- [ ] Content management
-- [ ] Feature flag configuration
+- [x] Admin dashboard (stats cards, recent activity)
+- [x] User management (list, view, activate/deactivate, role assignment)
+- [x] Project moderation (list, status transitions, featured toggle)
+- [x] Skill management (list, create, update, delete, synonym management)
+- [x] Category management (list, create, update, delete with dependency check)
+- [x] SEO control panel (redirects, blog categories)
+- [x] Content management (blog posts CRUD, blog categories CRUD)
+- [x] Feature flag configuration (read-only display)
+- [x] Audit logging (automatic for all admin actions, filterable viewer)
+- [x] Admin API routes (20 endpoints, ADMIN-role gated)
+- [x] Admin layout with sidebar navigation and auth guard
+- [x] ADR-021: Role-based admin access
 
 ---
 

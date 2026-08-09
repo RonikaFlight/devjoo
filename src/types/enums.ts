@@ -480,3 +480,90 @@ export const TEAM_MEMBER_ROLE_LABELS: Record<TeamMemberRole, string> = {
   SENIOR: 'عضو ارشد',
   MEMBER: 'عضو',
 };
+
+// ============ ADMIN ============
+
+export const ADMIN_ACTION = {
+  USER_UPDATE: 'USER_UPDATE',
+  USER_DEACTIVATE: 'USER_DEACTIVATE',
+  USER_ACTIVATE: 'USER_ACTIVATE',
+  USER_ROLE_ADD: 'USER_ROLE_ADD',
+  USER_ROLE_REMOVE: 'USER_ROLE_REMOVE',
+  PROJECT_MODERATE: 'PROJECT_MODERATE',
+  PROJECT_FEATURE: 'PROJECT_FEATURE',
+  CATEGORY_CREATE: 'CATEGORY_CREATE',
+  CATEGORY_UPDATE: 'CATEGORY_UPDATE',
+  CATEGORY_DELETE: 'CATEGORY_DELETE',
+  SKILL_CREATE: 'SKILL_CREATE',
+  SKILL_UPDATE: 'SKILL_UPDATE',
+  SKILL_DELETE: 'SKILL_DELETE',
+  VERIFICATION_APPROVE: 'VERIFICATION_APPROVE',
+  VERIFICATION_REJECT: 'VERIFICATION_REJECT',
+  BLOG_POST_CREATE: 'BLOG_POST_CREATE',
+  BLOG_POST_UPDATE: 'BLOG_POST_UPDATE',
+  BLOG_POST_DELETE: 'BLOG_POST_DELETE',
+  BLOG_CATEGORY_CREATE: 'BLOG_CATEGORY_CREATE',
+  BLOG_CATEGORY_UPDATE: 'BLOG_CATEGORY_UPDATE',
+  BLOG_CATEGORY_DELETE: 'BLOG_CATEGORY_DELETE',
+  REDIRECT_CREATE: 'REDIRECT_CREATE',
+  REDIRECT_UPDATE: 'REDIRECT_UPDATE',
+  REDIRECT_DELETE: 'REDIRECT_DELETE',
+  FEATURE_FLAG_UPDATE: 'FEATURE_FLAG_UPDATE',
+} as const;
+
+export type AdminAction = (typeof ADMIN_ACTION)[keyof typeof ADMIN_ACTION];
+
+export const ADMIN_RESOURCE_TYPE = {
+  USER: 'USER',
+  PROJECT: 'PROJECT',
+  CATEGORY: 'CATEGORY',
+  SKILL: 'SKILL',
+  VERIFICATION: 'VERIFICATION',
+  BLOG_POST: 'BLOG_POST',
+  BLOG_CATEGORY: 'BLOG_CATEGORY',
+  REDIRECT: 'REDIRECT',
+  FEATURE_FLAG: 'FEATURE_FLAG',
+} as const;
+
+export type AdminResourceType = (typeof ADMIN_RESOURCE_TYPE)[keyof typeof ADMIN_RESOURCE_TYPE];
+
+export const ADMIN_ACTION_LABELS: Record<AdminAction, string> = {
+  USER_UPDATE: 'ویرایش کاربر',
+  USER_DEACTIVATE: 'غیرفعال‌سازی کاربر',
+  USER_ACTIVATE: 'فعال‌سازی کاربر',
+  USER_ROLE_ADD: 'افزودن نقش',
+  USER_ROLE_REMOVE: 'حذف نقش',
+  PROJECT_MODERATE: 'مدیریت پروژه',
+  PROJECT_FEATURE: 'ویژه‌سازی پروژه',
+  CATEGORY_CREATE: 'ایجاد دسته‌بندی',
+  CATEGORY_UPDATE: 'ویرایش دسته‌بندی',
+  CATEGORY_DELETE: 'حذف دسته‌بندی',
+  SKILL_CREATE: 'ایجاد مهارت',
+  SKILL_UPDATE: 'ویرایش مهارت',
+  SKILL_DELETE: 'حذف مهارت',
+  VERIFICATION_APPROVE: 'تایید درخواست',
+  VERIFICATION_REJECT: 'رد درخواست',
+  BLOG_POST_CREATE: 'ایجاد پست بلاگ',
+  BLOG_POST_UPDATE: 'ویرایش پست بلاگ',
+  BLOG_POST_DELETE: 'حذف پست بلاگ',
+  BLOG_CATEGORY_CREATE: 'ایجاد دسته بلاگ',
+  BLOG_CATEGORY_UPDATE: 'ویرایش دسته بلاگ',
+  BLOG_CATEGORY_DELETE: 'حذف دسته بلاگ',
+  REDIRECT_CREATE: 'ایجاد تغییرمسیر',
+  REDIRECT_UPDATE: 'ویرایش تغییرمسیر',
+  REDIRECT_DELETE: 'حذف تغییرمسیر',
+  FEATURE_FLAG_UPDATE: 'تغییر تنظیمات',
+};
+
+export const ADMIN_RESOURCE_TYPE_LABELS: Record<AdminResourceType, string> = {
+  USER: 'کاربر',
+  PROJECT: 'پروژه',
+  CATEGORY: 'دسته‌بندی',
+  SKILL: 'مهارت',
+  VERIFICATION: 'تاییدیه',
+  BLOG_POST: 'پست بلاگ',
+  BLOG_CATEGORY: 'دسته بلاگ',
+  REDIRECT: 'تغییرمسیر',
+  FEATURE_FLAG: 'تنظیمات',
+};
+

@@ -46,7 +46,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Protected page routes
-  if (pathname.startsWith('/dashboard/') || pathname.startsWith('/settings/')) {
+  if (pathname.startsWith('/dashboard/') || pathname.startsWith('/settings/') || pathname.startsWith('/admin/')) {
     const auth = await checkAuth(request);
     if (!auth) {
       const loginUrl = new URL('/auth/login', request.url);

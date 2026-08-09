@@ -374,3 +374,35 @@ Implement a `PaymentProvider` interface with an internal dev provider. Real paym
 - Future: webhook endpoints for payment callbacks from real providers
 
 **Status:** Accepted
+
+---
+
+## ADR-021 — Role-Based Admin Access via requireRole('ADMIN')
+
+**Decision:**
+Use the existing `requireRole(USER_ROLES.ADMIN)` pattern for all admin API routes and the admin layout page guard. No separate admin middleware or admin-specific session handling.
+
+**Reason:**
+- The existing `requireRole()` helper already handles JWT verification + DB role check + Persian error messages
+- Adding admin-specific middleware would duplicate auth logic and violate ADR-012 (Edge/Node split — middleware is edge-only, can't check DB roles)
+- Admin layout uses `requireAuth()` in server component + manual `isAdmin` check for redirect — sufficient since middleware ensures the user is authenticated
+- All 20 admin API routes consistently use `requireRole(USER_ROLES.ADMIN)` — single line, clear intent
+- The `ADMIN` and `MODERATOR` role constants already existed in `USER_ROLES` (Phase 0) — no schema changes needed
+- Audit logging implemented as non-blocking `auditLog()` helper called after every admin mutation, using the existing `AuditLog` Prisma model
+
+**Architecture:**
+- `modules/admin/service.ts` — all admin business logic (users, projects, categories, skills, verifications, blog, redirects, flags, audit)
+- `modules/admin/audit.ts` — non-blocking audit log writer
+- `lib/validators/admin.ts` — 10 Zod schemas for admin operations
+- `app/admin/layout.tsx` — sidebar layout with 7 nav items, role guard
+- `app/admin/*` — 7 server component pages (dashboard, users, projects, taxonomy, verifications, seo, settings)
+- `app/api/v1/admin/*` — 20 API routes across 10 route groups
+- `middleware.ts` — `/admin/` added to protected page routes
+
+**Consequences:**
+- Admin pages are server-rendered (v1 — no client-side search/pagination/filters yet)
+- Feature flags are read-only via env vars — no runtime toggle
+- First admin user must be created manually (via DB direct query or assign ADMIN role)
+- robots.txt already blocks `/admin/` from crawlers
+
+**Status:** Accepted
