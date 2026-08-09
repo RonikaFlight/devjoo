@@ -310,3 +310,34 @@ Implement AI features (Project Builder, Proposal Assistant) using a provider abs
 - Future: can add streaming responses, conversation history, or fine-tuned models behind the same interface
 
 **Status:** Accepted
+
+---
+
+## ADR-019 — On-Demand Analytics Computation
+
+**Decision:**
+Compute all analytics on-demand at query time rather than using materialized views, pre-aggregated tables, or cron-based caching.
+
+**Reason:**
+- The platform has no meaningful traffic yet — pre-computing analytics adds schema complexity without benefit
+- On-demand computation is simple to implement, always fresh, and easy to debug
+- Analytics queries load all relevant records into memory and compute in TypeScript (no complex SQL aggregations)
+- Safety caps (take: 5000) prevent memory issues on global queries
+- The employer dashboard, proposal analytics, and price radar all use a consistent pattern: fetch raw data → compute in memory → return structured result
+- When traffic grows, a caching layer (Redis TTL, materialized views, or a cron-computed analytics table) can be added without changing the API contract
+
+**Architecture:**
+- `modules/analytics/proposal-analytics.ts` — win rate, category/month breakdown, velocity
+- `modules/analytics/project-analytics.ts` — lifecycle, time-to-hire, category trends
+- `modules/analytics/employer-metrics.ts` — hiring funnel, spend, response time buckets
+- `modules/analytics/price-radar.ts` — market rates, freelancer rates, proposal vs budget
+- `lib/validators/analytics.ts` — date range and category filter schemas
+- 4 API endpoints: 3 under /me/analytics/ (auth), 1 under /analytics/ (public)
+
+**Consequences:**
+- Analytics queries may be slow with large datasets (acceptable until traffic warrants optimization)
+- Results are always real-time (no stale cache)
+- No new Prisma models needed — analytics are pure computation over existing data
+- Adding caching later is a non-breaking change (same API response shape)
+
+**Status:** Accepted

@@ -111,3 +111,9 @@
 ## AI
 [x] POST   /api/v1/ai/build-project — AI Project Builder (employer, generates structured project from brief)
 [x] POST   /api/v1/ai/generate-proposal — AI Proposal Assistant (freelancer, generates cover letter + price)
+
+## Analytics
+[x] GET    /api/v1/me/analytics/proposals — proposal analytics (freelancer: sent, employer: received)
+[x] GET    /api/v1/me/analytics/projects — project analytics (employer)
+[x] GET    /api/v1/me/analytics/employer — employer dashboard (funnel, spend, response time)
+[x] GET    /api/v1/analytics/price-radar — market price intelligence (public, optional category filter)

@@ -312,3 +312,34 @@ Stage Summary:
 - AI Proposal Assistant: generates personalized proposals with context from profile + project
 - Graceful degradation: 503 when AI not configured, 403 when feature disabled
 - Ready for Phase 9 (Analytics)
+
+---
+Task ID: 9
+Agent: Main Agent
+Task: Phase 9 — Analytics (Proposal analytics, Project analytics, Employer dashboard, Price Radar)
+
+Work Log:
+- Created Proposal Analytics service (analytics/proposal-analytics.ts): win rate, status distribution, by category (win rate + avg price), by month (trend), velocity (this week/month/year)
+- Role-adaptive: automatically detects freelancer vs employer role and returns sent vs received analytics
+- Created Project Analytics service (analytics/project-analytics.ts): status distribution, time-to-hire (publish → first accepted proposal), category trends, monthly breakdown
+- Created Employer Metrics Dashboard (analytics/employer-metrics.ts): 5-stage hiring funnel, spend by category/month, response time (avg/median + under24h/under48h/over48h buckets), key ratios (response rate, hire rate, completion rate)
+- Created Price Radar (analytics/price-radar.ts): market rates by category with percentile breakdowns (P25/P75/P90), top 50 skills, freelancer hourly rates by experience level, proposal price vs project budget comparison (under/within/over)
+- Created Zod validators (lib/validators/analytics.ts): date range filters, price radar category filter
+- Created 4 API routes:
+  - GET /api/v1/me/analytics/proposals (auth, role-adaptive)
+  - GET /api/v1/me/analytics/projects (auth, employer)
+  - GET /api/v1/me/analytics/employer (auth, employer)
+  - GET /api/v1/analytics/price-radar (public, optional category filter)
+- No Prisma schema changes (analytics are pure computation over existing data)
+- ESLint clean, TypeScript type-check clean for all new files
+- Added ADR-019: On-demand analytics computation
+- Updated TODO.md (Phase 9 complete), CHANGELOG.md (v0.9.0), DECISIONS.md (ADR-019), API_STATUS.md (4 new endpoints), PROJECT_STATE.md
+
+Stage Summary:
+- Phase 9 Analytics is COMPLETE
+- 4 new API endpoints operational (3 auth, 1 public)
+- 4 domain service modules created in src/modules/analytics/
+- No database changes — all analytics computed on-demand over existing data
+- Employer dashboard provides comprehensive hiring funnel + spend + response metrics
+- Price Radar provides market intelligence (category/skill rates, freelancer rate distribution)
+- Ready for Phase 10 (Advanced Marketplace)

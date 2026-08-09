@@ -166,12 +166,17 @@
 
 ---
 
-## Phase 9 — Analytics
+## Phase 9 — Analytics ✓
 
-- [ ] Proposal analytics
-- [ ] Project analytics
-- [ ] Employer metrics dashboard
-- [ ] Price Radar
+- [x] Proposal analytics (win rate, status distribution, by category, by month, velocity)
+- [x] Project analytics (lifecycle, time-to-hire, category trends, monthly breakdown)
+- [x] Employer metrics dashboard (hiring funnel, spend by category/month, response time buckets)
+- [x] Price Radar (market rates by category/skill, freelancer rates by experience, proposal vs budget)
+- [x] Zod validators for analytics
+- [x] GET /api/v1/me/analytics/proposals
+- [x] GET /api/v1/me/analytics/projects
+- [x] GET /api/v1/me/analytics/employer
+- [x] GET /api/v1/analytics/price-radar
 
 ---
 

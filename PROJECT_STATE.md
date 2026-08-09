@@ -2,13 +2,13 @@
 DevJoo
 
 # Current Phase
-Phase 9 — Analytics (READY TO START)
+Phase 10 — Advanced Marketplace (READY TO START)
 
 # Last Completed Task
-Phase 8 AI: AI Provider abstraction (OpenAI-compatible, env config, structured JSON parsing), AI Project Builder (brief → title, description, skills, budget, duration), AI Proposal Assistant (project + profile → cover letter, price, key points), Zod validators, 2 API endpoints, ADR-018
+Phase 9 Analytics: Proposal analytics (win rate, velocity, by category/month), Project analytics (lifecycle, time-to-hire, trends), Employer dashboard (hiring funnel, spend, response time), Price Radar (market rates, freelancer rates, proposal vs budget), 4 API endpoints, ADR-019
 
 # Currently Working On
-None — Phase 8 complete, ready for Phase 9
+None — Phase 9 complete, ready for Phase 10
 
 # Completed Features
 - Phase 0 complete (see below)
@@ -20,6 +20,7 @@ None — Phase 8 complete, ready for Phase 9
 - Phase 6 complete: Smart features — match engine, smart feed, invitations, availability, quality score, duplicate detection, hiring probability (see below)
 - Phase 7 complete: Communication — messaging, notifications, dispatcher, SSE stream, job queues (see below)
 - Phase 8 complete: AI — provider abstraction, project builder, proposal assistant (see below)
+- Phase 9 complete: Analytics — proposal analytics, project analytics, employer dashboard, price radar (see below)
 
 ## Phase 0 Completed
 - All 10 project memory files
@@ -140,6 +141,15 @@ None — Phase 8 complete, ready for Phase 9
 - POST /api/v1/ai/generate-proposal (freelancer-only, security: can only generate for self)
 - ADR-018: Provider-agnostic AI with structured output parsing
 
+## Phase 9 Completed
+- Proposal Analytics: win rate, status distribution, by category (win rate + avg price), by month (trend), velocity (week/month/year)
+- Project Analytics: status distribution, time-to-hire (publish → accepted), category trends, monthly breakdown, avg quality score
+- Employer Metrics Dashboard: hiring funnel (5 stages), spend by category/month, response time (avg/median + buckets), key ratios
+- Price Radar: market rates by category (P25/P75/P90), by skill (top 50), freelancer rates by experience level, proposal vs budget comparison
+- Zod validators: analytics.ts (date range filters, price radar category filter)
+- 4 API endpoints: GET /me/analytics/proposals, GET /me/analytics/projects, GET /me/analytics/employer, GET /analytics/price-radar
+- ADR-019: On-demand analytics computation
+
 # Partially Completed Features
 - None
 
@@ -155,6 +165,7 @@ None — Phase 8 complete, ready for Phase 9
 - ADR-016: On-demand match computation (see DECISIONS.md)
 - ADR-017: Event-driven notification dispatch (see DECISIONS.md)
 - ADR-018: Provider-agnostic AI with structured output parsing (see DECISIONS.md)
+- ADR-019: On-demand analytics computation (see DECISIONS.md)
 
 # Database Status
 - Prisma schema: 33 models defined (added Conversation, ConversationMember, Message)
@@ -220,6 +231,10 @@ None — Phase 8 complete, ready for Phase 9
 - GET /api/v1/me/notifications/stream — working (auth required, SSE)
 - POST /api/v1/ai/build-project — working (auth required, employer only, feature-flag + AI config gated)
 - POST /api/v1/ai/generate-proposal — working (auth required, freelancer only, feature-flag + AI config gated)
+- GET /api/v1/me/analytics/proposals — working (auth required, role-adaptive)
+- GET /api/v1/me/analytics/projects — working (auth required, employer)
+- GET /api/v1/me/analytics/employer — working (auth required, employer)
+- GET /api/v1/analytics/price-radar — working (public, optional category filter)
 
 # Frontend Status
 - Next.js 16 App Router, RTL, Vazirmatn, purple design, dark mode
@@ -288,6 +303,7 @@ None — Phase 8 complete, ready for Phase 9
 - Notification SSE uses polling (3s) — adequate for dev, needs Redis Pub/Sub for production (see ADR-017)
 - Email/SMS queues are in-memory — lost on server restart (acceptable until production)
 - AI features require AI_API_KEY env var — endpoints return 503 when not configured
+- Analytics computed on-demand (see ADR-019 — acceptable until traffic warrants caching)
 
 # Blockers
 - None
@@ -298,19 +314,21 @@ None — Phase 8 complete, ready for Phase 9
 - npx prisma generate ✓
 
 # Recently Modified Files
-- src/modules/ai/provider.ts (NEW)
-- src/modules/ai/project-builder.ts (NEW)
-- src/modules/ai/proposal-assistant.ts (NEW)
-- src/lib/validators/ai.ts (NEW)
+- src/modules/analytics/proposal-analytics.ts (NEW)
+- src/modules/analytics/project-analytics.ts (NEW)
+- src/modules/analytics/employer-metrics.ts (NEW)
+- src/modules/analytics/price-radar.ts (NEW)
+- src/lib/validators/analytics.ts (NEW)
 - src/lib/validators/index.ts (UPDATED)
-- src/app/api/v1/ai/build-project/route.ts (NEW)
-- src/app/api/v1/ai/generate-proposal/route.ts (NEW)
-- .env (UPDATED — AI config vars + feature flags)
-- TODO.md (UPDATED — Phase 8 marked complete)
-- CHANGELOG.md (UPDATED — v0.8.0)
-- DECISIONS.md (UPDATED — ADR-018)
-- API_STATUS.md (UPDATED — 2 new endpoints)
+- src/app/api/v1/me/analytics/proposals/route.ts (NEW)
+- src/app/api/v1/me/analytics/projects/route.ts (NEW)
+- src/app/api/v1/me/analytics/employer/route.ts (NEW)
+- src/app/api/v1/analytics/price-radar/route.ts (NEW)
+- TODO.md (UPDATED — Phase 9 marked complete)
+- CHANGELOG.md (UPDATED — v0.9.0)
+- DECISIONS.md (UPDATED — ADR-019)
+- API_STATUS.md (UPDATED — 4 new endpoints)
 - PROJECT_STATE.md (UPDATED)
 
 # Next Recommended Task
-Start Phase 9 — Analytics: Proposal analytics, Project analytics, Employer metrics dashboard, Price Radar
+Start Phase 10 — Advanced Marketplace: Service marketplace, Team mode, Paid trial, Milestones, Contracts, Payment abstraction

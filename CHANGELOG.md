@@ -1,5 +1,44 @@
 # DevJoo — Changelog
 
+## [0.9.0] — 2026-08-09
+
+### Added
+- **Proposal Analytics**:
+  - Win rate (accepted / decided), status distribution (5 statuses)
+  - Success by category (win rate + avg price per category)
+  - Monthly trend (proposals, accepted, win rate per month)
+  - Proposal velocity (this week, this month, last month, this year)
+  - Average + median proposal price calculation
+  - Dual-mode: freelancer (sent) or employer (received) based on user role
+- **Project Analytics**:
+  - Status distribution with percentages
+  - Time-to-hire calculation (publish → first accepted proposal)
+  - Category trends (projects, avg proposals, avg quality score per category)
+  - Monthly breakdown (created, published, completed, avg proposals)
+  - Average project quality score and proposal count
+- **Employer Metrics Dashboard**:
+  - Hiring funnel: projects → with proposals → shortlisted → hired → completed
+  - Spend analytics by category and by month
+  - Response metrics: average/median response time in hours
+  - Response time buckets: under 24h, under 48h, over 48h
+  - Key ratios: response rate, hire rate, completion rate
+- **Price Radar** (public endpoint):
+  - Market rates by category with percentile breakdowns (P25, P75, P90)
+  - Market rates by skill (top 50 skills)
+  - Freelancer hourly rate distribution by experience level
+  - Proposal price vs project budget comparison (under/within/over budget counts)
+- **Zod Validators**: analytics.ts (date range, price radar filters)
+- **4 API Endpoints**:
+  - GET /api/v1/me/analytics/proposals
+  - GET /api/v1/me/analytics/projects
+  - GET /api/v1/me/analytics/employer
+  - GET /api/v1/analytics/price-radar
+
+### Decisions
+- ADR-019: On-demand analytics computation (no materialized views, compute at query time)
+
+---
+
 ## [0.8.0] — 2026-08-09
 
 ### Added
