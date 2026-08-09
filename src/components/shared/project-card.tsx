@@ -89,12 +89,12 @@ export function ProjectCard({ project }: { project: ProjectCardProps }) {
             <div className="flex items-center gap-3 text-xs text-muted-foreground">
               {project.employer.profile?.city && (
                 <span className="flex items-center gap-1">
-                  <MapPin className="h-3 w-3" />
+                  <MapPin className="h-3 w-3" aria-hidden="true" />
                   {project.employer.profile.city}
                 </span>
               )}
               <span className="flex items-center gap-1">
-                <Briefcase className="h-3 w-3" />
+                <Briefcase className="h-3 w-3" aria-hidden="true" />
                 {formatNumber(project.currentProposalCount)}/{formatNumber(project.proposalLimit)}
               </span>
             </div>

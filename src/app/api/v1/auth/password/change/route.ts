@@ -1,14 +1,30 @@
 import { NextRequest } from 'next/server';
-import { requireAuth, hashPassword, destroyAllUserSessions, getSessionCookieOptions, TOKEN_NAME } from '@/lib/auth';
+import { requireAuth, hashPassword, destroyAllUserSessions, authErrorResponse } from '@/lib/auth';
 import { changePasswordSchema } from '@/lib/validators/auth';
 import { db } from '@/lib/db';
 import bcrypt from 'bcryptjs';
+import { createRateLimitGuard } from '@/lib/security/rate-limiter';
+import { logger } from '@/lib/logger';
+
+const pwdChangeLimit = createRateLimitGuard('passwordChange', (req) => {
+  // Extract userId from cookie — rate limit per user
+  // Since requireAuth hasn't run yet, we use IP as fallback
+  const forwarded = req.headers.get('x-forwarded-for');
+  return `pwd-change:${forwarded?.split(',')[0]?.trim() || 'unknown'}`;
+});
 
 /**
  * POST /api/v1/auth/password/change
  * Change password (requires current password).
  */
 export async function POST(request: NextRequest) {
+  // Rate limit first (before auth)
+  const rateLimitResponse = pwdChangeLimit(request);
+  if (rateLimitResponse) return rateLimitResponse;
+
+  const requestId = request.headers.get('x-request-id') || '';
+  const reqLogger = logger.child({ requestId, path: '/api/v1/auth/password/change', method: 'POST' });
+
   try {
     const auth = await requireAuth();
     const body = await request.json();
@@ -22,6 +38,7 @@ export async function POST(request: NextRequest) {
             message: 'اطلاعات ورودی نامعتبر است.',
             details: parsed.error.issues.map((i) => i.message),
           },
+          requestId,
         },
         { status: 400 }
       );
@@ -39,6 +56,7 @@ export async function POST(request: NextRequest) {
             code: 'NO_PASSWORD',
             message: 'رمز عبور تنظیم نشده است. ابتدا یک رمز عبور تنظیم کنید.',
           },
+          requestId,
         },
         { status: 400 }
       );
@@ -47,12 +65,14 @@ export async function POST(request: NextRequest) {
     // Verify current password
     const isValid = await bcrypt.compare(parsed.data.currentPassword, user.passwordHash);
     if (!isValid) {
+      reqLogger.warn('Password change failed: invalid current password', { userId: auth.user.id });
       return Response.json(
         {
           error: {
             code: 'INVALID_PASSWORD',
             message: 'رمز عبور فعلی نادرست است.',
           },
+          requestId,
         },
         { status: 401 }
       );
@@ -68,28 +88,22 @@ export async function POST(request: NextRequest) {
     // Destroy all other sessions (force re-login on other devices)
     await destroyAllUserSessions(user.id);
 
-    // Create new session for current device
-    // (the current session was just destroyed, so we need to create a new one)
-    // The current request still has the valid cookie, so we'll let the middleware
-    // handle creating a new session. For now, just return success.
+    reqLogger.info('Password changed successfully', { userId: auth.user.id });
 
     return Response.json(
       {
         data: { message: 'رمز عبور با موفقیت تغییر کرد.' },
+        requestId,
       },
       { status: 200 }
     );
   } catch (error: unknown) {
     if (error && typeof error === 'object' && 'code' in error) {
-      const authErr = error as { code: string; statusCode: number; message: string };
-      return Response.json(
-        { error: { code: authErr.code, message: authErr.message } },
-        { status: authErr.statusCode }
-      );
+      return authErrorResponse(error as ReturnType<typeof requireAuth> extends Promise<infer T> ? never : never);
     }
-    console.error('[Change Password Error]', error);
+    reqLogger.error('Password change failed', error);
     return Response.json(
-      { error: { code: 'INTERNAL_ERROR', message: 'خطای داخلی سرور.' } },
+      { error: { code: 'INTERNAL_ERROR', message: 'خطای داخلی سرور.' }, requestId },
       { status: 500 }
     );
   }

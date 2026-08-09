@@ -1,5 +1,56 @@
 # DevJoo — Changelog
 
+## [0.12.0] — 2026-08-09
+
+### Added
+- **Security Infrastructure** (ADR-022):
+  - Security headers via middleware: X-Frame-Options (DENY), X-Content-Type-Options (nosniff), X-XSS-Protection, Referrer-Policy, Permissions-Policy, HSTS (production only)
+  - Content-Security-Policy frame-ancestors (self + devjoo.ir in production)
+  - CORS configuration: allowlist-based (localhost in dev, devjoo.ir in production), preflight handling
+  - Per-action rate limiter: 11 presets (api, auth, otp, login, passwordChange, projectCreate, proposalSubmit, upload, ai, admin, search)
+  - Rate limiters applied to: OTP request, OTP verify, password change, AI build-project, AI generate-proposal
+  - Request ID generation and propagation (x-request-id header)
+  - Input sanitization: stripHtml, escapeHtml, sanitizeForUrl, stripControlChars
+  - Log sanitization: deep-redacts 17 sensitive field patterns (password, token, otp, phone, etc.)
+- **Structured Logging**:
+  - JSON-formatted logger with log levels (debug, info, warn, error, fatal)
+  - Child logger with bound context (requestId, userId, path, method)
+  - Configurable minimum log level via LOG_LEVEL env var
+  - Sensitive field exclusion from logs (no stack traces in production)
+- **API Response Standardization**:
+  - Response helpers: apiSuccess, apiError, unauthorized, forbidden, notFound, rateLimited, internalError, validationError
+  - withHandler wrapper for consistent error handling and request logging
+  - All error responses include requestId for tracing
+- **Error Pages**:
+  - Custom 404 not-found page (Persian)
+  - Global error page with error digest and retry button
+- **Accessibility**:
+  - Skip-to-content link ("رفن به محتوای اصلی")
+  - Main element with id="main-content"
+  - Nav aria-label="منوی اصلی"
+  - Logo aria-label="DevJoo — صفحه اصلی"
+  - Decorative icons marked aria-hidden="true"
+  - Header login link fixed: /auth → /auth/login
+- **Test Suite** (88 tests):
+  - Vitest + jsdom configured
+  - Security tests: sanitize (25), rate-limiter (12), headers (13), request-id (7)
+  - Logger tests (7)
+  - Utility tests: currency (12), persian-normalize (12)
+- **CI Pipeline**:
+  - GitHub Actions: lint → typecheck → test → build
+  - Runs on push to main/develop and pull requests
+- **Deployment Documentation**:
+  - DEPLOY.md: env vars, Docker, Docker Compose, Nginx, PostgreSQL, monitoring, security checklist
+
+### Fixed
+- `/projects` page metadata: canonical → path parameter (was using removed `canonical` property)
+- `/auth` link in header: fixed to `/auth/login`
+
+### Decisions
+- ADR-022: Defense-in-depth security infrastructure
+
+---
+
 ## [0.11.0] — 2026-08-09
 
 ### Added

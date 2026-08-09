@@ -9,12 +9,12 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border bg-surface/80 backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2" aria-label="DevJoo — صفحه اصلی">
           <span className="text-xl font-extrabold text-primary">DevJoo</span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden md:flex items-center gap-1" aria-label="منوی اصلی">
           {siteConfig.nav.items.map((item) => (
             <Link
               key={item.href}
@@ -34,9 +34,9 @@ export function Header() {
             className="hidden md:flex"
             aria-label="جستجو"
           >
-            <Search className="h-5 w-5" />
+            <Search className="h-5 w-5" aria-hidden="true" />
           </Button>
-          <Link href="/auth">
+          <Link href="/auth/login">
             <Button variant="ghost" size="sm">
               ورود
             </Button>

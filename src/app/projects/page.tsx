@@ -7,7 +7,7 @@ import { buildCanonicalUrl } from '@/lib/seo/canonical';
 export const metadata: Metadata = generatePageMetadata({
   title: 'پروژه‌ها',
   description: 'پروژه‌های فریلنسری، برنامه‌نویسی و دیجیتال را در DevJoo پیدا کنید.',
-  canonical: buildCanonicalUrl('/projects'),
+  path: '/projects',
 });
 
 export default function ProjectsPage() {

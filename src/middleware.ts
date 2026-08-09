@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken, TOKEN_NAME } from '@/lib/auth/session-edge';
+import { getSecurityHeaders, getCorsHeaders } from '@/lib/security/headers';
+import { getOrCreateRequestId } from '@/lib/security/request-id';
 
 const STATIC_EXTENSIONS = [
   '.js', '.css', '.png', '.jpg', '.svg', '.ico', '.woff2', '.woff', '.json', '.xml',
 ];
+
+const isProduction = process.env.NODE_ENV === 'production';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -19,6 +23,22 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Generate or propagate request ID
+  const requestId = getOrCreateRequestId(request);
+
+  // Handle CORS preflight for API routes
+  if (pathname.startsWith('/api/') && request.method === 'OPTIONS') {
+    const origin = request.headers.get('origin');
+    const corsHeaders = getCorsHeaders(origin, isProduction);
+    return new NextResponse(null, {
+      status: 204,
+      headers: {
+        ...corsHeaders,
+        'Access-Control-Max-Age': '86400',
+      },
+    });
+  }
+
   // API routes: check auth for protected endpoints
   if (pathname.startsWith('/api/v1/')) {
     const isAuthApi = pathname.startsWith('/api/v1/auth/');
@@ -31,18 +51,30 @@ export async function middleware(request: NextRequest) {
     ].some((p) => pathname.startsWith(p));
 
     if (isAuthApi && !isPublicAuthApi) {
-      // Protected auth endpoints (register, me, logout, password)
       const auth = await checkAuth(request);
       if (!auth) return auth;
     }
 
     if (!isAuthApi) {
-      // All non-auth API routes require authentication
       const auth = await checkAuth(request);
       if (!auth) return auth;
     }
 
-    return NextResponse.next();
+    // Add security headers + CORS + request ID to API responses
+    const response = NextResponse.next();
+    const securityHeaders = getSecurityHeaders({ isProduction });
+    const origin = request.headers.get('origin');
+    const corsHeaders = getCorsHeaders(origin, isProduction);
+
+    for (const [key, value] of Object.entries(securityHeaders)) {
+      response.headers.set(key, value);
+    }
+    for (const [key, value] of Object.entries(corsHeaders)) {
+      response.headers.set(key, value);
+    }
+    response.headers.set('x-request-id', requestId);
+
+    return response;
   }
 
   // Protected page routes
@@ -55,13 +87,20 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  return NextResponse.next();
+  // Add security headers to page responses
+  const response = NextResponse.next();
+  const securityHeaders = getSecurityHeaders({ isProduction });
+  for (const [key, value] of Object.entries(securityHeaders)) {
+    response.headers.set(key, value);
+  }
+  response.headers.set('x-request-id', requestId);
+
+  return response;
 }
 
 async function checkAuth(request: NextRequest): Promise<NextResponse<unknown> | null> {
   const token = request.cookies.get(TOKEN_NAME)?.value;
   if (!token) {
-    // For API routes, return JSON error
     if (request.nextUrl.pathname.startsWith('/api/')) {
       return NextResponse.json(
         { error: { code: 'UNAUTHORIZED', message: 'لطفاً وارد حساب کاربری خود شوید.' } },
@@ -82,7 +121,7 @@ async function checkAuth(request: NextRequest): Promise<NextResponse<unknown> | 
     return null;
   }
 
-  return null; // null means auth passed
+  return null;
 }
 
 export const config = {

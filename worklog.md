@@ -410,3 +410,32 @@ Stage Summary:
 - Zero TypeScript errors in admin files, lint passes
 - ADR-021 documented
 - v0.11.0 in CHANGELOG
+---
+Task ID: 12
+Agent: Main Agent
+Task: Phase 12 — Production Hardening
+
+Work Log:
+- Created security infrastructure (lib/security/): headers.ts, rate-limiter.ts, sanitize.ts, request-id.ts, index.ts
+- Updated middleware.ts: security headers on all responses, CORS preflight handling, x-request-id propagation
+- Created structured logger (lib/logger.ts): JSON format, 5 levels, child context, LOG_LEVEL env var
+- Created API response helpers (lib/api-response.ts): apiSuccess, apiError, unauthorized, forbidden, rateLimited, internalError, validationError, withHandler wrapper
+- Applied rate limiters to 5 API routes: OTP request, OTP verify, password change, AI build-project, AI generate-proposal
+- Created custom 404 page (not-found.tsx) and global error page (global-error.tsx)
+- SEO audit: fixed /projects metadata (canonical→path bug)
+- Accessibility: skip-nav link, aria-labels on nav/logo, aria-hidden on decorative icons, main#main-content
+- Installed Vitest + Testing Library, wrote 88 tests across 7 files
+- Created GitHub Actions CI pipeline (.github/workflows/ci.yml)
+- Created DEPLOY.md with Docker, Docker Compose, Nginx, PostgreSQL, monitoring, security checklist
+- Added ADR-022 to DECISIONS.md
+- Updated CHANGELOG.md (v0.12.0), PROJECT_STATE.md, TODO.md
+
+Stage Summary:
+- All Phase 12 tasks complete
+- 88 tests passing, lint passing
+- All 13 planned phases (0-12) complete
+- New files: 15+ source files, 7 test files, 3 config/docs
+- Security: headers, rate limiting (11 presets), CORS, request IDs, input/log sanitization
+- Testing: Vitest configured, 88 unit tests
+- CI: GitHub Actions pipeline
+- Docs: DEPLOY.md deployment guide

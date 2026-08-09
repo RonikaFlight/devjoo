@@ -406,3 +406,44 @@ Use the existing `requireRole(USER_ROLES.ADMIN)` pattern for all admin API route
 - robots.txt already blocks `/admin/` from crawlers
 
 **Status:** Accepted
+
+---
+
+## ADR-022 — Defense-in-Depth Security Infrastructure
+
+**Decision:**
+Add multi-layer security infrastructure: security headers via middleware, per-action rate limiting, structured logging with request correlation, input sanitization, CORS configuration, and API response standardization.
+
+**Reason:**
+- Previous phases had no security headers (X-Frame-Options, CSP, HSTS)
+- Only OTP endpoint had rate limiting — auth, AI, and CRUD endpoints were unprotected
+- No request correlation — debugging production issues was impossible
+- Console.error was used inconsistently — no structured log format
+- No CORS configuration — API was open to any origin
+- No input sanitization layer — relied solely on Zod validation
+
+**Implementation:**
+- `lib/security/headers.ts` — security headers (X-Frame-Options, CSP frame-ancestors, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, HSTS in production) + CORS headers (allowlist-based)
+- `lib/security/rate-limiter.ts` — in-memory sliding window rate limiter with 10 presets (api, auth, otp, login, passwordChange, projectCreate, proposalSubmit, upload, ai, admin, search)
+- `lib/security/sanitize.ts` — stripHtml, escapeHtml, sanitizeForUrl, stripControlChars, sanitizeForLogging (deep redacts 17 sensitive field patterns)
+- `lib/security/request-id.ts` — generateRequestId (timestamp+random), getOrCreateRequestId (respects x-request-id header)
+- `lib/logger.ts` — structured JSON logger with log levels, child loggers, context binding, sensitive field exclusion
+- `lib/api-response.ts` — apiSuccess/apiError/unauthorized/forbidden/notFound/rateLimited/internalError helpers, withHandler wrapper
+- Middleware updated: security headers on all responses, CORS preflight handling, x-request-id propagation
+- Rate limiters added to: OTP request, OTP verify, password change, AI build-project, AI generate-proposal
+
+**Architecture:**
+- Security headers: applied in middleware (Edge runtime, no Node.js APIs needed)
+- Rate limiter: in-memory Map with periodic cleanup (5 min interval). Production note: replace with Redis for multi-instance deployments
+- Logger: JSON-formatted output to stdout. LOG_LEVEL env var controls minimum level. Production: `info`
+- Request ID: 24-char format (8-char hex timestamp + 16-char random hex)
+
+**Consequences:**
+- All responses now have security headers (even static pages)
+- API responses include requestId for tracing
+- All new API routes should use withHandler wrapper for consistent error handling
+- Rate limiters use IP-based identification by default; authenticated routes should include userId where possible
+- Sanitize all user input before logging, never log raw request bodies
+- Production needs Redis-backed rate limiter for multi-instance deployments
+
+**Status:** Accepted

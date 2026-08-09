@@ -4,17 +4,28 @@ import { generateProposalSchema } from '@/lib/validators/ai';
 import { isFeatureEnabled } from '@/config/feature-flags';
 import { isAIConfigured, AIError } from '@/modules/ai/provider';
 import * as proposalAssistant from '@/modules/ai/proposal-assistant';
+import { createRateLimitGuard, getClientIp } from '@/lib/security/rate-limiter';
+import { logger } from '@/lib/logger';
+
+const aiRateLimit = createRateLimitGuard('ai', (req) => `ai:${getClientIp(req)}`);
 
 /**
  * POST /api/v1/ai/generate-proposal — AI Proposal Assistant
  * Generates a personalized proposal for a freelancer.
  */
 export async function POST(request: Request) {
+  const requestId = request.headers.get('x-request-id') || '';
+  const reqLogger = logger.child({ requestId, path: '/api/v1/ai/generate-proposal', method: 'POST' });
+
   try {
+    // Rate limit before expensive AI call
+    const rlResponse = aiRateLimit(request);
+    if (rlResponse) return rlResponse;
+
     // Check feature flag
     if (!isFeatureEnabled('aiProposalAssistant')) {
       return NextResponse.json(
-        { error: { code: 'FEATURE_DISABLED', message: 'این قابلیت در حال حاضر غیرفعال است.' } },
+        { error: { code: 'FEATURE_DISABLED', message: 'این قابلیت در حال حاضر غیرفعال است.' }, requestId },
         { status: 403 }
       );
     }
@@ -22,7 +33,7 @@ export async function POST(request: Request) {
     // Check AI configuration
     if (!isAIConfigured()) {
       return NextResponse.json(
-        { error: { code: 'AI_NOT_CONFIGURED', message: 'سرویس هوش مصنوعی تنظیم نشده است.' } },
+        { error: { code: 'AI_NOT_CONFIGURED', message: 'سرویس هوش مصنوعی تنظیم نشده است.' }, requestId },
         { status: 503 }
       );
     }
@@ -36,14 +47,22 @@ export async function POST(request: Request) {
 
     // Ensure the freelancer can only generate proposals for themselves
     if (input.freelancerId !== user.id) {
+      reqLogger.warn('AI proposal generation: forbidden self-id mismatch', { userId: user.id });
       return NextResponse.json(
-        { error: { code: 'FORBIDDEN', message: 'شما فقط می‌توانید برای خودتان پیشنهاد تولید کنید.' } },
+        { error: { code: 'FORBIDDEN', message: 'شما فقط می‌توانید برای خودتان پیشنهاد تولید کنید.' }, requestId },
         { status: 403 }
       );
     }
 
+    reqLogger.info('AI proposal generation request', { userId: user.id, projectId: input.projectId });
+
     // Generate proposal
     const { result, meta } = await proposalAssistant.generateProposal(input);
+
+    reqLogger.info('AI proposal generation completed', {
+      userId: user.id,
+      tokensUsed: meta.totalTokens,
+    });
 
     return NextResponse.json({
       data: result,
@@ -51,12 +70,14 @@ export async function POST(request: Request) {
         tokensUsed: meta.totalTokens,
         model: 'ai',
       },
+      requestId,
     });
   } catch (error) {
     if (error && typeof error === 'object' && 'statusCode' in error) {
       return authErrorResponse(error as Parameters<typeof authErrorResponse>[0]);
     }
     if (error instanceof AIError) {
+      reqLogger.error('AI proposal generation error', error);
       const statusMap: Record<string, number> = {
         CONFIG_MISSING: 503,
         PROVIDER_ERROR: error.statusCode ?? 502,
@@ -67,18 +88,19 @@ export async function POST(request: Request) {
         PROJECT_NOT_FOUND: 404,
       };
       return NextResponse.json(
-        { error: { code: error.code, message: error.message } },
+        { error: { code: error.code, message: error.message }, requestId },
         { status: statusMap[error.code] ?? 500 }
       );
     }
     if (error instanceof Error && error.message.includes('Zod')) {
       return NextResponse.json(
-        { error: { code: 'VALIDATION_ERROR', message: error.message } },
+        { error: { code: 'VALIDATION_ERROR', message: error.message }, requestId },
         { status: 400 }
       );
     }
+    reqLogger.error('AI proposal generation failed', error);
     return NextResponse.json(
-      { error: { code: 'INTERNAL', message: 'خطای سرور.' } },
+      { error: { code: 'INTERNAL', message: 'خطای سرور.' }, requestId },
       { status: 500 }
     );
   }
