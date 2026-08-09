@@ -85,7 +85,7 @@
 - [x] Project detail API
 - [x] Project state machine
 - [x] Project save/bookmark API
-- [ ] Project creation page
+- [x] Project creation page (/projects/new) — 3-step multi-step form
 - [x] Project listing page (/projects)
 - [x] Project detail page (/project/[slug])
 - [x] Project card component
@@ -97,8 +97,9 @@
 - [x] Proposal listing (employer) API
 - [x] Proposal status workflow
 - [x] Proposal limit enforcement (max 10 qualified)
-- [ ] Proposal page (freelancer)
-- [ ] Proposal page (employer)
+- [x] Proposal submission (Dialog on project detail page)
+- [x] Proposal page (freelancer) — /dashboard/freelancer/proposals
+- [x] Proposal page (employer) — /project/[slug]/proposals
 
 ### Dashboards
 - [x] Freelancer dashboard skeleton
@@ -218,3 +219,17 @@
 - [x] CI pipeline
 - [x] Logging & monitoring
 - [x] Deployment documentation
+
+---
+
+## Phase 13 — Core Frontend Flows ✓
+
+- [x] Fix 91 pre-existing TypeScript errors (Zod v4, BreadcrumbItem, Prisma types)
+- [x] Auth client context (AuthProvider + useAuth hook)
+- [x] Project creation page (/projects/new) — 3-step form
+- [x] Proposal submission (Dialog on project detail)
+- [x] Freelancer my proposals page (/dashboard/freelancer/proposals)
+- [x] Employer project proposals page (/project/[slug]/proposals)
+- [x] Messaging UI (/messages) — two-panel layout with polling
+- [x] Suspense boundaries for useSearchParams pages
+- [x] ADR-023: Client-side auth context

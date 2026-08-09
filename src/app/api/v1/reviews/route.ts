@@ -52,7 +52,7 @@ export async function POST(request: Request) {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'ورودی‌ها نامعتبر هستند.',
-            details: parsed.error.errors.map((e) => e.message),
+            details: parsed.error.issues.map((e) => e.message),
           },
         },
         { status: 400 }
@@ -71,7 +71,7 @@ export async function POST(request: Request) {
       };
       return NextResponse.json(
         { error: { code: result.error, message: result.message } },
-        { status: statusMap[result.error] || 400 }
+        { status: statusMap[result.error!] || 400 }
       );
     }
 

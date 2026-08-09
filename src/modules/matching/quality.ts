@@ -25,7 +25,7 @@ export function computeProjectQualityScore(project: {
   budgetMinRial: number | null;
   budgetMaxRial: number | null;
   experienceLevel: string | null;
-  deadline: DateTime | null;
+  deadline: Date | null;
   estimatedDuration: string | null;
   skills: { skillId: string }[];
   isUrgent: boolean;
@@ -102,7 +102,7 @@ export async function detectDuplicateProject(
       createdAt: { gte: sevenDaysAgo },
       ...(excludeProjectId ? { id: { not: excludeProjectId } } : {}),
     },
-    select: { id: true, title: string, slug: true, description: true, createdAt: true },
+    select: { id: true, title: true, slug: true, description: true, createdAt: true },
   });
 
   const normalizedTitle = normalizePersian(title).toLowerCase().trim();

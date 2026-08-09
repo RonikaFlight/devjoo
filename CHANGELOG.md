@@ -1,5 +1,61 @@
 # DevJoo — Changelog
 
+## [0.13.0] — 2026-08-10
+
+### Added
+- **Auth Client Context** (ADR-023):
+  - `AuthProvider` + `useAuth` hook wrapping /api/v1/auth/me
+  - Provides: user, isLoading, isLoggedIn, isFreelancer, isEmployer, isAdmin, refresh, logout
+  - Auto-redirect to /auth/role-select if onboarding incomplete
+  - Integrated into root layout
+- **Project Creation Page** (/projects/new):
+  - 3-step form: basics (title + description), category & skills (dropdown + multi-select with search), budget & details (type, amount, work type, duration, deadline, proposal limit)
+  - Budget input in تومان, auto-converted to ریal for API
+  - Category-aware skill filtering (fetches from /api/v1/skills?categoryId=)
+  - Inline Farsi validation matching Zod messages
+  - Auth gate: employer-only, redirects freelancers to /projects
+  - Publish on success with optional immediate publish button
+- **Proposal Submission**:
+  - Project detail page now uses real auth state (useAuth)
+  - Freelancer: "ارسال پیشنهاد" opens Dialog modal with cover letter, price, duration
+  - Employer (project owner): "پیشنهادهای دریافت شده" links to proposals page
+  - Duplicate detection (checks existing proposals before showing form)
+  - Toast notifications on success/error
+- **Freelancer My Proposals Page** (/dashboard/freelancer/proposals):
+  - Paginated list of submitted proposals with color-coded status badges
+  - Shows project title (linked), price, duration, status, date
+  - "شروع گفتگو" button for accepted proposals
+  - Empty state with link to /projects
+- **Employer Project Proposals Page** (/project/[slug]/proposals):
+  - Freelancer cards with avatar, name, headline, city
+  - Expandable cover letter (line-clamp-3 with toggle)
+  - Action buttons: VIEWED, SHORTLISTED, ACCEPTED (with confirm), REJECTED (with reason textarea)
+  - Real-time status updates via PATCH /api/v1/proposals/[id]
+- **Messaging UI** (/messages):
+  - Two-panel layout: conversations list (left) + chat view (right)
+  - Conversation list: search, avatar, last message preview, relative time, unread badge
+  - Chat view: message bubbles (sent=purple, received=gray), auto-scroll, per-message timestamps
+  - System messages: centered pill style
+  - Message input: auto-growing textarea, Enter to send, Shift+Enter for newline
+  - New conversation dialog (participant ID + optional project ID)
+  - Mobile responsive: toggle between list and chat views
+  - Polling: messages every 5s (deduped), conversations every 10s for unread counts
+- **Suspense Boundaries**: Added to all pages using `useSearchParams()` (login, projects, category, skill pages) for Next.js 16 static generation compatibility
+
+### Fixed
+- All 91 pre-existing TypeScript errors resolved to 0:
+  - Zod v4: `.errors` → `.issues` (12 API route files)
+  - Zod v4: `.errorMap` → `.message` (3 validator files)
+  - BreadcrumbItem `href` made optional (8 page files + component)
+  - `generatePrivatePageMetadata` now accepts optional `description`
+  - Prisma select/include type mismatches in notifications, invitations, matching modules
+  - `global-error.tsx` missing `'use client'` directive
+
+### Decisions
+- ADR-023: Client-side auth context via /api/v1/auth/me (no server props, fresh on mount)
+
+---
+
 ## [0.12.0] — 2026-08-09
 
 ### Added

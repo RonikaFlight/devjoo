@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
       include: { user: { include: { roles: { include: { role: true } }, profile: true } } },
     });
 
-    let user: NonNullable<typeof oauthAccount>['user'];
+    let user: any = null;
 
     if (oauthAccount) {
       user = oauthAccount.user;
@@ -141,6 +141,13 @@ export async function POST(request: NextRequest) {
           include: { roles: { include: { role: true } }, profile: true },
         });
       }
+    }
+
+    if (!user) {
+      return Response.json(
+        { error: { code: 'INTERNAL_ERROR', message: 'خطا در ایجاد حساب کاربری.' } },
+        { status: 500 }
+      );
     }
 
     // Create session

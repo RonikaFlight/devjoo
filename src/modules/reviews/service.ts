@@ -67,10 +67,9 @@ export async function createReview(
             select: {
               id: true,
               displayName: true,
-              profile: { select: { avatarUrl: true } },
+              avatarUrl: true,
             },
           },
-          project: { select: { id: true, title: true, slug: true } },
         },
       });
 
@@ -141,10 +140,9 @@ export async function createReview(
           select: {
             id: true,
             displayName: true,
-            profile: { select: { avatarUrl: true } },
+            avatarUrl: true,
           },
         },
-        project: { select: { id: true, title: true, slug: true } },
       },
     });
 
@@ -178,10 +176,9 @@ export async function listReceivedReviews(
           select: {
             id: true,
             displayName: true,
-            profile: { select: { avatarUrl: true } },
+            avatarUrl: true,
           },
         },
-        project: { select: { id: true, title: true, slug: true } },
       },
     }),
     db.review.count({ where }),

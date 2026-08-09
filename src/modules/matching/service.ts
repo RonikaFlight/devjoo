@@ -17,18 +17,14 @@ export interface MatchResult {
   freelancer?: {
     id: string;
     displayName: string | null;
-    profile: {
-      avatarUrl: string | null;
-      headline: string | null;
-      city: string | null;
-    } | null;
-    freelancerProfile?: {
-      hourlyRateRial: number | null;
-      availability: string;
-      averageRating: number | null;
-      totalCompletedProjects: number;
-    } | null;
-  };
+    avatarUrl: string | null;
+    city: string | null;
+    headline: string | null;
+    hourlyRateRial: number | null;
+    availability: string;
+    averageRating: number | null;
+    totalCompletedProjects: number;
+  } | null;
 }
 
 /**
@@ -61,7 +57,7 @@ export async function scoreMatch(
   const skillOverlap = computeSkillOverlap(projectSkillIds, freelancerSkillIds, userSkills);
 
   // 2. Budget Fit (0-20 points)
-  const budgetFit = computeBudgetFit(project, freelancerId);
+  const budgetFit = await computeBudgetFit(project, freelancerId);
 
   // 3. Availability Fit (0-15 points)
   const availabilityFit = await computeAvailabilityFit(project, freelancerId);
@@ -146,9 +142,11 @@ export async function getProjectMatches(
           id: true,
           displayName: true,
           profile: {
-            select: { avatarUrl: true, headline: true, city: true,
+            select: {
+              avatarUrl: true, city: true,
               freelancerProfile: {
                 select: {
+                  headline: true,
                   hourlyRateRial: true, availability: true,
                   averageRating: true, totalCompletedProjects: true,
                 },
@@ -164,8 +162,14 @@ export async function getProjectMatches(
         freelancer: freelancer ? {
           id: freelancer.id,
           displayName: freelancer.displayName,
-          profile: freelancer.profile,
-        } : undefined,
+          avatarUrl: freelancer.profile?.avatarUrl ?? null,
+          city: freelancer.profile?.city ?? null,
+          headline: freelancer.profile?.freelancerProfile?.headline ?? null,
+          hourlyRateRial: freelancer.profile?.freelancerProfile?.hourlyRateRial ?? null,
+          availability: freelancer.profile?.freelancerProfile?.availability ?? 'AVAILABLE',
+          averageRating: freelancer.profile?.freelancerProfile?.averageRating ?? null,
+          totalCompletedProjects: freelancer.profile?.freelancerProfile?.totalCompletedProjects ?? 0,
+        } : null,
       });
     }
   }
@@ -282,7 +286,7 @@ function computeSkillOverlap(
 async function computeBudgetFit(
   project: { budgetType: string; fixedPriceRial: number | null; budgetMinRial: number | null; budgetMaxRial: number | null },
   freelancerId: string
-): number {
+): Promise<number> {
   const freelancerProfile = await db.freelancerProfile.findFirst({
     where: { profile: { userId: freelancerId } },
     select: { hourlyRateRial: true },
@@ -315,7 +319,7 @@ async function computeBudgetFit(
 async function computeAvailabilityFit(
   project: { status: string },
   freelancerId: string
-): number {
+): Promise<number> {
   const freelancerProfile = await db.freelancerProfile.findFirst({
     where: { profile: { userId: freelancerId } },
     select: { availability: true },

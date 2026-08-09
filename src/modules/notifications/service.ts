@@ -170,7 +170,7 @@ export async function initializeDefaultPreferences(userId: string) {
 
   const channels = ['IN_APP', 'EMAIL', 'SMS', 'PUSH'];
 
-  const data = [];
+  const data: Array<{ userId: string; type: string; channel: string; enabled: boolean }> = [];
   for (const type of types) {
     for (const channel of channels) {
       // Enable IN_APP by default, others disabled
@@ -185,7 +185,6 @@ export async function initializeDefaultPreferences(userId: string) {
 
   await db.notificationPreference.createMany({
     data,
-    skipDuplicates: true,
   });
 }
 
@@ -196,7 +195,7 @@ export async function updateNotificationPreferences(
   userId: string,
   preferences: NotificationPreferenceInput[]
 ) {
-  const results = [];
+  const results: Awaited<ReturnType<typeof db.notificationPreference.upsert>>[] = [];
 
   for (const pref of preferences) {
     const updated = await db.notificationPreference.upsert({

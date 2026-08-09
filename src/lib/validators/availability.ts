@@ -5,7 +5,7 @@ import { z } from 'zod';
  */
 export const availabilityUpdateSchema = z.object({
   availability: z.enum(['AVAILABLE', 'LIMITED', 'BUSY', 'UNAVAILABLE'], {
-    errorMap: () => ({ message: 'وضعیت نامعتبر است.' }),
+    message: 'وضعیت نامعتبر است.',
   }),
   hoursPerWeek: z
     .number()

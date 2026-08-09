@@ -22,7 +22,7 @@ export async function GET(
       };
       return NextResponse.json(
         { error: { code: result.error, message: result.message } },
-        { status: statusMap[result.error] || 400 }
+        { status: statusMap[result.error!] || 400 }
       );
     }
 

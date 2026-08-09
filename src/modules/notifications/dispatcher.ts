@@ -83,7 +83,7 @@ export async function dispatchProjectPublished(projectId: string) {
         select: {
           id: true,
           displayName: true,
-          profile: { select: { companyName: true } },
+          profile: { select: { employerProfile: { select: { companyName: true } } } },
         },
       },
     },
@@ -94,13 +94,15 @@ export async function dispatchProjectPublished(projectId: string) {
   const projectSkillIds = project.skills.map((ps) => ps.skillId);
   if (projectSkillIds.length === 0) return;
 
-  // Find freelancers with matching skills (limited to 50 for performance)
- const matchingFreelancers = await db.userSkill.findMany({
+  // Find freelancers with matching skills (limited for performance)
+  const matchingFreelancers = await db.userSkill.findMany({
     where: {
       skillId: { in: projectSkillIds },
-      user: {
-        isActive: true,
-        roles: { some: { role: { name: 'FREELANCER' } } },
+      profile: {
+        user: {
+          isActive: true,
+          roles: { some: { role: { name: 'FREELANCER' } } },
+        },
       },
     },
     select: {
@@ -118,7 +120,7 @@ export async function dispatchProjectPublished(projectId: string) {
   }
 
   // Notify freelancers with at least 1 matching skill (excluding the employer)
-  const employerName = project.employer.profile?.companyName || project.employer.displayName || 'کارفرما';
+  const employerName = project.employer.profile?.employerProfile?.companyName || project.employer.displayName || 'کارفرما';
   const body = `پروژه جدید: ${project.title} — ${employerName}`;
 
   const items: Array<{
@@ -164,7 +166,7 @@ export async function dispatchProposalReceived(proposalId: string) {
         select: {
           id: true,
           displayName: true,
-          profile: { select: { headline: true } },
+          profile: { select: { freelancerProfile: { select: { headline: true } } } },
         },
       },
     },
@@ -265,15 +267,15 @@ export async function dispatchInvitationReceived(invitationId: string) {
 
   const project = await db.project.findUnique({
     where: { id: invitation.projectId },
-    select: { title: true, slug: true, employerId: true },
+    select: { id: true, title: true, slug: true, employerId: true },
   });
   if (!project) return;
 
   const employer = await db.user.findUnique({
     where: { id: project.employerId },
-    select: { displayName: true, profile: { select: { companyName: true } } },
+    select: { displayName: true, profile: { select: { employerProfile: { select: { companyName: true } } } } },
   });
-  const employerName = employer?.profile?.companyName || employer?.displayName || 'کارفرما';
+  const employerName = employer?.profile?.employerProfile?.companyName || employer?.displayName || 'کارفرما';
 
   await createNotification({
     userId: invitation.freelancerId,
@@ -302,7 +304,7 @@ export async function dispatchInvitationResponded(
 
   const project = await db.project.findUnique({
     where: { id: invitation.projectId },
-    select: { title: true, slug: true, employerId: true },
+    select: { id: true, title: true, slug: true, employerId: true },
   });
   if (!project) return;
 
@@ -335,29 +337,32 @@ export async function dispatchReviewReceived(reviewId: string) {
   const review = await db.review.findUnique({
     where: { id: reviewId },
     include: {
-      project: { select: { title: true, slug: true } },
       reviewer: {
-        select: {
-          profile: {
-            select: { displayName: true },
-          },
-        },
+        select: { displayName: true },
       },
     },
   });
 
   if (!review) return;
 
-  const reviewerName = review.reviewer.profile?.displayName || 'کاربر';
+  const reviewerName = review.reviewer.displayName || 'کاربر';
+
+  // Fetch project title/slug for the notification body
+  const project = await db.project.findUnique({
+    where: { id: review.projectId },
+    select: { title: true, slug: true },
+  });
+  const projectTitle = project?.title || 'پروژه';
+  const projectSlug = project?.slug || '';
 
   await createNotification({
     userId: review.revieweeId,
     type: NOTIFICATION_TYPE.REVIEW_RECEIVED,
     title: 'نظر جدید دریافت شد',
-    body: `${reviewerName} برای پروژه «${review.project.title}» نظری ثبت کرد.`,
+    body: `${reviewerName} برای پروژه «${projectTitle}» نظری ثبت کرد.`,
     dataJson: {
       projectId: review.projectId,
-      projectSlug: review.project.slug,
+      projectSlug,
       reviewId,
       rating: review.rating,
     },

@@ -447,3 +447,22 @@ Add multi-layer security infrastructure: security headers via middleware, per-ac
 - Production needs Redis-backed rate limiter for multi-instance deployments
 
 **Status:** Accepted
+
+---
+
+## ADR-023 — Client-Side Auth Context
+
+**Decision:**
+Use a client-side React Context (`AuthProvider` + `useAuth` hook) that fetches `/api/v1/auth/me` on mount to provide auth state to all client components.
+
+**Reason:**
+Server components can use `requireAuth()` for page-level auth, but client components (forms, dialogs, conditional UI) need client-side access to auth state. A single context provider at root avoids duplicate fetches and provides reactive auth state across the component tree.
+
+**Consequences:**
+- One API call to /api/v1/auth/me on app mount (cached per session via HTTP-only cookie)
+- Components can check `isLoggedIn`, `isFreelancer`, `isEmployer` reactively
+- Logout clears context and redirects
+- Auto-redirect to /auth/role-select if `needsOnboarding` is true
+- No server prop drilling needed for auth in client components
+
+**Status:** Accepted

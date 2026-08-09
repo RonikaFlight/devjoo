@@ -144,7 +144,7 @@ export async function getSmartFeed(
         return b._matchScore - a._matchScore;
       }
       // Both null: sort by date
-      return b.publishedAt?.getTime() - a.publishedAt?.getTime();
+      return (b.publishedAt?.getTime() ?? 0) - (a.publishedAt?.getTime() ?? 0);
     });
 
     total = allProjects.length;

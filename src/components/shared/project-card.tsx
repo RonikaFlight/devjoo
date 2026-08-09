@@ -21,7 +21,7 @@ export interface ProjectCardProps {
   createdAt: string;
   publishedAt: string | null;
   category: { name: string; slug: string } | null;
-  skills: { skill: { name: string; slug: string } }[];
+  skills: { skillId: string; skill: { id: string; name: string; slug: string } }[];
   employer: {
     id: string;
     displayName: string | null;

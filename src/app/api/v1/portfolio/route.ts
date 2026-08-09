@@ -51,7 +51,7 @@ export async function POST(request: Request) {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'ورودی‌ها نامعتبر هستند.',
-            details: parsed.error.errors.map((e) => e.message),
+            details: parsed.error.issues.map((e) => e.message),
           },
         },
         { status: 400 }

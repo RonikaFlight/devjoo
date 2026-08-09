@@ -82,7 +82,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     });
     if (!parsed.success) {
       return NextResponse.json(
-        { error: { code: 'VALIDATION_ERROR', message: 'ورودی‌ها نامعتبر هستند.', details: parsed.error.errors.map((e) => e.message) } },
+        { error: { code: 'VALIDATION_ERROR', message: 'ورودی‌ها نامعتبر هستند.', details: parsed.error.issues.map((e) => e.message) } },
         { status: 400 }
       );
     }
@@ -101,7 +101,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       };
       return NextResponse.json(
         { error: { code: result.error, message: result.message } },
-        { status: statusMap[result.error] || 400 }
+        { status: statusMap[result.error!] || 400 }
       );
     }
 

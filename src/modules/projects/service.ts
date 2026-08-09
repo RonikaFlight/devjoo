@@ -1,5 +1,5 @@
 import { db } from '@/lib/db';
-import { VALID_PROJECT_TRANSITIONS, PROJECT_STATUS } from '@/types/enums';
+import { VALID_PROJECT_TRANSITIONS, PROJECT_STATUS, type ProjectStatus } from '@/types/enums';
 import { generateSlug, uniqueSlug } from '@/lib/utils/slug';
 import type { ProjectCreateInput, ProjectUpdateInput, ProjectFiltersInput } from '@/lib/validators/project';
 import { computeProjectQualityScore } from '@/modules/matching/quality';
@@ -80,31 +80,33 @@ export async function listProjects(filters: ProjectFiltersInput) {
   }
 
   if (minBudget || maxBudget) {
-    where.OR = [];
+    const budgetOR: Record<string, unknown>[] = [];
     if (minBudget && !maxBudget) {
-      where.OR.push(
+      budgetOR.push(
         { fixedPriceRial: { gte: minBudget } },
         { budgetMinRial: { gte: minBudget } }
       );
     } else if (maxBudget && !minBudget) {
-      where.OR.push(
+      budgetOR.push(
         { fixedPriceRial: { lte: maxBudget } },
         { budgetMaxRial: { lte: maxBudget } }
       );
     } else {
-      where.OR.push(
+      budgetOR.push(
         { fixedPriceRial: { gte: minBudget, lte: maxBudget } },
         { budgetMinRial: { gte: minBudget }, budgetMaxRial: { lte: maxBudget } }
       );
     }
+    where.OR = budgetOR;
   }
 
   if (search) {
-    where.OR = Array.isArray(where.OR) ? where.OR : [];
-    where.OR.push(
+    const searchOR: Record<string, unknown>[] = Array.isArray(where.OR) ? (where.OR as Record<string, unknown>[]) : [];
+    searchOR.push(
       { title: { contains: search } },
       { description: { contains: search } }
     );
+    where.OR = searchOR;
   }
 
   // Build order by
@@ -201,7 +203,7 @@ export async function transitionProjectStatus(
 
   const currentStatus = project.status as keyof typeof VALID_PROJECT_TRANSITIONS;
   const allowed = VALID_PROJECT_TRANSITIONS[currentStatus] || [];
-  if (!allowed.includes(newStatus)) {
+  if (!allowed.includes(newStatus as ProjectStatus)) {
     return { error: 'INVALID_TRANSITION', message: `تغییر وضعیت از ${currentStatus} به ${newStatus} مجاز نیست.` };
   }
 

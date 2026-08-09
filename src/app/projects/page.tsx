@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { ProjectsPageClient } from './projects-client';
 import { generatePageMetadata } from '@/lib/seo/metadata';
 import type { Metadata } from 'next';
@@ -11,5 +12,9 @@ export const metadata: Metadata = generatePageMetadata({
 });
 
 export default function ProjectsPage() {
-  return <ProjectsPageClient />;
+  return (
+    <Suspense>
+      <ProjectsPageClient />
+    </Suspense>
+  );
 }

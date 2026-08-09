@@ -38,7 +38,7 @@ export async function GET() {
 
     // Get verification summary
     const primaryRole = isFreelancer ? 'freelancer' : isEmployer ? 'employer' : null;
-    let summary = null;
+    let summary: { verifiedTypes: string[]; pendingTypes: string[]; totalVerified: number } | null = null;
     if (primaryRole) {
       summary = await verificationService.getVerificationSummary(
         profile.id,
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
           error: {
             code: 'VALIDATION_ERROR',
             message: 'ورودی‌ها نامعتبر هستند.',
-            details: parsed.error.errors.map((e) => e.message),
+            details: parsed.error.issues.map((e) => e.message),
           },
         },
         { status: 400 }
@@ -120,7 +120,7 @@ export async function POST(request: Request) {
       };
       return NextResponse.json(
         { error: { code: result.error, message: result.message } },
-        { status: statusMap[result.error] || 400 }
+        { status: statusMap[result.error!] || 400 }
       );
     }
 

@@ -1,0 +1,744 @@
+     1→'use client';
+     2→
+     3→import { useState, useEffect, useCallback, useRef } from 'react';
+     4→import { useAuth } from '@/lib/auth-client';
+     5→import { cn } from '@/lib/utils';
+     6→import { formatNumber } from '@/lib/utils/currency';
+     7→import { toast } from 'sonner';
+     8→import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+     9→import { Button } from '@/components/ui/button';
+    10→import { Input } from '@/components/ui/input';
+    11→import {
+    12→  Dialog,
+    13→  DialogContent,
+    14→  DialogHeader,
+    15→  DialogTitle,
+    16→  DialogTrigger,
+    17→} from '@/components/ui/dialog';
+    18→import { ScrollArea } from '@/components/ui/scroll-area';
+    19→import { Badge } from '@/components/ui/badge';
+    20→import { Skeleton } from '@/components/ui/skeleton';
+    21→import {
+    22→  Send,
+    23→  Plus,
+    24→  ArrowRight,
+    25→  Search,
+    26→  MessageCircle,
+    27→} from 'lucide-react';
+    28→
+    29→/* ------------------------------------------------------------------ */
+    30→/*  Types                                                              */
+    31→/* ------------------------------------------------------------------ */
+    32→
+    33→interface Participant {
+    34→  id: string;
+    35→  displayName: string;
+    36→  profile: { avatarUrl: string } | null;
+    37→}
+    38→
+    39→interface LastMessage {
+    40→  id: string;
+    41→  content: string;
+    42→  type: string;
+    43→  createdAt: string;
+    44→  senderId: string;
+    45→}
+    46→
+    47→interface Conversation {
+    48→  id: string;
+    49→  type: 'DIRECT' | 'PROJECT';
+    50→  createdAt: string;
+    51→  updatedAt: string;
+    52→  participants: Participant[];
+    53→  lastMessage: LastMessage | null;
+    54→  unreadCount: number;
+    55→}
+    56→
+    57→interface Message {
+    58→  id: string;
+    59→  content: string;
+    60→  type: 'TEXT' | 'SYSTEM' | 'FILE';
+    61→  senderId: string;
+    62→  createdAt: string;
+    63→  isRead: boolean;
+    64→}
+    65→
+    66→/* ------------------------------------------------------------------ */
+    67→/*  Helpers                                                            */
+    68→/* ------------------------------------------------------------------ */
+    69→
+    70→function getInitials(name: string): string {
+    71→  return name
+    72→    .trim()
+    73→    .split(/\s+/)
+    74→    .slice(0, 2)
+    75→    .map((w) => w[0])
+    76→    .join('')
+    77→    .toUpperCase();
+    78→}
+    79→
+    80→function relativeTime(dateStr: string): string {
+    81→  const now = Date.now();
+    82→  const date = new Date(dateStr).getTime();
+    83→  const diffMs = now - date;
+    84→  const diffSec = Math.floor(diffMs / 1000);
+    85→  const diffMin = Math.floor(diffSec / 60);
+    86→  const diffHour = Math.floor(diffMin / 60);
+    87→  const diffDay = Math.floor(diffHour / 24);
+    88→  const diffWeek = Math.floor(diffDay / 7);
+    89→
+    90→  if (diffSec < 60) return 'همین الان';
+    91→  if (diffMin < 60) return formatNumber(diffMin) + ' دقیقه پیش';
+    92→  if (diffHour < 24) return formatNumber(diffHour) + ' ساعت پیش';
+    93→  if (diffDay < 7) return formatNumber(diffDay) + ' روز پیش';
+    94→  if (diffWeek < 4) return formatNumber(diffWeek) + ' هفته پیش';
+    95→
+    96→  return new Intl.DateTimeFormat('fa-IR', {
+    97→    month: 'short',
+    98→    day: 'numeric',
+    99→  }).format(new Date(dateStr));
+   100→}
+   101→
+   102→function formatMessageTime(dateStr: string): string {
+   103→  return new Intl.DateTimeFormat('fa-IR', {
+   104→    hour: '2-digit',
+   105→    minute: '2-digit',
+   106→  }).format(new Date(dateStr));
+   107→}
+   108→
+   109→function getOtherParticipant(
+   110→  conversation: Conversation,
+   111→  currentUserId: string | undefined,
+   112→): Participant {
+   113→  const other = conversation.participants.find(
+   114→    (p) => p.id !== currentUserId,
+   115→  );
+   116→  return other || conversation.participants[0];
+   117→}
+   118→
+   119→function truncate(str: string, len: number): string {
+   120→  if (str.length <= len) return str;
+   121→  return str.slice(0, len) + '…';
+   122→}
+   123→
+   124→/* ------------------------------------------------------------------ */
+   125→/*  Component                                                          */
+   126→/* ------------------------------------------------------------------ */
+   127→
+   128→export default function MessagesClient() {
+   129→  const { user } = useAuth();
+   130→
+   131→  /* ---- State ---- */
+   132→  const [conversations, setConversations] = useState<Conversation[]>([]);
+   133→  const [conversationsLoading, setConversationsLoading] = useState(true);
+   134→  const [searchQuery, setSearchQuery] = useState('');
+   135→
+   136→  const [activeConversationId, setActiveConversationId] = useState<
+   137→    string | null
+   138→  >(null);
+   139→  const [showChat, setShowChat] = useState(false); // mobile toggle
+   140→
+   141→  const [messages, setMessages] = useState<Message[]>([]);
+   142→  const [messagesLoading, setMessagesLoading] = useState(false);
+   143→  const [messageInput, setMessageInput] = useState('');
+   144→  const [sendingMessage, setSendingMessage] = useState(false);
+   145→
+   146→  // New conversation dialog
+   147→  const [newConvOpen, setNewConvOpen] = useState(false);
+   148→  const [newConvParticipantId, setNewConvParticipantId] = useState('');
+   149→  const [newConvProjectId, setNewConvProjectId] = useState('');
+   150→  const [creatingConv, setCreatingConv] = useState(false);
+   151→
+   152→  const messagesEndRef = useRef<HTMLDivElement>(null);
+   153→  const textareaRef = useRef<HTMLTextAreaElement>(null);
+   154→
+   155→  const activeConversation = conversations.find(
+   156→    (c) => c.id === activeConversationId,
+   157→  );
+   158→
+   159→  /* ---- Fetch conversations ---- */
+   160→  const fetchConversations = useCallback(async () => {
+   161→    try {
+   162→      const res = await fetch('/api/v1/conversations');
+   163→      if (res.ok) {
+   164→        const json = await res.json();
+   165→        setConversations(json.data || []);
+   166→      }
+   167→    } catch {
+   168→      // silent
+   169→    } finally {
+   170→      setConversationsLoading(false);
+   171→    }
+   172→  }, []);
+   173→
+   174→  /* ---- Fetch messages ---- */
+   175→  const fetchMessages = useCallback(async (conversationId: string) => {
+   176→    try {
+   177→      const res = await fetch(
+   178→        `/api/v1/conversations/${conversationId}/messages?page=1&limit=50`,
+   179→      );
+   180→      if (res.ok) {
+   181→        const json = await res.json();
+   182→        const fetchedMessages: Message[] = json.data || [];
+   183→
+   184→        setMessages((prev) => {
+   185→          // Deduplicate: keep all unique messages sorted by time
+   186→          const map = new Map<string, Message>();
+   187→          for (const m of prev) map.set(m.id, m);
+   188→          for (const m of fetchedMessages) map.set(m.id, m);
+   189→          return Array.from(map.values()).sort(
+   190→            (a, b) =>
+   191→              new Date(a.createdAt).getTime() -
+   192→              new Date(b.createdAt).getTime(),
+   193→          );
+   194→        });
+   195→      }
+   196→    } catch {
+   197→      // silent
+   198→    }
+   199→  }, []);
+   200→
+   201→  /* ---- Open conversation ---- */
+   202→  const openConversation = useCallback(
+   203→    async (conversationId: string) => {
+   204→      setActiveConversationId(conversationId);
+   205→      setMessages([]);
+   206→      setMessagesLoading(true);
+   207→      setShowChat(true);
+   208→
+   209→      await fetchMessages(conversationId);
+   210→      setMessagesLoading(false);
+   211→    },
+   212→    [fetchMessages],
+   213→  );
+   214→
+   215→  /* ---- Send message ---- */
+   216→  const sendMessage = useCallback(async () => {
+   217→    if (!activeConversationId || !messageInput.trim() || sendingMessage) return;
+   218→
+   219→    setSendingMessage(true);
+   220→    try {
+   221→      const res = await fetch(
+   222→        `/api/v1/conversations/${activeConversationId}/messages`,
+   223→        {
+   224→          method: 'POST',
+   225→          headers: { 'Content-Type': 'application/json' },
+   226→          body: JSON.stringify({
+   227→            content: messageInput.trim(),
+   228→            type: 'TEXT',
+   229→          }),
+   230→        },
+   231→      );
+   232→      if (res.ok) {
+   233→        const json = await res.json();
+   234→        const newMsg: Message = json.data;
+   235→        setMessages((prev) => [...prev, newMsg]);
+   236→        setMessageInput('');
+   237→
+   238→        // Reset textarea height
+   239→        if (textareaRef.current) {
+   240→          textareaRef.current.style.height = 'auto';
+   241→        }
+   242→
+   243→        // Update conversation's last message optimistically
+   244→        setConversations((prev) =>
+   245→          prev.map((c) =>
+   246→            c.id === activeConversationId
+   247→              ? {
+   248→                  ...c,
+   249→                  lastMessage: {
+   250→                    id: newMsg.id,
+   251→                    content: newMsg.content,
+   252→                    type: newMsg.type,
+   253→                    createdAt: newMsg.createdAt,
+   254→                    senderId: newMsg.senderId,
+   255→                  },
+   256→                  updatedAt: newMsg.createdAt,
+   257→                }
+   258→              : c,
+   259→          ),
+   260→        );
+   261→      } else {
+   262→        const json = await res.json().catch(() => null);
+   263→        toast.error(
+   264→          json?.error?.message || 'خطا در ارسال پیام',
+   265→        );
+   266→      }
+   267→    } catch {
+   268→      toast.error('خطا در ارسال پیام');
+   269→    } finally {
+   270→      setSendingMessage(false);
+   271→    }
+   272→  }, [activeConversationId, messageInput, sendingMessage]);
+   273→
+   274→  /* ---- Create new conversation ---- */
+   275→  const createConversation = useCallback(async () => {
+   276→    if (!newConvParticipantId.trim() || creatingConv) return;
+   277→
+   278→    setCreatingConv(true);
+   279→    try {
+   280→      const body: { participantId: string; projectId?: string } = {
+   281→        participantId: newConvParticipantId.trim(),
+   282→      };
+   283→      if (newConvProjectId.trim()) {
+   284→        body.projectId = newConvProjectId.trim();
+   285→      }
+   286→
+   287→      const res = await fetch('/api/v1/conversations', {
+   288→        method: 'POST',
+   289→        headers: { 'Content-Type': 'application/json' },
+   290→        body: JSON.stringify(body),
+   291→      });
+   292→
+   293→      if (res.ok) {
+   294→        const json = await res.json();
+   295→        const conv: Conversation = json.data;
+   296→        setConversations((prev) => [conv, ...prev]);
+   297→        setNewConvOpen(false);
+   298→        setNewConvParticipantId('');
+   299→        setNewConvProjectId('');
+   300→        openConversation(conv.id);
+   301→        toast.success('مکالمه ایجاد شد');
+   302→      } else {
+   303→        const json = await res.json().catch(() => null);
+   304→        toast.error(
+   305→          json?.error?.message || 'خطا در ایجاد مکالمه',
+   306→        );
+   307→      }
+   308→    } catch {
+   309→      toast.error('خطا در ایجاد مکالمه');
+   310→    } finally {
+   311→      setCreatingConv(false);
+   312→    }
+   313→  }, [newConvParticipantId, newConvProjectId, creatingConv, openConversation]);
+   314→
+   315→  /* ---- Polling: messages ---- */
+   316→  useEffect(() => {
+   317→    if (!activeConversationId) return;
+   318→    const interval = setInterval(() => {
+   319→      fetchMessages(activeConversationId);
+   320→    }, 5000);
+   321→    return () => clearInterval(interval);
+   322→  }, [activeConversationId, fetchMessages]);
+   323→
+   324→  /* ---- Polling: conversations (unread counts) ---- */
+   325→  useEffect(() => {
+   326→    const interval = setInterval(() => {
+   327→      fetchConversations();
+   328→    }, 10000);
+   329→    return () => clearInterval(interval);
+   330→  }, [fetchConversations]);
+   331→
+   332→  /* ---- Auto-scroll on new messages ---- */
+   333→  useEffect(() => {
+   334→    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+   335→  }, [messages]);
+   336→
+   337→  /* ---- Initial load ---- */
+   338→  useEffect(() => {
+   339→    fetchConversations();
+   340→  }, [fetchConversations]);
+   341→
+   342→  /* ---- Back to list on mobile ---- */
+   343→  const handleBackToList = useCallback(() => {
+   344→    setShowChat(false);
+   345→    // Don't clear activeConversationId so desktop keeps the chat open
+   346→  }, []);
+   347→
+   348→  /* ---- Textarea auto-grow & keyboard handling ---- */
+   349→  const handleTextareaChange = useCallback(
+   350→    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+   351→      const val = e.target.value;
+   352→      if (val.length > 2000) return;
+   353→      setMessageInput(val);
+   354→
+   355→      // Auto-grow
+   356→      const ta = e.target;
+   357→      ta.style.height = 'auto';
+   358→      ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+   359→    },
+   360→    [],
+   361→  );
+   362→
+   363→  const handleKeyDown = useCallback(
+   364→    (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+   365→      if (e.key === 'Enter' && !e.shiftKey) {
+   366→        e.preventDefault();
+   367→        sendMessage();
+   368→      }
+   369→    },
+   370→    [sendMessage],
+   371→  );
+   372→
+   373→  /* ---- Filtered conversations ---- */
+   374→  const filteredConversations = searchQuery.trim()
+   375→    ? conversations.filter((c) => {
+   376→        const other = getOtherParticipant(c, user?.id);
+   377→        return other.displayName
+   378→          .toLowerCase()
+   379→          .includes(searchQuery.trim().toLowerCase());
+   380→      })
+   381→    : conversations;
+   382→
+   383→  /* ================================================================ */
+   384→  /*  RENDER                                                           */
+   385→  /* ================================================================ */
+   386→
+   387→  return (
+   388→    <div className="mx-auto h-[calc(100vh-8rem)] max-w-6xl overflow-hidden rounded-xl border bg-surface shadow-sm">
+   389→      <div className="flex h-full">
+   390→        {/* ===================== LEFT PANEL ===================== */}
+   391→        <div
+   392→          className={cn(
+   393→            'flex h-full w-full flex-col md:w-80 md:border-e',
+   394→            showChat ? 'hidden md:flex' : 'flex',
+   395→          )}
+   396→        >
+   397→          {/* Header */}
+   398→          <div className="flex items-center justify-between border-b px-4 py-3">
+   399→            <h1 className="text-lg font-bold">پیام‌ها</h1>
+   400→
+   401→            <Dialog open={newConvOpen} onOpenChange={setNewConvOpen}>
+   402→              <DialogTrigger asChild>
+   403→                <Button size="sm" variant="outline">
+   404→                  <Plus className="ml-1 h-4 w-4" />
+   405→                  مکالمه جدید
+   406→                </Button>
+   407→              </DialogTrigger>
+   408→              <DialogContent>
+   409→                <DialogHeader>
+   410→                  <DialogTitle>مکالمه جدید</DialogTitle>
+   411→                </DialogHeader>
+   412→                <div className="mt-4 space-y-4">
+   413→                  <div className="space-y-2">
+   414→                    <label
+   415→                      htmlFor="participantId"
+   416→                      className="text-sm font-medium"
+   417→                    >
+   418→                      شناسه کاربر
+   419→                    </label>
+   420→                    <Input
+   421→                      id="participantId"
+   422→                      placeholder="شناسه کاربر مقابل را وارد کنید"
+   423→                      value={newConvParticipantId}
+   424→                      onChange={(e) => setNewConvParticipantId(e.target.value)}
+   425→                    />
+   426→                  </div>
+   427→                  <div className="space-y-2">
+   428→                    <label
+   429→                      htmlFor="projectId"
+   430→                      className="text-sm font-medium"
+   431→                    >
+   432→                      شناسه پروژه <span className="text-muted-foreground">(اختیاری)</span>
+   433→                    </label>
+   434→                    <Input
+   435→                      id="projectId"
+   436→                      placeholder="شناسه پروژه (در صورت وجود)"
+   437→                      value={newConvProjectId}
+   438→                      onChange={(e) => setNewConvProjectId(e.target.value)}
+   439→                    />
+   440→                  </div>
+   441→                  <Button
+   442→                    className="w-full"
+   443→                    onClick={createConversation}
+   444→                    disabled={!newConvParticipantId.trim() || creatingConv}
+   445→                  >
+   446→                    {creatingConv ? 'در حال ایجاد…' : 'ایجاد مکالمه'}
+   447→                  </Button>
+   448→                </div>
+   449→              </DialogContent>
+   450→            </Dialog>
+   451→          </div>
+   452→
+   453→          {/* Search */}
+   454→          <div className="border-b px-3 py-2">
+   455→            <div className="relative">
+   456→              <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+   457→              <Input
+   458→                className="ps-9"
+   459→                placeholder="جستجو در مکالمه‌ها…"
+   460→                value={searchQuery}
+   461→                onChange={(e) => setSearchQuery(e.target.value)}
+   462→              />
+   463→            </div>
+   464→          </div>
+   465→
+   466→          {/* Conversation list */}
+   467→          <ScrollArea className="flex-1">
+   468→            {conversationsLoading ? (
+   469→              <div className="space-y-3 p-3">
+   470→                {Array.from({ length: 5 }).map((_, i) => (
+   471→                  <div key={i} className="flex items-center gap-3 px-2 py-2">
+   472→                    <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
+   473→                    <div className="flex-1 space-y-2">
+   474→                      <Skeleton className="h-4 w-28" />
+   475→                      <Skeleton className="h-3 w-40" />
+   476→                    </div>
+   477→                  </div>
+   478→                ))}
+   479→              </div>
+   480→            ) : filteredConversations.length === 0 ? (
+   481→              <div className="flex flex-col items-center justify-center px-4 py-16 text-center">
+   482→                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-muted">
+   483→                  <MessageCircle className="h-7 w-7 text-muted-foreground" />
+   484→                </div>
+   485→                <p className="text-sm text-muted-foreground">
+   486→                  {searchQuery
+   487→                    ? 'مکالمه‌ای یافت نشد'
+   488→                    : 'هنوز مکالمه‌ای ندارید'}
+   489→                </p>
+   490→              </div>
+   491→            ) : (
+   492→              <div className="divide-y">
+   493→                {filteredConversations.map((conv) => {
+   494→                  const other = getOtherParticipant(conv, user?.id);
+   495→                  const isActive = conv.id === activeConversationId;
+   496→
+   497→                  return (
+   498→                    <button
+   499→                      key={conv.id}
+   500→                      className={cn(
+   501→                        'flex w-full items-center gap-3 px-4 py-3 text-start transition-colors hover:bg-muted/50',
+   502→                        isActive && 'border-s-2 border-primary bg-primary-soft/50',
+   503→                      )}
+   504→                      onClick={() => openConversation(conv.id)}
+   505→                    >
+   506→                      <Avatar className="h-10 w-10 shrink-0">
+   507→                        {other.profile?.avatarUrl ? (
+   508→                          <AvatarImage
+   509→                            src={other.profile.avatarUrl}
+   510→                            alt={other.displayName}
+   511→                          />
+   512→                        ) : null}
+   513→                        <AvatarFallback className="text-xs">
+   514→                          {getInitials(other.displayName)}
+   515→                        </AvatarFallback>
+   516→                      </Avatar>
+   517→
+   518→                      <div className="min-w-0 flex-1">
+   519→                        <div className="flex items-center justify-between gap-2">
+   520→                          <span className="truncate text-sm font-semibold">
+   521→                            {other.displayName}
+   522→                          </span>
+   523→                          {conv.lastMessage && (
+   524→                            <span className="shrink-0 text-xs text-muted-foreground">
+   525→                              {relativeTime(conv.lastMessage.createdAt)}
+   526→                            </span>
+   527→                          )}
+   528→                        </div>
+   529→                        <div className="flex items-center justify-between gap-2">
+   530→                          <p className="truncate text-xs text-muted-foreground">
+   531→                            {conv.lastMessage
+   532→                              ? truncate(conv.lastMessage.content, 50)
+   533→                              : 'شروع گفتگو'}
+   534→                          </p>
+   535→                          {conv.unreadCount > 0 && (
+   536→                            <Badge className="shrink-0 h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-xs">
+   537→                              {formatNumber(conv.unreadCount)}
+   538→                            </Badge>
+   539→                          )}
+   540→                        </div>
+   541→                      </div>
+   542→                    </button>
+   543→                  );
+   544→                })}
+   545→              </div>
+   546→            )}
+   547→          </ScrollArea>
+   548→        </div>
+   549→
+   550→        {/* ===================== RIGHT PANEL ==================== */}
+   551→        <div
+   552→          className={cn(
+   553→            'flex h-full flex-1 flex-col',
+   554→            !showChat ? 'hidden md:flex' : 'flex',
+   555→          )}
+   556→        >
+   557→          {activeConversation ? (
+   558→            <>
+   559→              {/* Chat header */}
+   560→              <div className="flex items-center gap-3 border-b px-4 py-3">
+   561→                {/* Back button (mobile only) */}
+   562→                <Button
+   563→                  variant="ghost"
+   564→                  size="icon"
+   565→                  className="md:hidden"
+   566→                  onClick={handleBackToList}
+   567→                >
+   568→                  <ArrowRight className="h-5 w-5" />
+   569→                </Button>
+   570→
+   571→                <Avatar className="h-9 w-9 shrink-0">
+   572→                  {(() => {
+   573→                    const other = getOtherParticipant(
+   574→                      activeConversation,
+   575→                      user?.id,
+   576→                    );
+   577→                    return other.profile?.avatarUrl ? (
+   578→                      <AvatarImage
+   579→                        src={other.profile.avatarUrl}
+   580→                        alt={other.displayName}
+   581→                      />
+   582→                    ) : null;
+   583→                  })()}
+   584→                  <AvatarFallback className="text-xs">
+   585→                    {getInitials(
+   586→                      getOtherParticipant(activeConversation, user?.id)
+   587→                        .displayName,
+   588→                    )}
+   589→                  </AvatarFallback>
+   590→                </Avatar>
+   591→
+   592→                <div className="min-w-0 flex-1">
+   593→                  <p className="truncate text-sm font-semibold">
+   594→                    {getOtherParticipant(activeConversation, user?.id)
+   595→                      .displayName}
+   596→                  </p>
+   597→                  {activeConversation.type === 'PROJECT' && (
+   598→                    <p className="text-xs text-muted-foreground">
+   599→                      مکالمه پروژه‌ای
+   600→                    </p>
+   601→                  )}
+   602→                </div>
+   603→              </div>
+   604→
+   605→              {/* Messages area */}
+   606→              <ScrollArea className="flex-1">
+   607→                <div className="space-y-3 p-4">
+   608→                  {messagesLoading ? (
+   609→                    <div className="flex flex-col items-center gap-3 py-8">
+   610→                      {Array.from({ length: 4 }).map((_, i) => (
+   611→                        <Skeleton
+   612→                          key={i}
+   613→                          className={cn(
+   614→                            'h-12 rounded-2xl',
+   615→                            i % 2 === 0
+   616→                              ? 'ms-auto w-3/5'
+   617→                              : 'me-auto w-2/5',
+   618→                          )}
+   619→                        />
+   620→                      ))}
+   621→                    </div>
+   622→                  ) : messages.length === 0 ? (
+   623→                    <div className="flex items-center justify-center py-16">
+   624→                      <p className="text-sm text-muted-foreground">
+   625→                        هنوز پیامی ارسال نشده. اولین پیام را بفرستید!
+   626→                      </p>
+   627→                    </div>
+   628→                  ) : (
+   629→                    messages.map((msg) => {
+   630→                      const isMine = msg.senderId === user?.id;
+   631→                      const isSystem = msg.type === 'SYSTEM';
+   632→
+   633→                      if (isSystem) {
+   634→                        return (
+   635→                          <div
+   636→                            key={msg.id}
+   637→                            className="flex justify-center"
+   638→                          >
+   639→                            <span className="rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">
+   640→                              {msg.content}
+   641→                            </span>
+   642→                          </div>
+   643→                        );
+   644→                      }
+   645→
+   646→                      return (
+   647→                        <div
+   648→                          key={msg.id}
+   649→                          className={cn(
+   650→                            'flex flex-col',
+   651→                            isMine ? 'items-start' : 'items-end',
+   652→                          )}
+   653→                        >
+   654→                          {/* Sender name for PROJECT conversations */}
+   655→                          {activeConversation.type === 'PROJECT' &&
+   656→                            !isMine && (
+   657→                              <span className="mb-1 text-xs text-muted-foreground">
+   658→                                {(() => {
+   659→                                  const sender = activeConversation.participants.find(
+   660→                                    (p) => p.id === msg.senderId,
+   661→                                  );
+   662→                                  return sender?.displayName || '';
+   663→                                })()}
+   664→                              </span>
+   665→                            )}
+   666→
+   667→                          <div
+   668→                            className={cn(
+   669→                              'rounded-2xl px-4 py-2 max-w-[75%]',
+   670→                              isMine
+   671→                                ? 'bg-primary text-white ms-auto'
+   672→                                : 'bg-muted text-foreground',
+   673→                            )}
+   674→                          >
+   675→                            <p className="whitespace-pre-wrap text-sm leading-7">
+   676→                              {msg.content}
+   677→                            </p>
+   678→                          </div>
+   679→                          <span
+   680→                            className={cn(
+   681→                              'mt-1 text-xs text-muted-foreground',
+   682→                              isMine ? 'ms-1' : 'me-1',
+   683→                            )}
+   684→                          >
+   685→                            {formatMessageTime(msg.createdAt)}
+   686→                          </span>
+   687→                        </div>
+   688→                      );
+   689→                    })
+   690→                  )}
+   691→                  <div ref={messagesEndRef} />
+   692→                </div>
+   693→              </ScrollArea>
+   694→
+   695→              {/* Message input */}
+   696→              <div className="border-t p-3">
+   697→                <div className="flex items-end gap-2">
+   698→                  <textarea
+   699→                    ref={textareaRef}
+   700→                    value={messageInput}
+   701→                    onChange={handleTextareaChange}
+   702→                    onKeyDown={handleKeyDown}
+   703→                    placeholder="پیام خود را بنویسید…"
+   704→                    rows={1}
+   705→                    className={cn(
+   706→                      'flex-1 resize-none rounded-xl border bg-background px-4 py-2.5 text-sm',
+   707→                      'focus:outline-none focus:ring-2 focus:ring-primary/30',
+   708→                      'max-h-[120px] placeholder:text-muted-foreground',
+   709→                    )}
+   710→                  />
+   711→                  <Button
+   712→                    size="icon"
+   713→                    className="h-10 w-10 shrink-0 rounded-xl"
+   714→                    onClick={sendMessage}
+   715→                    disabled={!messageInput.trim() || sendingMessage}
+   716→                  >
+   717→                    <Send className="h-4 w-4" />
+   718→                  </Button>
+   719→                </div>
+   720→                {messageInput.length > 1800 && (
+   721→                  <p className="mt-1 text-xs text-muted-foreground text-start">
+   722→                    {formatNumber(2000 - messageInput.length)} کاراکتر باقی‌مانده
+   723→                  </p>
+   724→                )}
+   725→              </div>
+   726→            </>
+   727→          ) : (
+   728→            /* Empty state when no conversation selected */
+   729→            <div className="flex h-full flex-col items-center justify-center px-4">
+   730→              <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-muted">
+   731→                <MessageCircle className="h-10 w-10 text-muted-foreground" />
+   732→              </div>
+   733→              <h2 className="mb-2 text-lg font-semibold">پیام‌ها</h2>
+   734→              <p className="max-w-xs text-center text-sm text-muted-foreground">
+   735→                یک مکالمه را از لیست سمت راست انتخاب کنید یا مکالمه جدیدی بسازید.
+   736→              </p>
+   737→            </div>
+   738→          )}
+   739→        </div>
+   740→      </div>
+   741→    </div>
+   742→  );
+   743→}
+   744→

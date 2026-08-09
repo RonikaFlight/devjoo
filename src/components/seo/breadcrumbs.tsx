@@ -5,7 +5,7 @@ import { StructuredData } from './structured-data';
 
 export interface BreadcrumbItem {
   label: string;
-  href: string;
+  href?: string;
 }
 
 interface BreadcrumbsProps {
@@ -25,7 +25,7 @@ interface BreadcrumbsProps {
  */
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
   const ld = generateBreadcrumbLd(
-    items.map((item) => ({ name: item.label, href: item.href }))
+    items.filter((item) => item.href).map((item) => ({ name: item.label, href: item.href! }))
   );
 
   return (
@@ -36,11 +36,11 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
           {items.map((item, index) => {
             const isLast = index === items.length - 1;
             return (
-              <li key={`${item.href}-${index}`} className="flex items-center gap-1.5">
+              <li key={`${item.href ?? index}-${index}`} className="flex items-center gap-1.5">
                 {index > 0 && (
                   <ChevronLeft className="h-3.5 w-3.5 shrink-0 text-text-secondary/50" />
                 )}
-                {isLast ? (
+                {isLast || !item.href ? (
                   <span className="text-text-primary font-medium" aria-current="page">
                     {item.label}
                   </span>

@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { db } from '@/lib/db';
 import { generatePageMetadata } from '@/lib/seo/metadata';
 import { generateBreadcrumbLd } from '@/lib/seo/structured-data';
-import { Breadcrumbs } from '@/components/seo/breadcrumbs';
+import { Breadcrumbs, type BreadcrumbItem } from '@/components/seo/breadcrumbs';
 import { ProjectDetailClient } from './project-detail-client';
 import { StructuredData } from '@/components/seo/structured-data';
 
@@ -55,7 +55,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
     notFound();
   }
 
-      const breadcrumbItems = [
+      const breadcrumbItems: BreadcrumbItem[] = [
         { label: 'خانه', href: '/' },
         { label: 'پروژه‌ها', href: '/projects' },
       ];
@@ -68,9 +68,9 @@ export default async function ProjectDetailPage({ params }: PageProps) {
       breadcrumbItems.push({ label: project.title });
 
       const breadcrumbLd = generateBreadcrumbLd(
-        breadcrumbItems.map((item, i) => ({
+        breadcrumbItems.filter((item) => item.href).map((item) => ({
           name: item.label,
-          href: item.href,
+          href: item.href!,
         }))
       );
 

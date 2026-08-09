@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { db } from '@/lib/db';
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return generatePageMetadata({
     title: category.seoTitle || category.name,
-    description: category.seoDescription || category.description,
+    description: category.seoDescription || category.description || '',
     path: `/projects/${slug}`,
   });
 }
@@ -78,16 +79,18 @@ export default async function CategoryProjectsPage({ params }: PageProps) {
         </div>
         <StructuredData data={breadcrumbLd} />
 
-        <CategoryProjectsClient
-          category={{
-            id: category.id,
-            name: category.name,
-            slug: category.slug,
-            description: category.description,
-            projectCount: category._count.projects,
-            skills: category.skills.map((s) => ({ id: s.id, name: s.name, slug: s.slug })),
-          }}
-        />
+        <Suspense>
+          <CategoryProjectsClient
+            category={{
+              id: category.id,
+              name: category.name,
+              slug: category.slug,
+              description: category.description || '',
+              projectCount: category._count.projects,
+              skills: category.skills.map((s) => ({ id: s.id, name: s.name, slug: s.slug })),
+            }}
+          />
+        </Suspense>
       </div>
     </main>
   );

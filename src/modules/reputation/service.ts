@@ -96,9 +96,9 @@ export async function getClientScore(userId: string): Promise<ClientScore> {
   return {
     totalPosted: employerProfile?.totalPosted ?? 0,
     totalHired: employerProfile?.totalHired ?? 0,
-    hireRate: employerProfile?.hireRate,
-    averageResponseTimeHours: employerProfile?.averageResponseTimeHours,
-    responseRate: employerProfile?.responseRate,
+    hireRate: employerProfile?.hireRate ?? null,
+    averageResponseTimeHours: employerProfile?.averageResponseTimeHours ?? null,
+    responseRate: employerProfile?.responseRate ?? null,
     totalReviews: reviews.length,
     averageRating: avgRating,
     totalSpentRial: totalSpentRial || null,
@@ -179,7 +179,7 @@ export async function getFreelancerReputation(userId: string): Promise<Freelance
       ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) * 100) / 100
       : null),
     totalReviews: reviews.length,
-    responseRate: freelancerProfile?.responseRate,
+    responseRate: freelancerProfile?.responseRate ?? null,
     verifications,
     repeatHireRate,
     onTimeDeliveryRate,

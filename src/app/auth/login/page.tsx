@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { LoginClient } from './login-client';
 import { generatePrivatePageMetadata } from '@/lib/seo/metadata';
 import type { Metadata } from 'next';
@@ -8,5 +9,9 @@ export const metadata: Metadata = generatePrivatePageMetadata({
 });
 
 export default function LoginPage() {
-  return <LoginClient />;
+  return (
+    <Suspense>
+      <LoginClient />
+    </Suspense>
+  );
 }

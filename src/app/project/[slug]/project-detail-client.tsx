@@ -1,21 +1,33 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useAuth } from '@/lib/auth-client';
+import { formatBudgetRange, formatNumber, rialToToman, formatCurrencyToman } from '@/lib/utils/currency';
+import { toast } from 'sonner';
 import Link from 'next/link';
 import {
   MapPin,
   Clock,
   Briefcase,
-  Bookmark,
+  Send,
   Building2,
-  User,
+  CheckCircle2,
 } from 'lucide-react';
-import { formatBudgetRange, formatNumber } from '@/lib/utils/currency';
 import {
   WORK_TYPE_LABELS,
   EXPERIENCE_LEVEL_LABELS,
@@ -58,7 +70,20 @@ interface ProjectData {
 }
 
 export function ProjectDetailClient({ project }: { project: ProjectData }) {
-  const [isLoggedIn] = useState(false);
+  const { user, isLoggedIn, isFreelancer, isEmployer, isLoading } = useAuth();
+
+  const [proposalDialogOpen, setProposalDialogOpen] = useState(false);
+  const [hasExistingProposal, setHasExistingProposal] = useState(false);
+  const [checkingProposal, setCheckingProposal] = useState(false);
+
+  // Proposal form state
+  const [coverLetter, setCoverLetter] = useState('');
+  const [priceToman, setPriceToman] = useState('');
+  const [estimatedDuration, setEstimatedDuration] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  // Update proposal count after submission
+  const [proposalCount, setProposalCount] = useState(project.currentProposalCount);
 
   const budget = formatBudgetRange(
     project.budgetMinRial,
@@ -80,6 +105,155 @@ export function ProjectDetailClient({ project }: { project: ProjectData }) {
     .map((w) => w[0])
     .slice(0, 2)
     .join('');
+
+  // Check if freelancer already submitted a proposal
+  const checkExistingProposal = useCallback(async () => {
+    if (!isLoggedIn || !isFreelancer) return;
+    setCheckingProposal(true);
+    try {
+      const res = await fetch(`/api/v1/me/proposals?projectId=${project.id}`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.data && json.data.length > 0) {
+          setHasExistingProposal(true);
+        }
+      }
+    } catch {
+      // silent
+    } finally {
+      setCheckingProposal(false);
+    }
+  }, [isLoggedIn, isFreelancer, project.id]);
+
+  useEffect(() => {
+    checkExistingProposal();
+  }, [checkExistingProposal]);
+
+  const isOwner = isLoggedIn && isEmployer && user?.id === project.employer.id;
+
+  const handleOpenProposalDialog = () => {
+    setCoverLetter('');
+    setPriceToman('');
+    setEstimatedDuration('');
+    setProposalDialogOpen(true);
+  };
+
+  const handleSubmitProposal = async () => {
+    // Validation
+    if (coverLetter.trim().length < 50) {
+      toast.error('متن پیشنهاد باید حداقل ۵۰ کاراکتر باشد.');
+      return;
+    }
+    if (coverLetter.length > 5000) {
+      toast.error('متن پیشنهاد نمی‌تواند بیشتر از ۵۰۰۰ کاراکتر باشد.');
+      return;
+    }
+
+    const priceRialNum = Number(priceToman) * 10;
+    if (!priceToman || priceRialNum < 100000) {
+      toast.error('قیمت پیشنهادی باید حداقل ۱۰,۰۰۰ تومان باشد.');
+      return;
+    }
+
+    if (!estimatedDuration.trim()) {
+      toast.error('مدت زمان تخمینی الزامی است.');
+      return;
+    }
+    if (estimatedDuration.length > 100) {
+      toast.error('مدت زمان تخمینی نمی‌تواند بیشتر از ۱۰۰ کاراکتر باشد.');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const res = await fetch(`/api/v1/projects/${project.slug}/proposals`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          priceRial: priceRialNum,
+          estimatedDuration: estimatedDuration.trim(),
+          coverLetter: coverLetter.trim(),
+        }),
+      });
+
+      if (!res.ok) {
+        const json = await res.json().catch(() => null);
+        toast.error(json?.error?.message || 'خطا در ارسال پیشنهاد.');
+        return;
+      }
+
+      toast.success('پیشنهاد شما با موفقیت ارسال شد.');
+      setProposalDialogOpen(false);
+      setHasExistingProposal(true);
+      setProposalCount((c) => c + 1);
+    } catch {
+      toast.error('خطا در ارتباط با سرور.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // Determine button state
+  const renderActionButton = () => {
+    if (isLoading) {
+      return (
+        <Button className="w-full" size="lg" disabled>
+          <Briefcase className="ml-2 h-4 w-4" />
+          در حال بارگذاری...
+        </Button>
+      );
+    }
+
+    if (isOwner) {
+      return (
+        <Button className="w-full" size="lg" asChild>
+          <Link href={`/project/${project.slug}/proposals`}>
+            <Briefcase className="ml-2 h-4 w-4" />
+            پیشنهادهای دریافت شده
+          </Link>
+        </Button>
+      );
+    }
+
+    if (!isLoggedIn) {
+      return (
+        <Button className="w-full" size="lg" variant="outline" asChild>
+          <Link href="/auth/login">
+            نیاز به ورود
+          </Link>
+        </Button>
+      );
+    }
+
+    if (!isFreelancer) {
+      return (
+        <Button className="w-full" size="lg" disabled>
+          <Briefcase className="ml-2 h-4 w-4" />
+          فقط فریلنسرها می‌توانند پیشنهاد ارسال کنند
+        </Button>
+      );
+    }
+
+    if (hasExistingProposal) {
+      return (
+        <div className="flex w-full items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700 dark:border-green-800 dark:bg-green-950 dark:text-green-400">
+          <CheckCircle2 className="h-4 w-4 shrink-0" />
+          شما قبلاً پیشنهاد ارسال کرده‌اید
+        </div>
+      );
+    }
+
+    return (
+      <Button
+        className="w-full"
+        size="lg"
+        onClick={handleOpenProposalDialog}
+      >
+        <Send className="ml-2 h-4 w-4" />
+        ارسال پیشنهاد
+      </Button>
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -182,7 +356,7 @@ export function ProjectDetailClient({ project }: { project: ProjectData }) {
                   <span>پیشنهادها</span>
                 </div>
                 <span className="text-sm font-medium">
-                  {formatNumber(project.currentProposalCount)}/
+                  {formatNumber(proposalCount)}/
                   {formatNumber(project.proposalLimit)} پیشنهاد
                 </span>
               </div>
@@ -232,10 +406,7 @@ export function ProjectDetailClient({ project }: { project: ProjectData }) {
 
               <Separator />
 
-              <Button className="w-full" size="lg" disabled={!isLoggedIn}>
-                <Bookmark className="ml-2 h-4 w-4" />
-                {isLoggedIn ? 'ارسال پیشنهاد' : 'نیاز به ورود'}
-              </Button>
+              {renderActionButton()}
             </CardContent>
           </Card>
 
@@ -281,6 +452,86 @@ export function ProjectDetailClient({ project }: { project: ProjectData }) {
           </Card>
         </div>
       </div>
+
+      {/* Proposal Submission Dialog */}
+      <Dialog open={proposalDialogOpen} onOpenChange={setProposalDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>ارسال پیشنهاد</DialogTitle>
+            <DialogDescription>
+              پیشنهاد خود را برای پروژه «{project.title}» ارسال کنید.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-2">
+            <div className="grid gap-2">
+              <Label htmlFor="coverLetter">
+                متن پیشنهاد <span className="text-destructive">*</span>
+              </Label>
+              <Textarea
+                id="coverLetter"
+                value={coverLetter}
+                onChange={(e) => setCoverLetter(e.target.value)}
+                placeholder="توضیح دهید که چرا شما بهترین گزینه برای این پروژه هستید..."
+                rows={6}
+                maxLength={5000}
+              />
+              <p className="text-xs text-muted-foreground">
+                حداقل ۵۰ کاراکتر — {coverLetter.length}/۵۰۰۰
+              </p>
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="priceToman">
+                قیمت پیشنهادی (تومان) <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="priceToman"
+                type="number"
+                min={10000}
+                value={priceToman}
+                onChange={(e) => setPriceToman(e.target.value)}
+                placeholder="مثلاً ۵۰۰۰۰۰"
+                dir="ltr"
+              />
+              {priceToman && Number(priceToman) * 10 >= 100000 && (
+                <p className="text-xs text-muted-foreground">
+                  معادل {formatNumber(Number(priceToman) * 10)} ریال
+                </p>
+              )}
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="duration">
+                مدت زمان تخمینی <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="duration"
+                value={estimatedDuration}
+                onChange={(e) => setEstimatedDuration(e.target.value)}
+                placeholder="مثلاً: ۲ هفته، ۱ ماه"
+                maxLength={100}
+              />
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <Button
+                onClick={handleSubmitProposal}
+                disabled={submitting}
+                className="flex-1"
+              >
+                {submitting ? 'در حال ارسال...' : 'ارسال پیشنهاد'}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setProposalDialogOpen(false)}
+                disabled={submitting}
+              >
+                انصراف
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -19,7 +19,7 @@ export type InvitationCreateInput = z.infer<typeof invitationCreateSchema>;
  */
 export const invitationRespondSchema = z.object({
   status: z.enum(['ACCEPTED', 'DECLINED'], {
-    errorMap: () => ({ message: 'وضعیت نامعتبر است. فقط ACCEPTED یا DECLINED مجاز است.' }),
+    message: 'وضعیت نامعتبر است. فقط ACCEPTED یا DECLINED مجاز است.',
   }),
 });
 

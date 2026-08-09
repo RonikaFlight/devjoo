@@ -5,7 +5,7 @@ import { z } from 'zod';
  */
 export const verificationRequestSchema = z.object({
   type: z.enum(['PHONE', 'EMAIL', 'IDENTITY', 'COMPANY', 'PAYMENT'], {
-    errorMap: () => ({ message: 'نوع تاییدیه نامعتبر است' }),
+    message: 'نوع تاییدیه نامعتبر است',
   }),
   evidence: z
     .string()
@@ -20,7 +20,7 @@ export type VerificationRequestInput = z.infer<typeof verificationRequestSchema>
  */
 export const verificationUpdateSchema = z.object({
   status: z.enum(['APPROVED', 'REJECTED'], {
-    errorMap: () => ({ message: 'وضعیت نامعتبر است' }),
+    message: 'وضعیت نامعتبر است',
   }),
 });
 

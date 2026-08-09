@@ -41,6 +41,7 @@ model User {
   serviceOrders  ServiceOrder[]     @relation("EmployerServiceOrders")
   contractsAsFreelancer Contract[] @relation("FreelancerContracts")
   contractsAsEmployer   Contract[] @relation("EmployerContracts")
+  receivedInvitations ProjectInvitation[] @relation("FreelancerInvitations")
 
   @@index([email])
   @@index([phone])
@@ -289,6 +290,7 @@ model Project {
   matchScores MatchScore[]
   conversations Conversation[]
   contract    Contract?
+  invitations  ProjectInvitation[]
 
   @@index([employerId, createdAt])
   @@index([status, createdAt])
@@ -540,6 +542,9 @@ model ProjectInvitation {
   respondedAt  DateTime?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  project    Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  freelancer User        @relation("FreelancerInvitations", fields: [freelancerId], references: [id])
 
   @@unique([projectId, freelancerId])
   @@index([freelancerId, status])

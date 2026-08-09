@@ -1,0 +1,458 @@
+     1→# Project
+     2→DevJoo
+     3→
+     4→# Current Phase
+     5→Phase 12 — Production Hardening (COMPLETE)
+     6→
+     7→# Last Completed Task
+     8→Phase 12 Production Hardening: Security headers, rate limiting, structured logging, request IDs, input sanitization, CORS, error pages, a11y, test suite (88 tests), CI pipeline, deployment docs, ADR-022
+     9→
+    10→# Currently Working On
+    11→None — Phase 12 complete, all planned phases done
+    12→
+    13→# Completed Features
+    14→- Phase 0 complete (see below)
+    15→- Phase 1 complete: SEO infrastructure, structured data, sitemaps, Zod validators
+    16→- Phase 2 complete: Full authentication system (see below)
+    17→- Phase 3 complete: Marketplace core — seed data, categories/skills/projects/proposals APIs, project pages, dashboard skeletons (see below)
+    18→- Phase 4 complete: SEO landing pages — category/skill/hire pages, internal linking, blog foundation (see below)
+    19→- Phase 5 complete: Trust — portfolio, reviews, verification, client score, reputation (see below)
+    20→- Phase 6 complete: Smart features — match engine, smart feed, invitations, availability, quality score, duplicate detection, hiring probability (see below)
+    21→- Phase 7 complete: Communication — messaging, notifications, dispatcher, SSE stream, job queues (see below)
+    22→- Phase 8 complete: AI — provider abstraction, project builder, proposal assistant (see below)
+    23→- Phase 9 complete: Analytics — proposal analytics, project analytics, employer dashboard, price radar (see below)
+    24→- Phase 10 complete: Advanced marketplace — contracts, milestones, service marketplace, teams, paid trial, payment abstraction (see below)
+    25→- Phase 11 complete: Admin — dashboard, user management, project moderation, taxonomy, verifications, SEO/content, feature flags, audit logging, ADR-021 (see below)
+    26→- Phase 12 complete: Production Hardening — security headers, rate limiting, structured logging, request IDs, input sanitization, CORS, error pages, a11y, test suite, CI pipeline, deployment docs (see below)
+    27→
+    28→## Phase 0 Completed
+    29→- All 10 project memory files
+    30→- Prisma schema with 30+ models
+    31→- Database synced and Prisma client generated
+    32→- TypeScript enum constants with Persian labels
+    33→- Site configuration, feature flags
+    34→- Currency formatting, Persian normalization utilities
+    35→- Vazirmatn font, purple design tokens, dark mode, RTL
+    36→- Header, Footer, Homepage with hero/search/skills/differentiators/CTA
+    37→
+    38→## Phase 1 Completed
+    39→- SEO metadata helper: generatePageMetadata() with full OG, Twitter, robots
+    40→- SEO filter page helper: generateFilterPageMetadata() (noindex, follow)
+    41→- SEO private page helper: generatePrivatePageMetadata() (noindex, nofollow)
+    42→- Canonical URL helper: buildCanonicalUrl()
+    43→- 6 JSON-LD structured data generators
+    44→- StructuredData React component, Breadcrumb component, SeoPage wrapper
+    45→- Dynamic robots.txt, sitemap-index + 3 dynamic sub-sitemaps
+    46→- Homepage integrated with Organization, WebSite, ItemList structured data
+    47→- Zod validators: auth, profile, project, proposal, taxonomy, common
+    48→
+    49→## Phase 2 Completed
+    50→- Session management: JWT (jose HS256) + DB session, HttpOnly cookies, 30-day expiry
+    51→- Edge-safe session verification (session-edge.ts for middleware)
+    52→- Password hashing (bcryptjs, 12 rounds)
+    53→- Mobile OTP: request (rate-limited 2/min), verify (5 attempts, 2-min expiry), resend
+    54→- Dev mode OTP bypass (code: 12345)
+    55→- Google OAuth: code exchange, user creation/linking, session creation
+    56→- GitHub OAuth: code exchange, user creation/linking, session creation
+    57→- Auth API routes: POST otp/request, POST otp/verify, POST otp/resend, POST oauth/google, POST oauth/github, POST register, GET me, POST logout, POST password/set, POST password/change
+    58→- Auth middleware: JWT verification for protected API/page routes, public route whitelist
+    59→- Login page: phone OTP + email/password tabs, OAuth buttons, RTL design
+    60→- Role selection page: freelancer/employer choice + display name input
+    61→- Dashboard skeletons: /dashboard (redirect), /dashboard/freelancer, /dashboard/employer
+    62→- Helper functions: requireAuth, requireRole, getAuthUser, isFreelancer, isEmployer, isAdmin, assignRole, findOrCreateUserByPhone
+    63→
+    64→## Phase 3 Completed
+    65→- Seed data: 10 categories, 75 skills, 93 synonyms (Persian tech market)
+    66→- Module-based service layer: projects/service.ts, proposals/service.ts
+    67→- Categories API: GET /api/v1/categories, GET /api/v1/categories/[slug]
+    68→- Skills API: GET /api/v1/skills (with search & category filter), GET /api/v1/skills/[slug]
+    69→- Projects API: POST (create with slug generation), GET (list with filters/sort/pagination), GET [slug] (detail), PATCH [slug] (update draft), POST [slug]/publish (state machine)
+    70→- Proposal API: POST (submit, max 10 limit), GET (employer list), PATCH [id] (status update), GET /me/proposals (freelancer list)
+    71→- Saved projects: POST /api/v1/projects/[slug]/save (bookmark toggle)
+    72→- ProjectCard shared component (reusable project card)
+    73→- /projects page with category filter bar and pagination
+    74→- /project/[slug] detail page with SEO breadcrumbs
+    75→- Dashboard skeletons: /dashboard (role-based redirect), /dashboard/freelancer, /dashboard/employer
+    76→
+    77→## Phase 4 Completed
+    78→- /categories index page: grid with icons, skill counts, project counts, SEO breadcrumbs
+    79→- /projects/[slug] category pages: projects filtered by category, skill sub-filter, search, pagination, seoTitle/seoDescription metadata
+    80→- /projects/skills/[slug] skill pages: projects by skill, related skills, hire CTA, synonyms, generateStaticParams
+    81→- /hire landing page: hire-by-skill links, category grid, employer CTA
+    82→- /hire/[role] role pages: 15 SEO-optimized pages (react-developer, nextjs-developer, seo-specialist, etc.)
+    83→- /blog foundation: empty state with internal links
+    84→- Internal linking: project detail → skill/category pages, footer categories + skill pages, homepage skill links
+    85→- Sitemap updated: all category, skill, hire, and static pages
+    86→- Breadcrumb key fix (unique keys)
+    87→
+    88→## Phase 5 Completed
+    89→- Portfolio service: CRUD (max 20 items), reorder, ownership checks
+    90→- Portfolio API: GET/POST /api/v1/portfolio, PATCH/DELETE /api/v1/portfolio/[id], POST /api/v1/portfolio/reorder
+    91→- Portfolio frontend: /dashboard/freelancer/portfolio with create/edit/delete dialog, image preview, empty state, grid layout
+    92→- Review service: create (employer↔freelancer for completed projects), list received, stats (distribution + category averages)
+    93→- Reviews API: GET/POST /api/v1/reviews, GET /api/v1/reviews/stats
+    94→- Verification service: request (freelancer/employer), list, summary badges, admin status update
+    95→- Verification API: GET/POST /api/v1/verification
+    96→- Client Score: getClientScore (employer metrics), computeClientScore (0-100 weighted), refreshEmployerMetrics
+    97→- Freelancer Reputation: getFreelancerReputation, computeReputationScore (0-100 weighted), refreshFreelancerMetrics
+    98→- Reputation API: GET /api/v1/reputation?type=client|freelancer
+    99→- Zod validators: portfolio.ts, review.ts, verification.ts
+   100→- New enums: VERIFICATION_TYPE_LABELS, VERIFICATION_STATUS_LABELS, COMPANY_SIZE, PROFICIENCY_LEVEL, REVIEW_CATEGORIES
+   101→- ADR-015: On-read reputation computation
+   102→
+   103→## Phase 6 Completed
+   104→- Match Engine: 5-signal scoring (skill overlap 40, budget fit 20, availability 15, experience 10, reputation 15)
+   105→- Match API: GET /api/v1/projects/[slug]/matches (employer reverse hiring)
+   106→- computeAndStoreMatches() for persisting MatchScore records
+   107→- Smart Feed: personalized project ranking with skill overlap + quality + recency, excludes already-proposed
+   108→- Feed API: GET /api/v1/feed (freelancer-only, supports all project filters)
+   109→- Project Invitations: create (employer), respond (freelancer), list project, list freelancer, duplicate prevention
+   110→- Invitation API: GET/POST /api/v1/projects/[slug]/invitations, GET/PATCH /api/v1/me/invitations
+   111→- Availability System: GET/PATCH /api/v1/me/availability (freelancer-only)
+   112→- Project Quality Score: computeProjectQualityScore() (description, skills, budget, category, deadline, title), auto-computed on publish
+   113→- Duplicate Detection: detectDuplicateProject() (bigram similarity, Persian-normalized, 7-day window)
+   114→- Hiring Probability: estimateHiringProbability() (match 35, competition 20, reputation 20, portfolio 10, verifications 5, client 10)
+   115→- Zod validators: invitation.ts, availability.ts
+   116→- INVITATION_STATUS_LABELS: Persian labels
+   117→- ADR-016: On-demand match computation
+   118→
+   119→## Phase 7 Completed
+   120→- Messaging: Conversation, ConversationMember, Message Prisma models
+   121→- Messaging service: findOrCreateConversation, listConversations (unread count + last message), getConversation, sendMessage, listMessages (auto mark-read), getUnreadMessageCount
+   122→- Messaging API: GET/POST /api/v1/conversations, GET /api/v1/conversations/[id], GET/POST /api/v1/conversations/[id]/messages, GET /api/v1/me/messages/unread
+   123→- Notification service: create, createBatch, list, markRead (single/all), getUnreadCount, getPreferences, initializeDefaults, updatePreferences (batch upsert)
+   124→- Notification API: GET/PATCH /api/v1/me/notifications, GET /api/v1/me/notifications/unread, GET/PUT /api/v1/me/notifications/preferences
+   125→- SSE endpoint: GET /api/v1/me/notifications/stream (3s polling, real-time notification push)
+   126→- Notification dispatcher: 8 event handlers (project published, proposal received/status, invitation received/responded, review received, message received, project status changed)
+   127→- Dispatcher integrated into: projects/service.ts, proposals/service.ts, invitations/service.ts, reviews/service.ts, messaging/service.ts
+   128→- Instant project alerts: on publish, notifies freelancers with matching skills
+   129→- Email job queue: in-process enqueueEmail/processEmailQueue (console log in dev)
+   130→- SMS job queue: in-process enqueueSms/processSmsQueue (console log in dev)
+   131→- New enums: CONVERSATION_TYPE, MESSAGE_TYPE, NOTIFICATION_TYPE, NOTIFICATION_CHANNEL + Persian labels
+   132→- Zod validators: conversation.ts, message.ts, notification.ts
+   133→- ADR-017: Event-driven notification dispatch
+   134→
+   135→## Phase 8 Completed
+   136→- AI Provider Abstraction: AIProvider interface, OpenAIProvider (supports OpenAI + compatible APIs via AI_BASE_URL)
+   137→- AI Provider factory: getAIProvider() with env config (AI_API_KEY, AI_BASE_URL, AI_MODEL, AI_MAX_TOKENS, AI_TEMPERATURE)
+   138→- parseAIJSON<T>(): robust JSON parser handling markdown-wrapped responses
+   139→- AIError class: typed error codes (CONFIG_MISSING, PROVIDER_ERROR, EMPTY_RESPONSE, PARSE_ERROR, INVALID_OUTPUT)
+   140→- AI Project Builder: employer brief → structured project (Persian title, 3+ paragraph description, skill slugs, budget IRR, duration, experience level)
+   141→- AI Proposal Assistant: project + freelancer profile → cover letter (2-4 paragraphs), suggested price, duration, 3-5 key points
+   142→- Zod validators: ai.ts (buildProjectSchema, generateProposalSchema)
+   143→- POST /api/v1/ai/build-project (employer-only, feature-flag + AI config gated)
+   144→- POST /api/v1/ai/generate-proposal (freelancer-only, security: can only generate for self)
+   145→- ADR-018: Provider-agnostic AI with structured output parsing
+   146→
+   147→## Phase 12 Completed
+   148→- Security headers: X-Frame-Options (DENY), CSP frame-ancestors, X-Content-Type-Options, X-XSS-Protection, Referrer-Policy, Permissions-Policy, HSTS (production)
+   149→- CORS: allowlist-based (localhost dev, devjoo.ir production), OPTIONS preflight handling
+   150→- Rate limiter: in-memory sliding window, 11 presets, applied to OTP/verify/password/AI endpoints
+   151→- Request ID: 24-char timestamp+random, x-request-id header propagation
+   152→- Input sanitization: stripHtml, escapeHtml, sanitizeForUrl, stripControlChars
+   153→- Log sanitization: deep-redacts 17 sensitive field patterns
+   154→- Structured logger: JSON output, 5 levels, child context, LOG_LEVEL env var
+   155→- API response helpers: apiSuccess, apiError, unauthorized, forbidden, rateLimited, withHandler
+   156→- Error pages: custom 404 (Persian), global-error (digest + retry)
+   157→- Accessibility: skip-nav, aria-labels, aria-hidden icons, main#main-content
+   158→- Test suite: 88 tests (Vitest) — security, logger, currency, persian-normalize
+   159→- CI pipeline: GitHub Actions (lint, typecheck, test, build)
+   160→- Deployment docs: DEPLOY.md (Docker, Nginx, PostgreSQL, env vars, monitoring, security checklist)
+   161→- ADR-022: Defense-in-depth security infrastructure
+   162→
+   163→## Phase 11 Completed
+   164→- Admin dashboard: 7 stat cards (users, projects, pending review, verifications, proposals, contracts, services)
+   165→- User management: list with filters (search, role, status), view detail, activate/deactivate, add/remove roles
+   166→- Project moderation: list with filters (status, category, search), approve/reject/pause, featured toggle
+   167→- Category management: list (ordered), create, update, delete (dependency check on skills)
+   168→- Skill management: list (with category filter), create, update, delete, synonym CRUD
+   169→- Verification management: list pending (default), approve/reject for freelancer & employer
+   170→- Blog management: post CRUD (with publish/unpublish), blog category CRUD
+   171→- Redirect management: list, create, update, delete (301/302)
+   172→- Feature flag display: read-only list of all flags with env key and Persian description
+   173→- Audit logging: non-blocking writer for all admin mutations, filterable log viewer (by actor, action, resource, date)
+   174→- Zod validators: admin.ts (10 schemas)
+   175→- Admin enums: ADMIN_ACTION (21 actions), ADMIN_RESOURCE_TYPE (9 types) with Persian labels
+   176→- 20 API endpoints: stats (1), users (3), projects (2), categories (3), skills (4), verifications (2), blog/posts (3), blog/categories (3), redirects (3), feature-flags (1), audit-log (1)
+   177→- 7 admin pages: dashboard, users, projects, taxonomy, verifications, seo, settings
+   178→- Admin layout: sidebar with 7 nav items, mobile-responsive, role guard (redirect non-admins to /dashboard)
+   179→- Middleware: /admin/ routes added to protected page routes
+   180→- ADR-021: Role-based admin access via requireRole('ADMIN')
+   181→
+   182→## Phase 10 Completed
+   183→- Contracts: create from accepted proposal, status state machine (DRAFT→ACTIVE→IN_PROGRESS→COMPLETED, with CANCELLED/DISPUTED), project status sync
+   184→- Milestones: add to contract, status state machine (PENDING→IN_PROGRESS→SUBMITTED→APPROVED/REJECTED), role-based authorization
+   185→- Service Marketplace: freelancer CRUD with slug, category+skill linking, public filtered listing, order state machine
+   186→- Service Orders: PENDING→ACCEPTED→IN_PROGRESS→DELIVERED→COMPLETED (with REVISION_REQUESTED/CANCELLED/REFUNDED), role-based transitions
+   187→- Team Mode: create with auto-leader, member management (add/remove/role change), limits (5 teams/user, 20 members/team)
+   188→- Paid Trial: optional trialPriceRial+trialDays on ServiceListing, isTrial flag on order creation
+   189→- Payment Abstraction: PaymentProvider interface, InternalPaymentProvider (dev), provider factory, transaction tracking
+   190→- Zod validators: contract.ts, service.ts, team.ts, payment.ts
+   191→- 18 API endpoints: contracts (5), services (8), teams (5), payments (3)
+   192→- ADR-020: Provider-agnostic payment abstraction
+   193→
+   194→## Phase 9 Completed
+   195→- Proposal Analytics: win rate, status distribution, by category (win rate + avg price), by month (trend), velocity (week/month/year)
+   196→- Project Analytics: status distribution, time-to-hire (publish → accepted), category trends, monthly breakdown, avg quality score
+   197→- Employer Metrics Dashboard: hiring funnel (5 stages), spend by category/month, response time (avg/median + buckets), key ratios
+   198→- Price Radar: market rates by category (P25/P75/P90), by skill (top 50), freelancer rates by experience level, proposal vs budget comparison
+   199→- Zod validators: analytics.ts (date range filters, price radar category filter)
+   200→- 4 API endpoints: GET /me/analytics/proposals, GET /me/analytics/projects, GET /me/analytics/employer, GET /analytics/price-radar
+   201→- ADR-019: On-demand analytics computation
+   202→
+   203→# Partially Completed Features
+   204→- None
+   205→
+   206→# Pending Features
+   207→- Phase 8-12: See TODO.md
+   208→
+   209→# Important Architecture Decisions
+   210→- ADR-001 through ADR-011 (see DECISIONS.md)
+   211→- ADR-012: Edge-safe session split (see DECISIONS.md)
+   212→- ADR-013: Module-based service layer architecture (see DECISIONS.md)
+   213→- ADR-014: URL structure for SEO landing pages (see DECISIONS.md)
+   214→- ADR-015: On-read reputation computation (see DECISIONS.md)
+   215→- ADR-016: On-demand match computation (see DECISIONS.md)
+   216→- ADR-017: Event-driven notification dispatch (see DECISIONS.md)
+   217→- ADR-018: Provider-agnostic AI with structured output parsing (see DECISIONS.md)
+   218→- ADR-019: On-demand analytics computation (see DECISIONS.md)
+   219→- ADR-020: Provider-agnostic payment abstraction (see DECISIONS.md)
+   220→- ADR-021: Role-based admin access (see DECISIONS.md)
+   221→- ADR-022: Defense-in-depth security infrastructure (see DECISIONS.md)
+   222→
+   223→# Database Status
+   224→- Prisma schema: 42 models defined (no new models in Phase 11 — used existing AuditLog, BlogPost, BlogCategory, Redirect)
+   225→- SQLite database: synced
+   226→- Seed data: 10 categories, 75 skills, 93 synonyms seeded
+   227→- Test users created via API: 3 OTP-verified users
+   228→
+   229→# API Status
+   230→- POST /api/v1/auth/otp/request — working
+   231→- POST /api/v1/auth/otp/verify — working
+   232→- POST /api/v1/auth/otp/resend — working
+   233→- POST /api/v1/auth/oauth/google — working (requires credentials)
+   234→- POST /api/v1/auth/oauth/github — working (requires credentials)
+   235→- POST /api/v1/auth/register — working
+   236→- GET /api/v1/auth/me — working
+   237→- POST /api/v1/auth/logout — working
+   238→- POST /api/v1/auth/password/set — working
+   239→- POST /api/v1/auth/password/change — working
+   240→- GET /api/v1/categories — working
+   241→- GET /api/v1/categories/[slug] — working
+   242→- GET /api/v1/skills — working
+   243→- GET /api/v1/skills/[slug] — working
+   244→- POST /api/v1/projects — working
+   245→- GET /api/v1/projects — working
+   246→- GET /api/v1/projects/[slug] — working
+   247→- PATCH /api/v1/projects/[slug] — working
+   248→- POST /api/v1/projects/[slug]/publish — working (auto-computes qualityScore + dispatches notifications)
+   249→- POST /api/v1/projects/[slug]/proposals — working (dispatches notification to employer)
+   250→- GET /api/v1/projects/[slug]/proposals — working
+   251→- PATCH /api/v1/proposals/[id] — working (dispatches notification to freelancer)
+   252→- GET /api/v1/me/proposals — working
+   253→- POST /api/v1/projects/[slug]/save — working
+   254→- GET /api/v1/reviews — working (dispatches notification to reviewee)
+   255→- POST /api/v1/reviews — working
+   256→- GET /api/v1/reviews/stats — working
+   257→- GET /api/v1/portfolio — working (auth required)
+   258→- POST /api/v1/portfolio — working (auth required)
+   259→- PATCH /api/v1/portfolio/[id] — working (auth required)
+   260→- DELETE /api/v1/portfolio/[id] — working (auth required)
+   261→- POST /api/v1/portfolio/reorder — working (auth required)
+   262→- GET /api/v1/verification — working (auth required)
+   263→- POST /api/v1/verification — working (auth required)
+   264→- GET /api/v1/reputation — working
+   265→- GET /api/v1/feed — working (auth required, freelancer only)
+   266→- GET /api/v1/projects/[slug]/matches — working (auth required, employer only)
+   267→- POST /api/v1/projects/[slug]/invitations — working (auth required, employer only, dispatches notification)
+   268→- GET /api/v1/projects/[slug]/invitations — working (auth required, employer only)
+   269→- GET /api/v1/me/invitations — working (auth required)
+   270→- PATCH /api/v1/me/invitations — working (auth required, dispatches notification)
+   271→- GET /api/v1/me/availability — working (auth required, freelancer only)
+   272→- PATCH /api/v1/me/availability — working (auth required, freelancer only)
+   273→- GET /api/v1/conversations — working (auth required)
+   274→- POST /api/v1/conversations — working (auth required)
+   275→- GET /api/v1/conversations/[id] — working (auth required)
+   276→- GET /api/v1/conversations/[id]/messages — working (auth required)
+   277→- POST /api/v1/conversations/[id]/messages — working (auth required, dispatches notification)
+   278→- GET /api/v1/me/messages/unread — working (auth required)
+   279→- GET /api/v1/me/notifications — working (auth required)
+   280→- PATCH /api/v1/me/notifications — working (auth required)
+   281→- GET /api/v1/me/notifications/unread — working (auth required)
+   282→- GET /api/v1/me/notifications/preferences — working (auth required)
+   283→- PUT /api/v1/me/notifications/preferences — working (auth required)
+   284→- GET /api/v1/me/notifications/stream — working (auth required, SSE)
+   285→- POST /api/v1/ai/build-project — working (auth required, employer only, feature-flag + AI config gated)
+   286→- POST /api/v1/ai/generate-proposal — working (auth required, freelancer only, feature-flag + AI config gated)
+   287→- GET /api/v1/me/analytics/proposals — working (auth required, role-adaptive)
+   288→- GET /api/v1/me/analytics/projects — working (auth required, employer)
+   289→- GET /api/v1/me/analytics/employer — working (auth required, employer)
+   290→- GET /api/v1/analytics/price-radar — working (public, optional category filter)
+   291→- POST /api/v1/contracts — working (auth required, employer only)
+   292→- GET /api/v1/contracts/me — working (auth required, role-adaptive)
+   293→- GET /api/v1/contracts/[id] — working (auth required)
+   294→- PATCH /api/v1/contracts/[id] — working (auth required, parties only)
+   295→- POST /api/v1/contracts/[id]/milestones — working (auth required, parties only)
+   296→- PATCH /api/v1/contracts/[id]/milestones/[milestoneId] — working (auth required, role-based)
+   297→- GET /api/v1/services — working (public, filtered)
+   298→- GET /api/v1/services/[slug] — working (public)
+   299→- GET/POST /api/v1/services/me — working (auth required, freelancer only)
+   300→- PATCH /api/v1/services/me/[serviceId] — working (auth required, owner only)
+   301→- POST /api/v1/services/orders — working (auth required, employer only)
+   302→- GET /api/v1/services/me/orders — working (auth required)
+   303→- PATCH /api/v1/services/orders/[id] — working (auth required, parties only)
+   304→- GET /api/v1/teams — working (public, searchable)
+   305→- GET/POST /api/v1/teams/me — working (auth required, freelancer only)
+   306→- GET/PATCH /api/v1/teams/[id] — working (auth required for PATCH, leader only)
+   307→- POST /api/v1/teams/[id]/members — working (auth required, leader only)
+   308→- PATCH/DELETE /api/v1/teams/[id]/members/[memberId] — working (auth required, leader only)
+   309→- POST /api/v1/payments — working (auth required, employer only)
+   310→- GET /api/v1/payments/me — working (auth required)
+   311→- GET /api/v1/payments/[id] — working (auth required, parties only)
+   312→- GET /api/v1/admin/stats — working (auth required, admin only)
+   313→- GET /api/v1/admin/users — working (auth required, admin only)
+   314→- GET/PATCH /api/v1/admin/users/[id] — working (auth required, admin only)
+   315→- GET /api/v1/admin/projects — working (auth required, admin only)
+   316→- PATCH /api/v1/admin/projects/[id] — working (auth required, admin only)
+   317→- GET/POST /api/v1/admin/categories — working (auth required, admin only)
+   318→- PATCH/DELETE /api/v1/admin/categories/[id] — working (auth required, admin only)
+   319→- GET/POST /api/v1/admin/skills — working (auth required, admin only)
+   320→- PATCH/DELETE /api/v1/admin/skills/[id] — working (auth required, admin only)
+   321→- GET/POST /api/v1/admin/skills/synonyms — working (auth required, admin only)
+   322→- GET /api/v1/admin/verifications — working (auth required, admin only)
+   323→- PATCH /api/v1/admin/verifications/[id] — working (auth required, admin only)
+   324→- GET/POST /api/v1/admin/blog/posts — working (auth required, admin only)
+   325→- PATCH/DELETE /api/v1/admin/blog/posts/[id] — working (auth required, admin only)
+   326→- GET/POST /api/v1/admin/blog/categories — working (auth required, admin only)
+   327→- PATCH/DELETE /api/v1/admin/blog/categories/[id] — working (auth required, admin only)
+   328→- GET/POST /api/v1/admin/redirects — working (auth required, admin only)
+   329→- PATCH/DELETE /api/v1/admin/redirects/[id] — working (auth required, admin only)
+   330→- GET /api/v1/admin/feature-flags — working (auth required, admin only)
+   331→- GET /api/v1/admin/audit-log — working (auth required, admin only)
+   332→
+   333→# Frontend Status
+   334→- Next.js 16 App Router, RTL, Vazirmatn, purple design, dark mode
+   335→- Header + Footer + Homepage
+   336→- Breadcrumb component, SeoPage template
+   337→- Login page (/auth/login) with OTP + OAuth
+   338→- Role selection page (/auth/role-select)
+   339→- Dashboard pages (/dashboard, /dashboard/freelancer, /dashboard/employer)
+   340→- ProjectCard shared component
+   341→- /projects page with category filters and pagination
+   342→- /project/[slug] detail page with SEO breadcrumbs + internal links
+   343→- /categories index page with category grid
+   344→- /projects/[slug] category project pages with skill filter
+   345→- /projects/skills/[slug] skill project pages with related skills
+   346→- /hire landing page with hire-by-skill links
+   347→- /hire/[role] role-specific hire pages (15 roles)
+   348→- /blog foundation page
+   349→- /dashboard/freelancer/portfolio — portfolio management page
+   350→- /admin/* — 7 admin pages (dashboard, users, projects, taxonomy, verifications, seo, settings) with sidebar layout
+   351→
+   352→# SEO Status
+   353→- Homepage metadata configured
+   354→- robots.txt: dynamic route (production-aware)
+   355→- Sitemap: sitemap-index.xml + 3 dynamic sub-sitemaps (updated for Phase 4 pages)
+   356→- Structured data: Organization, WebSite, ItemList on homepage
+   357→- Breadcrumbs: component ready, all public pages have breadcrumbs
+   358→- Metadata helpers: generatePageMetadata, generateFilterPageMetadata, generatePrivatePageMetadata
+   359→- Canonical helpers: buildCanonicalUrl
+   360→- Project detail page with SEO breadcrumbs + category breadcrumb
+   361→- Category pages with seoTitle/seoDescription metadata
+   362→- Skill pages with dynamic metadata (title + description from skill name)
+   363→- Hire pages with hand-written SEO metadata per role
+   364→- Internal linking: project → skills/categories, footer → categories/skills, homepage → skill pages
+   365→
+   366→# Search Status
+   367→- Not implemented
+   368→
+   369→# Matching Engine Status
+   370→- Implemented (Phase 6): on-demand match scoring, smart feed, hiring probability
+   371→
+   372→# Notification Status
+   373→- Implemented (Phase 7): 12 types, 4 channels, preference-aware, SSE stream, event dispatcher
+   374→
+   375→# Messaging Status
+   376→- Implemented (Phase 7): REST-based, conversations + messages, auto mark-read
+   377→
+   378→# Admin Panel Status
+   379→- Implemented (Phase 11): 20 API endpoints, 7 server-rendered pages, sidebar layout, role-based access, audit logging
+   380→
+   381→# Testing Status
+   382→- 88 unit tests passing (Vitest): security (57), logger (7), currency (12), persian-normalize (12)
+   383→- CI pipeline configured (GitHub Actions: lint, typecheck, test, build)
+   384→- No integration or E2E tests yet
+   385→
+   386→# Production Readiness
+   387→- Security infrastructure in place (headers, rate limiting, CORS, sanitization)
+   388→- Structured logging with request correlation
+   389→- CI pipeline configured
+   390→- Deployment documentation complete (DEPLOY.md)
+   391→- Remaining: frontend for core flows, Redis rate limiter, real payment provider, E2E tests
+   392→
+   393→# Known Bugs
+   394→- None
+   395→
+   396→# Technical Debt
+   397→- OAuth frontend buttons are placeholders (show "coming soon" message)
+   398→- Email/password login shows "coming soon" message
+   399→- Project creation page not built (only API exists)
+   400→- Proposal pages (freelancer/employer) not built (only APIs exist)
+   401→- Service marketplace, teams, contracts have no frontend pages (APIs only)
+   402→- Admin pages are server-rendered v1 — no client-side search/pagination/filters yet
+   403→- Admin feature flags are read-only (env-backed, no runtime toggle)
+   404→- First admin user must be created manually (assign ADMIN role via DB or API)
+   405→- AuditLog has no User relation — actor shown as truncated ID in admin UI
+   406→- Rate limiter is in-memory — needs Redis for multi-instance deployments
+   407→- Pre-existing TypeScript errors in dispatcher, matching, and invitation modules (not from Phase 12)
+   408→- Reputation scores computed on-read (see ADR-015 — acceptable for now)
+   409→- Match scores computed on-demand (see ADR-016 — acceptable for now)
+   410→- Notification SSE uses polling (3s) — adequate for dev, needs Redis Pub/Sub for production (see ADR-017)
+   411→- Email/SMS queues are in-memory — lost on server restart (acceptable until production)
+   412→- AI features require AI_API_KEY env var — endpoints return 503 when not configured
+   413→- Analytics computed on-demand (see ADR-019 — acceptable until traffic warrants caching)
+   414→- Payments use internal dev provider (see ADR-020 — ZarinPal/IDPay needed for production)
+   415→
+   416→# Blockers
+   417→- None
+   418→
+   419→# Last Successful Commands
+   420→- bun run lint ✓
+   421→- npx prisma db push ✓
+   422→- npx prisma generate ✓
+   423→
+   424→# Recently Modified Files
+   425→- src/lib/security/ (NEW — headers.ts, rate-limiter.ts, sanitize.ts, request-id.ts, index.ts)
+   426→- src/lib/logger.ts (NEW)
+   427→- src/lib/api-response.ts (NEW)
+   428→- src/middleware.ts (UPDATED — security headers, CORS, request ID)
+   429→- src/app/not-found.tsx (NEW — Persian 404 page)
+   430→- src/app/global-error.tsx (NEW — global error page)
+   431→- src/app/layout.tsx (UPDATED — skip-nav, main#main-content)
+   432→- src/components/layout/header.tsx (UPDATED — aria labels, login link fix)
+   433→- src/components/shared/project-card.tsx (UPDATED — aria-hidden icons)
+   434→- src/app/api/v1/auth/otp/request/route.ts (UPDATED — rate limit, structured logging)
+   435→- src/app/api/v1/auth/otp/verify/route.ts (UPDATED — rate limit, structured logging)
+   436→- src/app/api/v1/auth/password/change/route.ts (UPDATED — rate limit, structured logging)
+   437→- src/app/api/v1/ai/build-project/route.ts (UPDATED — rate limit, structured logging)
+   438→- src/app/api/v1/ai/generate-proposal/route.ts (UPDATED — rate limit, structured logging)
+   439→- src/app/projects/page.tsx (FIXED — metadata canonical→path)
+   440→- src/lib/security/__tests__/ (NEW — 4 test files, 57 tests)
+   441→- src/lib/__tests__/logger.test.ts (NEW — 7 tests)
+   442→- src/lib/utils/__tests__/ (NEW — 2 test files, 24 tests)
+   443→- vitest.config.ts (NEW)
+   444→- .github/workflows/ci.yml (NEW)
+   445→- DEPLOY.md (NEW)
+   446→- TODO.md (UPDATED — Phase 12 complete)
+   447→- CHANGELOG.md (UPDATED — v0.12.0)
+   448→- DECISIONS.md (UPDATED — ADR-022)
+   449→- PROJECT_STATE.md (UPDATED)
+   450→
+   451→# Next Recommended Task
+   452→All 13 planned phases (0-12) are complete. Recommended next steps:
+   453→1. Frontend for core flows: project creation page, proposal pages, messaging UI
+   454→2. OAuth frontend integration (Google/GitHub buttons are placeholders)
+   455→3. Email/password login frontend
+   456→4. Fix pre-existing TypeScript errors in dispatcher, matching, and invitation modules
+   457→5. Replace in-memory rate limiter with Redis for multi-instance deployments
+   458→

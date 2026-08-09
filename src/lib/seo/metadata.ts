@@ -111,11 +111,14 @@ export function generateFilterPageMetadata({
  */
 export function generatePrivatePageMetadata({
   title,
+  description,
 }: {
   title: string;
+  description?: string;
 }): Metadata {
   return {
     title,
+    ...(description && { description }),
     robots: { index: false, follow: false },
   };
 }

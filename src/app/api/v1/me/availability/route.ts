@@ -50,7 +50,7 @@ export async function PATCH(request: Request) {
     const parsed = availabilityUpdateSchema.safeParse(body);
     if (!parsed.success) {
       return NextResponse.json(
-        { error: { code: 'VALIDATION_ERROR', message: 'ورودی‌ها نامعتبر هستند.', details: parsed.error.errors.map((e) => e.message) } },
+        { error: { code: 'VALIDATION_ERROR', message: 'ورودی‌ها نامعتبر هستند.', details: parsed.error.issues.map((e) => e.message) } },
         { status: 400 }
       );
     }

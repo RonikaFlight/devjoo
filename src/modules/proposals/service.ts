@@ -40,7 +40,7 @@ export async function submitProposal(
         freelancer: {
           select: {
             id: true, displayName: true,
-            profile: { select: { avatarUrl: true, headline: true, city: true } },
+            profile: { select: { avatarUrl: true, city: true, freelancerProfile: { select: { headline: true } } } },
           },
         },
       },
@@ -94,7 +94,7 @@ export async function listProjectProposals(
         freelancer: {
           select: {
             id: true, displayName: true,
-            profile: { select: { avatarUrl: true, headline: true, city: true, hourlyRateRial: true } },
+            profile: { select: { avatarUrl: true, city: true, freelancerProfile: { select: { headline: true, hourlyRateRial: true } } } },
           },
         },
       },

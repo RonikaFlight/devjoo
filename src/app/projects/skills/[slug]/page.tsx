@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { db } from '@/lib/db';
@@ -91,16 +92,18 @@ export default async function SkillProjectsPage({ params }: PageProps) {
         </div>
         <StructuredData data={breadcrumbLd} />
 
-        <SkillProjectsClient
-          skill={{
-            id: skill.id,
-            name: skill.name,
-            slug: skill.slug,
-            category: skill.category,
-            synonyms: skill.synonyms.map((s) => s.name),
-          }}
-          relatedSkills={relatedSkills}
-        />
+        <Suspense>
+          <SkillProjectsClient
+            skill={{
+              id: skill.id,
+              name: skill.name,
+              slug: skill.slug,
+              category: skill.category,
+              synonyms: skill.synonyms.map((s) => s.name),
+            }}
+            relatedSkills={relatedSkills}
+          />
+        </Suspense>
       </div>
     </main>
   );

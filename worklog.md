@@ -439,3 +439,99 @@ Stage Summary:
 - Testing: Vitest configured, 88 unit tests
 - CI: GitHub Actions pipeline
 - Docs: DEPLOY.md deployment guide
+---
+Task ID: 13-1
+Agent: TS Fix Agent
+Task: Fix all pre-existing TypeScript errors in src/
+
+Work Log:
+- Category 1: Changed `.errors` to `.issues` in 12 Zod validation route files (conversations, me/availability, me/invitations, me/notifications, portfolio, projects/invitations, reviews, verification)
+- Category 2: Made `href` optional in `BreadcrumbItem` interface (`src/components/seo/breadcrumbs.tsx`); updated rendering logic to use `<span>` when href is absent; filtered LD items to only include those with href; typed `breadcrumbItems` array explicitly in `src/app/project/[slug]/page.tsx`
+- Category 3: Replaced `errorMap: () => ({ message: '...' })` with `message: '...'` in z.enum() calls in `availability.ts`, `invitation.ts`, and `verification.ts` validators
+- Category 4: Added optional `description` parameter to `generatePrivatePageMetadata()` in `src/lib/seo/metadata.ts`, resolving errors in 6 dashboard/auth pages
+- Category 5: Added `skillId` field to `skills` type and `skill: { id, name, slug }` to `ProjectCardProps` in `src/components/shared/project-card.tsx`
+- Category 6 (Prisma/Schema): Added `ProjectInvitation` relations (project, freelancer) to Prisma schema, regenerated client. Fixed all ProfileSelect errors by moving `headline` from Profile to `freelancerProfile`, `companyName` from Profile to `employerProfile`, and `displayName`/`avatarUrl` to Profile directly (for Review model where reviewer is a Profile). Fixed UserSkill `user` → `profile.user` in dispatcher. Fixed `project.id` missing from select in verification/invitation dispatchers. Fixed `result.error` index type by using non-null assertion. Fixed `where.OR` unknown type in projects/service.ts. Fixed missing `await` on async budget/availability functions in matching/service.ts. Fixed `number | null | undefined` → `number | null` in reputation/service.ts. Fixed NotificationPreference `createMany` (removed SQLite-unsupported `skipDuplicates`) and typed `results` array. Fixed `user` used-before-assigned in GitHub OAuth route. Fixed `summary` null type in verification route. Fixed `string | null` assignment in projects/[slug] page.
+- Category 7: Changed `DateTime` to `Date` in `src/modules/matching/quality.ts` function parameter type
+- Category 8: Changed `title: string` (invalid Prisma select) to `title: true` in `detectDuplicateProject` query
+
+Stage Summary:
+- 0 TypeScript errors remaining in src/ (verified with `npx tsc --noEmit 2>&1 | rg '^src/' | wc -l`)
+- ESLint passes with 0 errors, 0 warnings
+---
+Task ID: 13-2
+Agent: Frontend Agent
+Task: Build Project Creation page (/projects/new)
+
+Work Log:
+- Created server page with private metadata (src/app/projects/new/page.tsx)
+- Created multi-step client form (src/app/projects/new/project-create-client.tsx) with 3 steps
+- Step 1: title + description with character counters and min-length validation
+- Step 2: category dropdown (fetched from /api/v1/categories), skills multi-select with search (fetched from /api/v1/skills, filtered by selected category)
+- Step 3: budget type radio (FIXED/HOURLY), budget input in تومان (×۱۰ to ریal on submit), experience level, work type (REMOTE/ONSITE/HYBRID), city (conditional), estimated duration, deadline, proposal limit (3-20, default 10)
+- Auth gate: redirects non-logged-in to /auth/login, shows message for freelancers
+- Persian progress bar with step numbers (۱. اطلاعات اصلی ۲. دسته‌بندی و مهارت‌ها ۳. بودجه و جزئیات)
+- Inline validation errors in Farsi matching Zod messages
+- Uses formatNumber and toEnglishDigits from @/lib/utils/currency
+- Uses enum labels from @/types/enums
+- Success screen with publish button (POST /api/v1/projects/[slug]/publish) and view/dashboard links
+- Toast notifications via sonner
+- 0 TypeScript errors, 0 ESLint errors
+
+Stage Summary:
+- /projects/new page fully functional
+- Multi-step form with category/skills/budget
+- Redirect to project detail on success, optional publish
+
+---
+Task ID: 13-3/13-4/13-5
+Agent: Proposals Frontend Agent
+Task: Build proposal submission, freelancer my-proposals, employer project proposals pages
+
+Work Log:
+- Updated `src/app/project/[slug]/project-detail-client.tsx` to integrate `useAuth` for real auth state
+- Replaced hardcoded `isLoggedIn` with actual auth context (isLoading, isLoggedIn, isFreelancer, isEmployer, user)
+- Added proposal submission Dialog modal with: cover letter (textarea, 50-5000 chars), price in تومان (input, min 100,000 ریal), estimated duration (input, max 100 chars)
+- Button behavior: not logged in → "نیاز به ورود" linking to /auth/login; freelancer → "ارسال پیشنهاد" opening dialog; employer/owner → "پیشنهادهای دریافت شده" linking to proposals page; non-freelancer → disabled with message
+- Added duplicate proposal check via GET /api/v1/me/proposals?projectId=... on mount, shows green "شما قبلاً پیشنهاد ارسال کرده‌اید" if found
+- On submit: POST /api/v1/projects/[slug]/proposals with priceRial/estimatedDuration/coverLetter, toast success, increment proposal count
+- Created `src/app/dashboard/freelancer/proposals/page.tsx` (server page with requireAuth + isFreelancer check, generatePrivatePageMetadata)
+- Created `src/app/dashboard/freelancer/proposals/my-proposals-client.tsx` with: paginated list of proposals, status badges (color-coded), project title links, price/duration/date, empty state with link to /projects, "شروع گفتگو" button for ACCEPTED proposals, prev/next pagination
+- Created `src/app/project/[slug]/proposals/page.tsx` (client-only with generatePrivatePageMetadata)
+- Created `src/app/project/[slug]/proposals/project-proposals-client.tsx` with: freelancer avatar/name/headline, truncated expandable cover letter, price/duration, status badge, action buttons (VIEWED, SHORTLISTED, ACCEPTED, REJECTED), AlertDialog for accept confirmation, reject dialog with required reason textarea (min 10 chars)
+- All files pass TypeScript compilation (zero src/ errors in modified files)
+- All UI text in Farsi (RTL), uses purple design system, Card/Badge/Dialog/AlertDialog/Button patterns
+
+Stage Summary:
+- Part A: Proposal submission dialog on project detail page with auth-aware button, duplicate check, validation, and API integration
+- Part B: Freelancer my-proposals page at /dashboard/freelancer/proposals with paginated list, status badges, and empty state
+- Part C: Employer project proposals page at /project/[slug]/proposals with freelancer cards, expandable cover letters, and status management (view/shortlist/accept/reject)
+
+---
+Task ID: 13-6
+Agent: Messaging Frontend Agent
+Task: Build messaging UI — conversations list + chat view
+
+Work Log:
+- Created `src/app/messages/page.tsx` — server component with `requireAuth()` and `generatePrivatePageMetadata({ title: 'پیام‌ها', description: 'پیام‌های شما در DevJoo' })`
+- Created `src/app/messages/messages-client.tsx` — full two-panel messaging layout client component
+- Left panel: header with "پیام‌ها" title + "مکالمه جدید" button, search input (filters by participant name), scrollable conversation list with avatars (Avatar/AvatarImage/AvatarFallback), display name, last message preview (truncated 50 chars), relative time (Persian: "۲ دقیقه پیش", "۱ ساعت پیش", etc.), unread badge (Badge with Persian numbers), active state highlight (border-s-2 border-primary)
+- Left panel empty state: "هنوز مکالمه‌ای ندارید" with MessageCircle icon
+- Right panel: chat header with back button (mobile only, ArrowRight icon), participant avatar + name, PROJECT type indicator ("مکالمه پروژه‌ای")
+- Message bubbles: sent = purple bg (bg-primary text-white ms-auto), received = gray bg (bg-muted), system = centered muted pill, rounded-2xl px-4 py-2 max-w-[75%]
+- Sender name shown only in PROJECT conversations for received messages
+- Message time displayed below each bubble using `fa-IR` locale
+- Message input: auto-growing textarea (max 2000 chars, max-h 120px), Send icon button, Enter to send / Shift+Enter for newline, character count warning above 1800
+- New Conversation Dialog: participant ID input (required), optional project ID input, create button with loading state, toast success/error feedback
+- Mobile responsive: md breakpoint toggle between list and chat views, back button in chat header
+- Polling: messages poll every 5 seconds with deduplication (Map-based), conversations poll every 10 seconds for unread count updates
+- Conversations fetched on mount, messages fetched when conversation opened with loading skeletons
+- All UI text in Farsi (RTL), uses `useAuth` for current user ID, `toast` from sonner for notifications, `cn` from utils, `formatNumber` from currency utils
+- Container: `h-[calc(100vh-8rem)]` full-height with rounded border, left panel `md:w-80 md:border-e`
+- ESLint: zero errors, TypeScript: zero errors in messages files
+
+Stage Summary:
+- Full messaging UI at /messages with WhatsApp/Telegram-style two-panel layout
+- Conversations list with search, avatars, unread badges, relative time
+- Chat view with message bubbles, auto-scroll, auto-growing input, keyboard shortcuts
+- New conversation dialog, polling for real-time updates
+- Mobile-responsive with list/chat toggle at md breakpoint

@@ -4,6 +4,7 @@ import { ThemeProvider } from "next-themes";
 import { Toaster } from "@/components/ui/sonner";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { AuthProvider } from "@/lib/auth-client";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
 
@@ -59,11 +60,13 @@ export default function RootLayout({
           >
             رفتن به محتوای اصلی
           </a>
-          <div className="min-h-screen flex flex-col">
-            <Header />
-            <main id="main-content" className="flex-1">{children}</main>
-            <Footer />
-          </div>
+          <AuthProvider>
+            <div className="min-h-screen flex flex-col">
+              <Header />
+              <main id="main-content" className="flex-1">{children}</main>
+              <Footer />
+            </div>
+          </AuthProvider>
           <Toaster />
         </ThemeProvider>
       </body>
