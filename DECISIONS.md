@@ -272,3 +272,41 @@ Use a centralized notification dispatcher with non-blocking fire-and-forget patt
 - Email/SMS queues are in-memory — lost on server restart (acceptable until production)
 
 **Status:** Accepted
+
+---
+
+## ADR-018 — Provider-Agnostic AI with Structured Output Parsing
+
+**Decision:**
+Implement AI features (Project Builder, Proposal Assistant) using a provider abstraction layer over OpenAI-compatible APIs, with structured JSON output parsing and feature-flag gating.
+
+**Reason:**
+- The AI provider landscape changes rapidly — abstracting behind an `AIProvider` interface allows swapping OpenAI for Anthropic, Gemini, or local LLMs without touching business logic
+- `AI_BASE_URL` env var supports self-hosted models (Ollama, vLLM) and regional proxies
+- Structured JSON output with `parseAIJSON()` handles markdown-wrapped responses gracefully
+- Feature flags (`aiProjectBuilder`, `aiProposalAssistant`) allow gradual rollout and A/B testing
+- Persian-language prompts ensure AI output matches the marketplace's language
+- No AI-specific Prisma models needed — AI results are transient (generated at request time, not persisted)
+
+**Architecture:**
+- `modules/ai/provider.ts` — `AIProvider` interface, `OpenAIProvider` implementation, factory, JSON parser
+- `modules/ai/project-builder.ts` — employer brief → structured project (title, description, skills, budget, duration)
+- `modules/ai/proposal-assistant.ts` — project + freelancer profile → cover letter, suggested price, key points
+- `lib/validators/ai.ts` — Zod schemas for both endpoints
+- `api/v1/ai/build-project/route.ts` — employer-only, feature-flag + AI config gates
+- `api/v1/ai/generate-proposal/route.ts` — freelancer-only, security: can only generate for self
+
+**Configuration:**
+- `AI_API_KEY` — API key (required to enable AI features)
+- `AI_BASE_URL` — optional custom endpoint (for local/self-hosted models)
+- `AI_MODEL` — model name (default: `gpt-4o-mini`)
+- `AI_MAX_TOKENS` — max response tokens (default: 2048)
+- `AI_TEMPERATURE` — default temperature (default: 0.7)
+
+**Consequences:**
+- AI endpoints return 503 if `AI_API_KEY` is not set (graceful degradation)
+- AI endpoints return 403 if feature flag is disabled
+- No data persistence — AI results are returned as API responses, user can edit before saving via existing project/proposal APIs
+- Future: can add streaming responses, conversation history, or fine-tuned models behind the same interface
+
+**Status:** Accepted

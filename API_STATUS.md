@@ -107,3 +107,7 @@
 [x] GET    /api/v1/conversations/[id]/messages — list messages (auto mark-read)
 [x] POST   /api/v1/conversations/[id]/messages — send message
 [x] GET    /api/v1/me/messages/unread — total unread message count
+
+## AI
+[x] POST   /api/v1/ai/build-project — AI Project Builder (employer, generates structured project from brief)
+[x] POST   /api/v1/ai/generate-proposal — AI Proposal Assistant (freelancer, generates cover letter + price)

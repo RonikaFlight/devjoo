@@ -1,5 +1,34 @@
 # DevJoo — Changelog
 
+## [0.8.0] — 2026-08-09
+
+### Added
+- **AI Provider Abstraction**:
+  - `AIProvider` interface for provider-agnostic AI integration
+  - `OpenAIProvider` implementation supporting OpenAI and compatible APIs (Ollama, vLLM, etc.)
+  - `getAIProvider()` factory with env-based config (AI_API_KEY, AI_BASE_URL, AI_MODEL)
+  - `parseAIJSON<T>()` — robust JSON parser handling markdown-wrapped responses
+  - `AIError` class with typed error codes (CONFIG_MISSING, PROVIDER_ERROR, PARSE_ERROR, etc.)
+- **AI Project Builder**:
+  - Takes employer brief (Persian/English) → generates structured project draft
+  - Output: Persian title, 3+ paragraph description, skill slugs, budget (IRR), duration, experience level
+  - Fetches all active skills from DB for context-aware suggestions
+  - Validates generated skill slugs against DB, validates budget fields per type
+  - POST /api/v1/ai/build-project (employer-only, feature-flag + AI config gated)
+- **AI Proposal Assistant**:
+  - Takes project + freelancer profile → generates personalized proposal
+  - Output: Persian cover letter (2-4 paragraphs), suggested price, duration, 3-5 key points
+  - Builds rich context: freelancer skills, portfolio, ratings, availability + project details, employer info
+  - Security: freelancer can only generate proposals for themselves
+  - POST /api/v1/ai/generate-proposal (auth required, feature-flag + AI config gated)
+- **Zod Validators**: ai.ts (buildProjectSchema, generateProposalSchema)
+- **Environment Config**: AI_API_KEY, AI_BASE_URL, AI_MODEL, AI_MAX_TOKENS, AI_TEMPERATURE, FEATURE_AI_PROJECT_BUILDER_ENABLED, FEATURE_AI_PROPOSAL_ASSISTANT_ENABLED
+
+### Decisions
+- ADR-018: Provider-agnostic AI with structured output parsing (transient results, no DB persistence)
+
+---
+
 ## [0.7.0] — 2026-08-09
 
 ### Added

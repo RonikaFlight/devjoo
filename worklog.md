@@ -278,3 +278,37 @@ Stage Summary:
 - SSE endpoint for real-time notification push
 - Email/SMS job queue stubs ready for production swap
 - Ready for Phase 8 (AI)
+
+---
+Task ID: 8
+Agent: Main Agent
+Task: Phase 8 — AI (Provider Abstraction, Project Builder, Proposal Assistant)
+
+Work Log:
+- Created AI Provider Abstraction (src/modules/ai/provider.ts): AIProvider interface, OpenAIProvider implementation, factory function, parseAIJSON<T> utility, AIError class
+- OpenAIProvider supports OpenAI and compatible APIs via AI_BASE_URL (Ollama, vLLM, regional proxies)
+- Created AI Project Builder (src/modules/ai/project-builder.ts): employer brief → structured project (Persian title, 3+ paragraph description, skill slugs, budget IRR, duration, experience level)
+- Fetches all active skills from DB for context-aware prompt, validates generated skill slugs against DB
+- Created AI Proposal Assistant (src/modules/ai/proposal-assistant.ts): project + freelancer profile → cover letter, suggested price, duration, 3-5 key points
+- Builds rich context from freelancer (skills, portfolio, ratings, availability) and project (details, employer info, budget)
+- Security: freelancer can only generate proposals for themselves (freelancerId === user.id check)
+- Created Zod validators (src/lib/validators/ai.ts): buildProjectSchema, generateProposalSchema
+- Updated validators/index.ts to export AI validators
+- Created POST /api/v1/ai/build-project (employer-only, feature-flag + AI config gated, returns 403/503 when disabled)
+- Created POST /api/v1/ai/generate-proposal (auth required, freelancer-only, feature-flag + AI config gated)
+- Updated .env with AI config vars: AI_API_KEY, AI_BASE_URL, AI_MODEL, AI_MAX_TOKENS, AI_TEMPERATURE
+- Updated .env with feature flags: FEATURE_AI_PROJECT_BUILDER_ENABLED, FEATURE_AI_PROPOSAL_ASSISTANT_ENABLED
+- Fixed proposal-assistant.ts: moved headline from Profile to FreelancerProfile (Prisma schema alignment)
+- No Prisma schema changes needed (AI results are transient, not persisted)
+- ESLint clean, TypeScript type-check clean for all new files
+- Added ADR-018: Provider-Agnostic AI with Structured Output Parsing
+- Updated TODO.md (Phase 8 complete), CHANGELOG.md (v0.8.0), DECISIONS.md (ADR-018), API_STATUS.md (2 new endpoints), PROJECT_STATE.md
+
+Stage Summary:
+- Phase 8 AI is COMPLETE
+- 2 new API endpoints operational
+- AI Provider Abstraction: supports any OpenAI-compatible API
+- AI Project Builder: generates structured project drafts from briefs in Persian
+- AI Proposal Assistant: generates personalized proposals with context from profile + project
+- Graceful degradation: 503 when AI not configured, 403 when feature disabled
+- Ready for Phase 9 (Analytics)

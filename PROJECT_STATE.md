@@ -2,13 +2,13 @@
 DevJoo
 
 # Current Phase
-Phase 8 — AI (READY TO START)
+Phase 9 — Analytics (READY TO START)
 
 # Last Completed Task
-Phase 7 Communication: Messaging (conversations + messages REST API, 6 endpoints), Notification system (12 types, 4 channels, preferences), Event dispatcher (8 dispatchers integrated into proposals/invitations/reviews/messages/project publish), SSE real-time stream, Email/SMS in-process job queues, ADR-017
+Phase 8 AI: AI Provider abstraction (OpenAI-compatible, env config, structured JSON parsing), AI Project Builder (brief → title, description, skills, budget, duration), AI Proposal Assistant (project + profile → cover letter, price, key points), Zod validators, 2 API endpoints, ADR-018
 
 # Currently Working On
-None — Phase 7 complete, ready for Phase 8
+None — Phase 8 complete, ready for Phase 9
 
 # Completed Features
 - Phase 0 complete (see below)
@@ -19,6 +19,7 @@ None — Phase 7 complete, ready for Phase 8
 - Phase 5 complete: Trust — portfolio, reviews, verification, client score, reputation (see below)
 - Phase 6 complete: Smart features — match engine, smart feed, invitations, availability, quality score, duplicate detection, hiring probability (see below)
 - Phase 7 complete: Communication — messaging, notifications, dispatcher, SSE stream, job queues (see below)
+- Phase 8 complete: AI — provider abstraction, project builder, proposal assistant (see below)
 
 ## Phase 0 Completed
 - All 10 project memory files
@@ -127,6 +128,18 @@ None — Phase 7 complete, ready for Phase 8
 - Zod validators: conversation.ts, message.ts, notification.ts
 - ADR-017: Event-driven notification dispatch
 
+## Phase 8 Completed
+- AI Provider Abstraction: AIProvider interface, OpenAIProvider (supports OpenAI + compatible APIs via AI_BASE_URL)
+- AI Provider factory: getAIProvider() with env config (AI_API_KEY, AI_BASE_URL, AI_MODEL, AI_MAX_TOKENS, AI_TEMPERATURE)
+- parseAIJSON<T>(): robust JSON parser handling markdown-wrapped responses
+- AIError class: typed error codes (CONFIG_MISSING, PROVIDER_ERROR, EMPTY_RESPONSE, PARSE_ERROR, INVALID_OUTPUT)
+- AI Project Builder: employer brief → structured project (Persian title, 3+ paragraph description, skill slugs, budget IRR, duration, experience level)
+- AI Proposal Assistant: project + freelancer profile → cover letter (2-4 paragraphs), suggested price, duration, 3-5 key points
+- Zod validators: ai.ts (buildProjectSchema, generateProposalSchema)
+- POST /api/v1/ai/build-project (employer-only, feature-flag + AI config gated)
+- POST /api/v1/ai/generate-proposal (freelancer-only, security: can only generate for self)
+- ADR-018: Provider-agnostic AI with structured output parsing
+
 # Partially Completed Features
 - None
 
@@ -141,6 +154,7 @@ None — Phase 7 complete, ready for Phase 8
 - ADR-015: On-read reputation computation (see DECISIONS.md)
 - ADR-016: On-demand match computation (see DECISIONS.md)
 - ADR-017: Event-driven notification dispatch (see DECISIONS.md)
+- ADR-018: Provider-agnostic AI with structured output parsing (see DECISIONS.md)
 
 # Database Status
 - Prisma schema: 33 models defined (added Conversation, ConversationMember, Message)
@@ -204,6 +218,8 @@ None — Phase 7 complete, ready for Phase 8
 - GET /api/v1/me/notifications/preferences — working (auth required)
 - PUT /api/v1/me/notifications/preferences — working (auth required)
 - GET /api/v1/me/notifications/stream — working (auth required, SSE)
+- POST /api/v1/ai/build-project — working (auth required, employer only, feature-flag + AI config gated)
+- POST /api/v1/ai/generate-proposal — working (auth required, freelancer only, feature-flag + AI config gated)
 
 # Frontend Status
 - Next.js 16 App Router, RTL, Vazirmatn, purple design, dark mode
@@ -271,6 +287,7 @@ None — Phase 7 complete, ready for Phase 8
 - Match scores computed on-demand (see ADR-016 — acceptable for now)
 - Notification SSE uses polling (3s) — adequate for dev, needs Redis Pub/Sub for production (see ADR-017)
 - Email/SMS queues are in-memory — lost on server restart (acceptable until production)
+- AI features require AI_API_KEY env var — endpoints return 503 when not configured
 
 # Blockers
 - None
@@ -281,31 +298,19 @@ None — Phase 7 complete, ready for Phase 8
 - npx prisma generate ✓
 
 # Recently Modified Files
-- prisma/schema.prisma (UPDATED — added Conversation, ConversationMember, Message models)
-- src/types/enums.ts (UPDATED — communication + notification enums + labels)
-- src/lib/validators/conversation.ts (NEW)
-- src/lib/validators/message.ts (NEW)
-- src/lib/validators/notification.ts (NEW)
+- src/modules/ai/provider.ts (NEW)
+- src/modules/ai/project-builder.ts (NEW)
+- src/modules/ai/proposal-assistant.ts (NEW)
+- src/lib/validators/ai.ts (NEW)
 - src/lib/validators/index.ts (UPDATED)
-- src/modules/messaging/service.ts (NEW)
-- src/modules/notifications/service.ts (NEW)
-- src/modules/notifications/dispatcher.ts (NEW)
-- src/modules/projects/service.ts (UPDATED — dispatch on publish/status change)
-- src/modules/proposals/service.ts (UPDATED — dispatch on submit/status change)
-- src/modules/invitations/service.ts (UPDATED — dispatch on create/respond)
-- src/modules/reviews/service.ts (UPDATED — dispatch on create)
-- src/app/api/v1/conversations/route.ts (NEW)
-- src/app/api/v1/conversations/[id]/route.ts (NEW)
-- src/app/api/v1/conversations/[id]/messages/route.ts (NEW)
-- src/app/api/v1/me/messages/unread/route.ts (NEW)
-- src/app/api/v1/me/notifications/route.ts (NEW)
-- src/app/api/v1/me/notifications/unread/route.ts (NEW)
-- src/app/api/v1/me/notifications/preferences/route.ts (NEW)
-- src/app/api/v1/me/notifications/stream/route.ts (NEW)
-- TODO.md (UPDATED — Phase 7 marked complete)
-- CHANGELOG.md (UPDATED — v0.7.0)
-- DECISIONS.md (UPDATED — ADR-017)
-- API_STATUS.md (UPDATED — 12 new endpoints)
+- src/app/api/v1/ai/build-project/route.ts (NEW)
+- src/app/api/v1/ai/generate-proposal/route.ts (NEW)
+- .env (UPDATED — AI config vars + feature flags)
+- TODO.md (UPDATED — Phase 8 marked complete)
+- CHANGELOG.md (UPDATED — v0.8.0)
+- DECISIONS.md (UPDATED — ADR-018)
+- API_STATUS.md (UPDATED — 2 new endpoints)
+- PROJECT_STATE.md (UPDATED)
 
 # Next Recommended Task
-Start Phase 8 — AI: AI Provider abstraction, AI Project Builder, AI Proposal Assistant
+Start Phase 9 — Analytics: Proposal analytics, Project analytics, Employer metrics dashboard, Price Radar

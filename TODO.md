@@ -155,11 +155,14 @@
 
 ---
 
-## Phase 8 — AI
+## Phase 8 — AI ✓
 
-- [ ] AI Provider abstraction
-- [ ] AI Project Builder
-- [ ] AI Proposal Assistant
+- [x] AI Provider abstraction (OpenAI-compatible, env config, structured JSON parsing)
+- [x] AI Project Builder (brief → title, description, skills, budget, duration)
+- [x] AI Proposal Assistant (project + profile → cover letter, price, duration)
+- [x] Zod validators for AI endpoints
+- [x] POST /api/v1/ai/build-project
+- [x] POST /api/v1/ai/generate-proposal
 
 ---
 
