@@ -224,3 +224,24 @@ Compute reputation and client scores on-read (query-time) rather than maintainin
 - Adding caching later is a non-breaking change (same API contract)
 
 **Status:** Accepted
+
+---
+
+## ADR-016 — On-Demand Match Computation
+
+**Decision:**
+The match engine computes scores on-demand when an employer requests matches for their project, rather than pre-computing scores for all freelancer-project pairs at publish time.
+
+**Reason:**
+- Pre-computing all pairs is O(N*M) where N=projects and M=freelancers — infeasible at scale
+- On-demand computation only processes candidates with at least one matching skill
+- The `computeAndStoreMatches()` function persists scores for the smart feed, but is triggered explicitly (e.g., by a cron job or after publish)
+- The match score is split into 5 weighted signals (skill overlap 40, budget fit 20, availability 15, experience 10, reputation 15) for transparency
+- The hiring probability function provides a complementary "likelihood" metric using different weights
+
+**Consequences:**
+- First match request for a project is slower (computes all candidate scores)
+- Subsequent requests can use stored MatchScore records
+- Smart feed uses a faster inline scoring function (no DB calls per item) instead of the full match engine
+
+**Status:** Accepted

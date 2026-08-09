@@ -2,6 +2,7 @@ import { db } from '@/lib/db';
 import { VALID_PROJECT_TRANSITIONS, PROJECT_STATUS } from '@/types/enums';
 import { generateSlug, uniqueSlug } from '@/lib/utils/slug';
 import type { ProjectCreateInput, ProjectUpdateInput, ProjectFiltersInput } from '@/lib/validators/project';
+import { computeProjectQualityScore } from '@/modules/matching/quality';
 
 /**
  * Create a new project.
@@ -209,7 +210,18 @@ export async function transitionProjectStatus(
     });
 
     const data: Record<string, unknown> = { status: newStatus };
-    if (newStatus === 'PUBLISHED') data.publishedAt = new Date();
+    if (newStatus === 'PUBLISHED') {
+      data.publishedAt = new Date();
+
+      // Compute quality score on publish
+      const projectWithSkills = await tx.project.findUnique({
+        where: { id: projectId },
+        include: { skills: { select: { skillId: true } } },
+      });
+      if (projectWithSkills) {
+        data.qualityScore = computeProjectQualityScore(projectWithSkills);
+      }
+    }
 
     return tx.project.update({
       where: { id: projectId },

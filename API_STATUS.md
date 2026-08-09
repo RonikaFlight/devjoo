@@ -76,10 +76,21 @@
 [x] GET    /api/v1/reputation?userId=xxx&type=client — employer client score
 [x] GET    /api/v1/reputation?userId=xxx&type=freelancer — freelancer reputation score
 
+## Smart Feed
+[x] GET    /api/v1/feed — personalized project feed (freelancer)
+
+## Match Engine
+[x] GET    /api/v1/projects/[slug]/matches — top freelancer matches (employer)
+
 ## Invitations
-[ ] POST   /api/v1/projects/:id/invitations
-[ ] GET    /api/v1/me/invitations
-[ ] PATCH  /api/v1/invitations/:id/respond
+[x] POST   /api/v1/projects/[slug]/invitations — invite freelancer (employer)
+[x] GET    /api/v1/projects/[slug]/invitations — list project invitations (employer)
+[x] GET    /api/v1/me/invitations — list received invitations (freelancer)
+[x] PATCH  /api/v1/me/invitations — respond to invitation (freelancer)
+
+## Availability
+[x] GET    /api/v1/me/availability — get freelancer availability
+[x] PATCH  /api/v1/me/availability — update freelancer availability
 
 ## Notifications
 [ ] GET    /api/v1/notifications

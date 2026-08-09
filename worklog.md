@@ -184,3 +184,43 @@ Stage Summary:
 - Verification system for both roles
 - Review system with category breakdowns
 - Ready for Phase 6 (Smart Features)
+
+---
+Task ID: 7
+Agent: Main Agent
+Task: Phase 6 — Smart Features
+
+Work Log:
+- Created Zod validators: invitation.ts (create, respond, filters), availability.ts (update)
+- Updated validators/index.ts to export new validators
+- Updated enums.ts: added INVITATION_STATUS_LABELS
+- Created Match Engine service (matching/service.ts): 5-signal scoring (skill overlap 0-40, budget fit 0-20, availability fit 0-15, experience fit 0-10, reputation bonus 0-15)
+- Skill overlap uses proficiency weights (BEGINNER 0.6, INTERMEDIATE 0.8, ADVANCED 0.95, EXPERT 1.0)
+- Budget fit compares freelancer hourly rate against project budget (fixed: implied 40hr, hourly: range with 20% tolerance)
+- getProjectMatches() returns top N matches, excluding already-invited/proposed/self
+- computeAndStoreMatches() persists MatchScore records for smart feed
+- getFreelancerMatchScores() retrieves stored match scores with pagination
+- Created Smart Feed service (feed/service.ts): personalized ranking using quick inline scoring (no per-item DB calls)
+- Feed excludes already-proposed projects, ranks by skill overlap + quality score + recency + urgent boost
+- Created Invitations service (invitations/service.ts): create (employer), respond (freelancer accept/decline), list project, list freelancer
+- Duplicate prevention: checks existing invitations and proposals before creating
+- Created quality.ts module: computeProjectQualityScore (description length, skills count, budget, category, experience level, deadline, duration, title quality), detectDuplicateProject (bigram similarity with Persian normalization, 7-day window), estimateHiringProbability (weighted: match 35, competition 20, reputation 20, portfolio 10, verifications 5, client 10)
+- Integrated quality score into project publish flow (transitionProjectStatus auto-computes on PUBLISHED)
+- Created 5 API route files: feed/route.ts, projects/[slug]/matches/route.ts, projects/[slug]/invitations/route.ts, me/invitations/route.ts, me/availability/route.ts
+- Fixed syntax errors (> instead of )) in 4 auth error handler casts
+- Added ADR-016: On-Demand Match Computation
+- Updated TODO.md (Phase 6 complete), CHANGELOG.md (v0.6.0), DECISIONS.md (ADR-016), API_STATUS.md (7 new endpoints), PROJECT_STATE.md
+- ESLint clean, API endpoints verified (feed: 401, availability: 401)
+
+Stage Summary:
+- Phase 6 Smart Features is COMPLETE
+- 7 new API endpoints operational
+- 3 new domain service modules (matching, feed, invitations) + quality utility module
+- Match Engine: multi-signal 0-100 scoring with breakdown
+- Smart Feed: personalized project ranking for freelancers
+- Reverse Hiring: employer can invite freelancers, freelancer can accept/decline
+- Availability: freelancers can set/update their availability status
+- Project Quality Score: auto-computed and stored on publish
+- Duplicate Detection: bigram similarity with Persian normalization
+- Hiring Probability: 0-100 estimation from multiple signals
+- Ready for Phase 7 (Communication)

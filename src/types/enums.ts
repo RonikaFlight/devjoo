@@ -171,6 +171,14 @@ export const PROFICIENCY_LEVEL_LABELS: Record<ProficiencyLevel, string> = {
   EXPERT: 'حرفه‌ای',
 };
 
+export const INVITATION_STATUS_LABELS: Record<InvitationStatus, string> = {
+  SENT: 'ارسال شده',
+  VIEWED: 'مشاهده شده',
+  ACCEPTED: 'قبول شده',
+  DECLINED: 'رد شده',
+  EXPIRED: 'منقضی شده',
+};
+
 // Persian labels
 export const PROJECT_STATUS_LABELS: Record<ProjectStatus, string> = {
   DRAFT: 'پیش‌نویس',

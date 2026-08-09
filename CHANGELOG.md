@@ -1,5 +1,52 @@
 # DevJoo — Changelog
 
+## [0.6.0] — 2026-08-09
+
+### Added
+- **Match Engine**:
+  - Multi-signal scoring: skill overlap (0-40), budget fit (0-20), availability fit (0-15), experience fit (0-10), reputation bonus (0-15)
+  - Skill overlap considers proficiency level weights (BEGINNER: 0.6 → EXPERT: 1.0)
+  - Budget fit compares freelancer hourly rate against project budget range
+  - `getProjectMatches()`: top N matches for employer reverse hiring
+  - `computeAndStoreMatches()`: persist MatchScore records after publish
+  - `getFreelancerMatchScores()`: retrieve stored matches for freelancer feed
+- **Smart Feed**:
+  - Personalized project ranking for freelancers based on skill overlap + quality score + recency
+  - Excludes already-proposed projects
+  - Quick inline scoring for feed ranking (no per-item DB calls)
+  - Urgent projects get a small boost
+  - GET /api/v1/feed (freelancer-only, uses project filters)
+- **Project Invitations**:
+  - Invitation service: create (employer→freelancer), respond (accept/decline), list project, list freelancer
+  - Duplicate prevention: checks existing invitations and proposals
+  - Zod validators: invitationCreateSchema, invitationRespondSchema, invitationFiltersSchema
+  - GET/POST /api/v1/projects/[slug]/invitations (employer)
+  - GET/PATCH /api/v1/me/invitations (freelancer)
+- **Availability System**:
+  - GET/PATCH /api/v1/me/availability (freelancer-only)
+  - Update availability status (AVAILABLE/LIMITED/BUSY/UNAVAILABLE), hours per week, available date
+  - Availability affects match engine scoring
+- **Project Quality Score**:
+  - `computeProjectQualityScore()`: 0-100 based on description length, skills count, budget, category, experience level, deadline, duration, title quality
+  - Auto-computed and stored when project is published (integrated into transitionProjectStatus)
+  - Used by smart feed for ranking
+- **Duplicate Project Detection**:
+  - `detectDuplicateProject()`: bigram-based string similarity on title + description
+  - Checks employer's recent projects (7 days) for 85%+ title or combined title+description similarity
+  - Persian-normalized comparison via normalizePersian()
+- **Hiring Probability**:
+  - `estimateHiringProbability()`: 0-100 based on match score (35), competition factor (20), freelancer reputation (20), portfolio (10), verifications (5), client score (10)
+- **INVITATION_STATUS_LABELS**: Persian labels for invitation statuses
+
+### Decisions
+- ADR-016: Match Engine is on-demand computation (no pre-computed scores at scale)
+
+### Changed
+- Project publish now auto-computes and stores qualityScore on the Project model
+- Project service imports quality scoring from matching module
+
+---
+
 ## [0.5.0] — 2026-08-09
 
 ### Added

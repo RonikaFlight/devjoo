@@ -2,13 +2,13 @@
 DevJoo
 
 # Current Phase
-Phase 6 — Smart Features (READY TO START)
+Phase 7 — Communication (READY TO START)
 
 # Last Completed Task
-Phase 5 Trust: Portfolio CRUD + frontend, Review system (create/list/stats), Verification (freelancer/employer), Client Score (employer metrics), Reputation score (0-100 computed), ADR-015
+Phase 6 Smart Features: Match engine (5-signal scoring), Smart Feed (personalized ranking), Project Invitations (CRUD + respond), Availability system, Project Quality Score (auto-computed on publish), Duplicate detection (bigram similarity), Hiring probability, ADR-016
 
 # Currently Working On
-None — Phase 5 complete, ready for Phase 6
+None — Phase 6 complete, ready for Phase 7
 
 # Completed Features
 - Phase 0 complete (see below)
@@ -17,6 +17,7 @@ None — Phase 5 complete, ready for Phase 6
 - Phase 3 complete: Marketplace core — seed data, categories/skills/projects/proposals APIs, project pages, dashboard skeletons (see below)
 - Phase 4 complete: SEO landing pages — category/skill/hire pages, internal linking, blog foundation (see below)
 - Phase 5 complete: Trust — portfolio, reviews, verification, client score, reputation (see below)
+- Phase 6 complete: Smart features — match engine, smart feed, invitations, availability, quality score, duplicate detection, hiring probability (see below)
 
 ## Phase 0 Completed
 - All 10 project memory files
@@ -93,11 +94,27 @@ None — Phase 5 complete, ready for Phase 6
 - New enums: VERIFICATION_TYPE_LABELS, VERIFICATION_STATUS_LABELS, COMPANY_SIZE, PROFICIENCY_LEVEL, REVIEW_CATEGORIES
 - ADR-015: On-read reputation computation
 
+## Phase 6 Completed
+- Match Engine: 5-signal scoring (skill overlap 40, budget fit 20, availability 15, experience 10, reputation 15)
+- Match API: GET /api/v1/projects/[slug]/matches (employer reverse hiring)
+- computeAndStoreMatches() for persisting MatchScore records
+- Smart Feed: personalized project ranking with skill overlap + quality + recency, excludes already-proposed
+- Feed API: GET /api/v1/feed (freelancer-only, supports all project filters)
+- Project Invitations: create (employer), respond (freelancer), list project, list freelancer, duplicate prevention
+- Invitation API: GET/POST /api/v1/projects/[slug]/invitations, GET/PATCH /api/v1/me/invitations
+- Availability System: GET/PATCH /api/v1/me/availability (freelancer-only)
+- Project Quality Score: computeProjectQualityScore() (description, skills, budget, category, deadline, title), auto-computed on publish
+- Duplicate Detection: detectDuplicateProject() (bigram similarity, Persian-normalized, 7-day window)
+- Hiring Probability: estimateHiringProbability() (match 35, competition 20, reputation 20, portfolio 10, verifications 5, client 10)
+- Zod validators: invitation.ts, availability.ts
+- INVITATION_STATUS_LABELS: Persian labels
+- ADR-016: On-demand match computation
+
 # Partially Completed Features
 - None
 
 # Pending Features
-- Phase 6-12: See TODO.md
+- Phase 7-12: See TODO.md
 
 # Important Architecture Decisions
 - ADR-001 through ADR-010 (see DECISIONS.md)
@@ -106,6 +123,7 @@ None — Phase 5 complete, ready for Phase 6
 - ADR-013: Module-based service layer architecture (see DECISIONS.md)
 - ADR-014: URL structure for SEO landing pages (see DECISIONS.md)
 - ADR-015: On-read reputation computation (see DECISIONS.md)
+- ADR-016: On-demand match computation (see DECISIONS.md)
 
 # Database Status
 - Prisma schema: 30+ models defined
@@ -132,7 +150,7 @@ None — Phase 5 complete, ready for Phase 6
 - GET /api/v1/projects — working
 - GET /api/v1/projects/[slug] — working
 - PATCH /api/v1/projects/[slug] — working
-- POST /api/v1/projects/[slug]/publish — working
+- POST /api/v1/projects/[slug]/publish — working (auto-computes qualityScore)
 - POST /api/v1/projects/[slug]/proposals — working
 - GET /api/v1/projects/[slug]/proposals — working
 - PATCH /api/v1/proposals/[id] — working
@@ -149,6 +167,14 @@ None — Phase 5 complete, ready for Phase 6
 - GET /api/v1/verification — working (auth required)
 - POST /api/v1/verification — working (auth required)
 - GET /api/v1/reputation — working
+- GET /api/v1/feed — working (auth required, freelancer only)
+- GET /api/v1/projects/[slug]/matches — working (auth required, employer only)
+- POST /api/v1/projects/[slug]/invitations — working (auth required, employer only)
+- GET /api/v1/projects/[slug]/invitations — working (auth required, employer only)
+- GET /api/v1/me/invitations — working (auth required)
+- PATCH /api/v1/me/invitations — working (auth required)
+- GET /api/v1/me/availability — working (auth required, freelancer only)
+- PATCH /api/v1/me/availability — working (auth required, freelancer only)
 
 # Frontend Status
 - Next.js 16 App Router, RTL, Vazirmatn, purple design, dark mode
@@ -186,7 +212,7 @@ None — Phase 5 complete, ready for Phase 6
 - Not implemented
 
 # Matching Engine Status
-- Not implemented
+- Implemented (Phase 6): on-demand match scoring, smart feed, hiring probability
 
 # Notification Status
 - Not implemented
@@ -210,44 +236,35 @@ None — Phase 5 complete, ready for Phase 6
 - Proposal pages (freelancer/employer) not built (only APIs exist)
 - Authentication tests not written
 - Reputation scores computed on-read (see ADR-015 — acceptable for now)
+- Match scores computed on-demand (see ADR-016 — acceptable for now)
 
 # Blockers
 - None
 
 # Last Successful Commands
 - bun run lint ✓
-- dev server: HTTP 200 on all new pages ✓
-- /dashboard/freelancer/portfolio: 307 (redirect, auth required) ✓
-- /api/v1/reputation: 400 (missing params) ✓
-- /api/v1/reviews/stats: 200 ✓
-- /api/v1/portfolio (no auth): 401 ✓
-- /api/v1/verification (no auth): 401 ✓
+- /api/v1/feed (no auth): 401 ✓
+- /api/v1/me/availability (no auth): 401 ✓
 
 # Recently Modified Files
-- src/lib/validators/portfolio.ts (NEW)
-- src/lib/validators/review.ts (NEW)
-- src/lib/validators/verification.ts (NEW)
+- src/lib/validators/invitation.ts (NEW)
+- src/lib/validators/availability.ts (NEW)
 - src/lib/validators/index.ts (UPDATED)
-- src/types/enums.ts (UPDATED — verification labels, company size, proficiency level)
-- src/modules/portfolio/service.ts (NEW)
-- src/modules/reviews/service.ts (NEW)
-- src/modules/verification/service.ts (NEW)
-- src/modules/reputation/service.ts (NEW)
-- src/app/api/v1/portfolio/route.ts (NEW)
-- src/app/api/v1/portfolio/[id]/route.ts (NEW)
-- src/app/api/v1/portfolio/reorder/route.ts (NEW)
-- src/app/api/v1/reviews/route.ts (NEW)
-- src/app/api/v1/reviews/stats/route.ts (NEW)
-- src/app/api/v1/verification/route.ts (NEW)
-- src/app/api/v1/reputation/route.ts (NEW)
-- src/app/dashboard/freelancer/portfolio/page.tsx (NEW)
-- src/app/dashboard/freelancer/portfolio/portfolio-client.tsx (NEW)
-- src/app/dashboard/freelancer/page.tsx (UPDATED — portfolio link)
-- TODO.md (UPDATED — Phase 5 marked complete)
-- PROJECT_STATE.md (UPDATED)
-- CHANGELOG.md (UPDATED — v0.5.0)
-- DECISIONS.md (UPDATED — ADR-015)
-- API_STATUS.md (UPDATED — 11 new endpoints)
+- src/types/enums.ts (UPDATED — INVITATION_STATUS_LABELS)
+- src/modules/matching/service.ts (NEW)
+- src/modules/matching/quality.ts (NEW — quality score, duplicate detection, hiring probability)
+- src/modules/feed/service.ts (NEW)
+- src/modules/invitations/service.ts (NEW)
+- src/modules/projects/service.ts (UPDATED — quality score on publish)
+- src/app/api/v1/feed/route.ts (NEW)
+- src/app/api/v1/projects/[slug]/matches/route.ts (NEW)
+- src/app/api/v1/projects/[slug]/invitations/route.ts (NEW)
+- src/app/api/v1/me/invitations/route.ts (NEW)
+- src/app/api/v1/me/availability/route.ts (NEW)
+- TODO.md (UPDATED — Phase 6 marked complete)
+- CHANGELOG.md (UPDATED — v0.6.0)
+- DECISIONS.md (UPDATED — ADR-016)
+- API_STATUS.md (UPDATED — 7 new endpoints)
 
 # Next Recommended Task
-Start Phase 6 — Smart Features: DevJoo Match engine, Smart Feed, Reverse Hiring, Project Invitations, Availability system, Project Quality Score, Duplicate project detection, Hiring probability
+Start Phase 7 — Communication: Messaging system (WebSocket), Notification system, Instant project alerts, Email job queue, SMS job queue
