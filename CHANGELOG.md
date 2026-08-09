@@ -1,5 +1,35 @@
 # DevJoo — Changelog
 
+## [0.3.0] — 2026-08-09
+
+### Added
+- **Seed Data**: 10 categories, 75 skills, 93 synonyms (Persian tech market)
+- **Categories API**: GET /api/v1/categories (list), GET /api/v1/categories/[slug] (detail)
+- **Skills API**: GET /api/v1/skills (with search & category filter), GET /api/v1/skills/[slug] (detail)
+- **Project API**:
+  - POST /api/v1/projects — create project with auto slug generation
+  - GET /api/v1/projects — list with filters, sort, pagination
+  - GET /api/v1/projects/[slug] — project detail
+  - PATCH /api/v1/projects/[slug] — update draft project
+  - POST /api/v1/projects/[slug]/publish — publish via state machine (DRAFT → PENDING_APPROVAL)
+- **Proposal API**:
+  - POST /api/v1/projects/[slug]/proposals — submit proposal (max 10 per project)
+  - GET /api/v1/projects/[slug]/proposals — employer proposal list
+  - PATCH /api/v1/proposals/[id] — proposal status update
+  - GET /api/v1/me/proposals — freelancer proposal list
+- **Saved Projects**: POST /api/v1/projects/[slug]/save — bookmark toggle
+- **Frontend**:
+  - ProjectCard shared component (reusable project card with RTL design)
+  - /projects page with category filter bar and pagination
+  - /project/[slug] detail page with SEO breadcrumbs
+- **Dashboard Skeletons**: /dashboard (role-based redirect), /dashboard/freelancer, /dashboard/employer
+- **Module Service Layer**: projects/service.ts, proposals/service.ts
+
+### Decisions
+- ADR-013: Module-based service layer architecture
+
+---
+
 ## [0.2.0] — 2026-08-09
 
 ### Added

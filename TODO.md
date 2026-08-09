@@ -70,7 +70,7 @@
 
 ---
 
-## Phase 3 — Marketplace Core
+## Phase 3 — Marketplace Core (IN PROGRESS)
 
 ### Categories & Skills
 - [ ] Categories CRUD API

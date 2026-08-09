@@ -14,21 +14,21 @@
 [ ] POST /api/v1/auth/logout-all — destroy all sessions
 
 ## Projects
-[ ] GET    /api/v1/projects
-[ ] GET    /api/v1/projects/:id
-[ ] POST   /api/v1/projects
-[ ] PATCH  /api/v1/projects/:id
-[ ] DELETE /api/v1/projects/:id
-[ ] POST   /api/v1/projects/:id/publish
-[ ] POST   /api/v1/projects/:id/pause
-[ ] GET    /api/v1/projects/:id/similar
+[x] POST   /api/v1/projects — create project (auto slug, draft)
+[x] GET    /api/v1/projects — list projects (filters, sort, pagination)
+[x] GET    /api/v1/projects/[slug] — project detail
+[x] PATCH  /api/v1/projects/[slug] — update draft project
+[x] POST   /api/v1/projects/[slug]/publish — publish via state machine
+[ ] PATCH  /api/v1/projects/[slug]/pause — pause project
+[ ] GET    /api/v1/projects/[slug]/similar — similar projects
+[ ] DELETE /api/v1/projects/[slug] — delete project
 
 ## Proposals
-[ ] POST   /api/v1/projects/:id/proposals
-[ ] GET    /api/v1/projects/:id/proposals (employer)
-[ ] GET    /api/v1/me/proposals (freelancer)
-[ ] PATCH  /api/v1/proposals/:id/status (employer)
-[ ] POST   /api/v1/proposals/:id/withdraw (freelancer)
+[x] POST   /api/v1/projects/[slug]/proposals — submit proposal (max 10)
+[x] GET    /api/v1/projects/[slug]/proposals — employer proposal list
+[x] GET    /api/v1/me/proposals — freelancer proposal list
+[x] PATCH  /api/v1/proposals/[id] — update proposal status
+[ ] POST   /api/v1/proposals/[id]/withdraw — withdraw proposal
 
 ## Profiles
 [ ] GET    /api/v1/profiles/:username
@@ -39,22 +39,22 @@
 [ ] PATCH  /api/v1/me/employer-profile
 
 ## Skills
-[ ] GET    /api/v1/skills
-[ ] GET    /api/v1/skills/:slug
+[x] GET    /api/v1/skills — list skills (search & category filter)
+[x] GET    /api/v1/skills/[slug] — skill detail
 [ ] POST   /api/v1/me/skills
 [ ] DELETE /api/v1/me/skills/:id
 
 ## Categories
-[ ] GET    /api/v1/categories
-[ ] GET    /api/v1/categories/:slug
+[x] GET    /api/v1/categories — list categories
+[x] GET    /api/v1/categories/[slug] — category detail
 
 ## Search
 [ ] GET    /api/v1/search?q=&category=&skills=&...
 
 ## Saved Projects
-[ ] POST   /api/v1/projects/:id/save
-[ ] DELETE /api/v1/projects/:id/save
-[ ] GET    /api/v1/me/saved-projects
+[x] POST   /api/v1/projects/[slug]/save — bookmark toggle
+[ ] DELETE /api/v1/projects/[slug]/save — remove bookmark
+[ ] GET    /api/v1/me/saved-projects — list saved projects
 
 ## Invitations
 [ ] POST   /api/v1/projects/:id/invitations

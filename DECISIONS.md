@@ -154,3 +154,25 @@ Split session utilities into two files: `session-edge.ts` (jose only, edge-compa
 - This split prevents the entire auth system from breaking in Edge Runtime
 
 **Status:** Accepted
+
+---
+
+## ADR-013 — Module-Based Service Layer
+
+**Decision:**
+Place business logic in `src/modules/<domain>/service.ts` files, keeping API route handlers thin (validation, auth, response formatting only).
+
+**Reason:**
+- API route handlers in Next.js App Router are tightly coupled to the request/response cycle
+- Business logic (slug generation, state machine transitions, proposal limits, complex queries) needs to be reusable across routes and testable in isolation
+- A module-based service layer separates concerns: routes handle HTTP, services handle domain logic
+- This pattern mirrors NestJS module structure, easing future extraction to a separate backend
+- Services can be imported by both API routes and server components (e.g., for SSR data)
+
+**Conventions:**
+- Each domain gets a `src/modules/<domain>/` directory with `service.ts`
+- Service functions are pure (receive validated input, return data or throw errors)
+- Services import `db` from `@/lib/db` directly
+- Route handlers call service functions, wrapping results in `NextResponse.json()`
+
+**Status:** Accepted

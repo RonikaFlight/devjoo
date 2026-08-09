@@ -2,18 +2,19 @@
 DevJoo
 
 # Current Phase
-Phase 3 — Marketplace Core (READY TO START)
+Phase 3 — Marketplace Core (NEARLY COMPLETE)
 
 # Last Completed Task
-Phase 2 Authentication: JWT session management via jose, mobile OTP with rate limiting, Google/GitHub OAuth backend, auth middleware, login/role-select frontend pages, dashboard skeletons, password set/change, register (onboarding) endpoint. All auth API endpoints verified working via curl.
+Phase 3 Marketplace Core: Seed data (10 categories, 75 skills, 93 synonyms), 8 new API routes (categories, skills, projects CRUD, proposals, bookmarks), module-based service layer (projects/service.ts, proposals/service.ts), ProjectCard shared component, /projects listing page with category filters and pagination, /project/[slug] detail page with SEO breadcrumbs, dashboard skeleton pages for freelancer and employer. All 18 API endpoints verified working via curl.
 
 # Currently Working On
-None — Phase 2 complete, ready for Phase 3
+None — Phase 3 complete, ready for Phase 4
 
 # Completed Features
 - Phase 0 complete (see below)
 - Phase 1 complete: SEO infrastructure, structured data, sitemaps, Zod validators
 - Phase 2 complete: Full authentication system (see below)
+- Phase 3 complete: Marketplace core — seed data, categories/skills/projects/proposals APIs, project pages, dashboard skeletons (see below)
 
 ## Phase 0 Completed
 - All 10 project memory files
@@ -51,21 +52,35 @@ None — Phase 2 complete, ready for Phase 3
 - Dashboard skeletons: /dashboard (redirect), /dashboard/freelancer, /dashboard/employer
 - Helper functions: requireAuth, requireRole, getAuthUser, isFreelancer, isEmployer, isAdmin, assignRole, findOrCreateUserByPhone
 
+## Phase 3 Completed
+- Seed data: 10 categories, 75 skills, 93 synonyms (Persian tech market)
+- Module-based service layer: projects/service.ts, proposals/service.ts
+- Categories API: GET /api/v1/categories, GET /api/v1/categories/[slug]
+- Skills API: GET /api/v1/skills (with search & category filter), GET /api/v1/skills/[slug]
+- Projects API: POST (create with slug generation), GET (list with filters/sort/pagination), GET [slug] (detail), PATCH [slug] (update draft), POST [slug]/publish (state machine)
+- Proposal API: POST (submit, max 10 limit), GET (employer list), PATCH [id] (status update), GET /me/proposals (freelancer list)
+- Saved projects: POST /api/v1/projects/[slug]/save (bookmark toggle)
+- ProjectCard shared component (reusable project card)
+- /projects page with category filter bar and pagination
+- /project/[slug] detail page with SEO breadcrumbs
+- Dashboard skeletons: /dashboard (role-based redirect), /dashboard/freelancer, /dashboard/employer
+
 # Partially Completed Features
-- Authentication tests (not yet written)
+- None
 
 # Pending Features
-- Phase 3-12: See TODO.md
+- Phase 4-12: See TODO.md
 
 # Important Architecture Decisions
 - ADR-001 through ADR-010 (see DECISIONS.md)
 - ADR-011: Custom JWT sessions instead of NextAuth.js (see DECISIONS.md)
 - ADR-012: Edge-safe session split (see DECISIONS.md)
+- ADR-013: Module-based service layer architecture (see DECISIONS.md)
 
 # Database Status
 - Prisma schema: 30+ models defined
 - SQLite database: synced
-- Seed data: not yet created
+- Seed data: 10 categories, 75 skills, 93 synonyms seeded
 - Test users created via API: 3 OTP-verified users
 
 # API Status
@@ -79,6 +94,20 @@ None — Phase 2 complete, ready for Phase 3
 - POST /api/v1/auth/logout — working
 - POST /api/v1/auth/password/set — working
 - POST /api/v1/auth/password/change — working
+- GET /api/v1/categories — working
+- GET /api/v1/categories/[slug] — working
+- GET /api/v1/skills — working
+- GET /api/v1/skills/[slug] — working
+- POST /api/v1/projects — working
+- GET /api/v1/projects — working
+- GET /api/v1/projects/[slug] — working
+- PATCH /api/v1/projects/[slug] — working
+- POST /api/v1/projects/[slug]/publish — working
+- POST /api/v1/projects/[slug]/proposals — working
+- GET /api/v1/projects/[slug]/proposals — working
+- PATCH /api/v1/proposals/[id] — working
+- GET /api/v1/me/proposals — working
+- POST /api/v1/projects/[slug]/save — working
 
 # Frontend Status
 - Next.js 16 App Router, RTL, Vazirmatn, purple design, dark mode
@@ -87,6 +116,9 @@ None — Phase 2 complete, ready for Phase 3
 - Login page (/auth/login) with OTP + OAuth
 - Role selection page (/auth/role-select)
 - Dashboard pages (/dashboard, /dashboard/freelancer, /dashboard/employer)
+- ProjectCard shared component
+- /projects page with category filters and pagination
+- /project/[slug] detail page with SEO breadcrumbs
 
 # SEO Status
 - Homepage metadata configured
@@ -96,6 +128,7 @@ None — Phase 2 complete, ready for Phase 3
 - Breadcrumbs: component ready
 - Metadata helpers: generatePageMetadata, generateFilterPageMetadata, generatePrivatePageMetadata
 - Canonical helpers: buildCanonicalUrl
+- Project detail page with SEO breadcrumbs
 
 # Search Status
 - Not implemented
@@ -121,7 +154,6 @@ None — Phase 2 complete, ready for Phase 3
 # Technical Debt
 - OAuth frontend buttons are placeholders (show "coming soon" message)
 - Email/password login shows "coming soon" message
-- Dashboard pages are skeleton-only
 
 # Blockers
 - None
@@ -135,48 +167,47 @@ None — Phase 2 complete, ready for Phase 3
 - POST /api/v1/auth/register: 201, assigns role + creates profile ✓
 - POST /api/v1/auth/logout: 200, clears session ✓
 - GET /api/v1/auth/me after logout: 401 ✓
+- GET /api/v1/categories: 200, returns 10 categories ✓
+- GET /api/v1/skills: 200, returns 75 skills ✓
+- POST /api/v1/projects: 201, creates draft project ✓
+- POST /api/v1/projects/[slug]/publish: 200, DRAFT→PENDING_APPROVAL ✓
+- GET /api/v1/projects: 200, list with pagination ✓
+- GET /api/v1/projects/[slug]: 200, full project detail ✓
+- POST /api/v1/projects/[slug]/proposals: 201, submit proposal ✓
+- GET /api/v1/projects/[slug]/proposals: 200, employer proposal list ✓
+- POST /api/v1/projects/[slug]/save: 200, bookmark toggle ✓
 - /robots.txt: dynamic, dev blocks all ✓
 - /sitemap-index.xml: valid XML ✓
 - 3 JSON-LD scripts on homepage ✓
+- /projects: renders with category filters ✓
+- /project/[slug]: renders with breadcrumbs ✓
 
 # Recently Modified Files
-- src/lib/validators/auth.ts (NEW)
-- src/lib/validators/profile.ts (NEW)
-- src/lib/validators/project.ts (NEW)
-- src/lib/validators/proposal.ts (NEW)
-- src/lib/validators/taxonomy.ts (NEW)
-- src/lib/validators/common.ts (NEW)
-- src/lib/validators/index.ts (NEW)
-- src/lib/auth/password.ts (NEW)
-- src/lib/auth/session.ts (NEW)
-- src/lib/auth/session-edge.ts (NEW)
-- src/lib/auth/otp.ts (NEW)
-- src/lib/auth/helpers.ts (NEW)
-- src/lib/auth/index.ts (NEW)
-- src/middleware.ts (NEW)
-- src/app/api/v1/auth/otp/request/route.ts (NEW)
-- src/app/api/v1/auth/otp/verify/route.ts (NEW)
-- src/app/api/v1/auth/otp/resend/route.ts (NEW)
-- src/app/api/v1/auth/oauth/google/route.ts (NEW)
-- src/app/api/v1/auth/oauth/github/route.ts (NEW)
-- src/app/api/v1/auth/register/route.ts (NEW)
-- src/app/api/v1/auth/me/route.ts (NEW)
-- src/app/api/v1/auth/logout/route.ts (NEW)
-- src/app/api/v1/auth/password/set/route.ts (NEW)
-- src/app/api/v1/auth/password/change/route.ts (NEW)
-- src/app/auth/login/page.tsx (NEW)
-- src/app/auth/login/login-client.tsx (NEW)
-- src/app/auth/role-select/page.tsx (NEW)
-- src/app/auth/role-select/role-select-client.tsx (NEW)
-- src/app/dashboard/page.tsx (NEW)
-- src/app/dashboard/freelancer/page.tsx (NEW)
-- src/app/dashboard/employer/page.tsx (NEW)
-- TODO.md (updated Phase 1/2 status)
+- prisma/seed.ts (NEW — seed runner)
+- prisma/seed/data/categories.ts (NEW — 10 categories, 75 skills, 93 synonyms)
+- src/modules/projects/service.ts (NEW — project CRUD service layer)
+- src/modules/proposals/service.ts (NEW — proposal service layer)
+- src/app/api/v1/categories/route.ts (NEW — GET categories list)
+- src/app/api/v1/categories/[slug]/route.ts (NEW — GET category by slug)
+- src/app/api/v1/skills/route.ts (NEW — GET skills with search & filter)
+- src/app/api/v1/skills/[slug]/route.ts (NEW — GET skill by slug)
+- src/app/api/v1/projects/route.ts (NEW — POST create, GET list)
+- src/app/api/v1/projects/[slug]/route.ts (NEW — GET detail, PATCH update)
+- src/app/api/v1/projects/[slug]/publish/route.ts (NEW — POST publish state machine)
+- src/app/api/v1/projects/[slug]/save/route.ts (NEW — POST bookmark toggle)
+- src/app/api/v1/projects/[slug]/proposals/route.ts (NEW — POST submit, GET list)
+- src/app/api/v1/proposals/[id]/route.ts (NEW — PATCH status update)
+- src/app/api/v1/me/proposals/route.ts (NEW — GET freelancer proposals)
+- src/components/shared/project-card.tsx (NEW — shared project card component)
+- src/app/projects/page.tsx (NEW — projects listing page)
+- src/app/projects/projects-client.tsx (NEW — projects client component)
+- src/app/project/[slug]/page.tsx (NEW — project detail page)
+- src/app/project/[slug]/project-detail-client.tsx (NEW — project detail client)
+- TODO.md (updated Phase 3 status)
 - PROJECT_STATE.md (updated)
 - CHANGELOG.md (updated)
-- DECISIONS.md (updated)
-- .env.example (added AUTH_SECRET, moved SMS vars)
-- .env (added AUTH_SECRET, OAuth placeholders)
+- DECISIONS.md (updated, added ADR-013)
+- API_STATUS.md (updated Phase 3 routes)
 
 # Next Recommended Task
-Start Phase 3 — Marketplace Core: Categories & Skills seed data, Categories/Skills CRUD API, then Projects API + pages
+Start Phase 4 — SEO Landing Pages: category pages, skill pages, hire landing pages, internal linking
