@@ -180,14 +180,14 @@
 
 ---
 
-## Phase 10 — Advanced Marketplace
+## Phase 10 — Advanced Marketplace ✓
 
-- [ ] Service marketplace
-- [ ] Team mode
-- [ ] Paid trial
-- [ ] Milestones
-- [ ] Contracts
-- [ ] Payment abstraction
+- [x] Service marketplace (CRUD, publish/pause, public listing, filters, orders)
+- [x] Team mode (create, list, members add/remove/role, leader-only management)
+- [x] Paid trial (trialPriceRial + trialDays on ServiceListing, isTrial order flag)
+- [x] Milestones (state machine, role-based transitions, add to contract)
+- [x] Contracts (creation from accepted proposal, status machine, project status sync)
+- [x] Payment abstraction (provider interface, internal dev provider, factory)
 
 ---
 

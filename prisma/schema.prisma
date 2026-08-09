@@ -35,6 +35,12 @@ model User {
   notificationPrefs NotificationPreference[]
   conversations  ConversationMember[]
   sentMessages  Message[]           @relation("SentMessages")
+  ledTeams      Team[]             @relation("TeamLeader")
+  teamMemberships TeamMember[]
+  serviceListings ServiceListing[]
+  serviceOrders  ServiceOrder[]     @relation("EmployerServiceOrders")
+  contractsAsFreelancer Contract[] @relation("FreelancerContracts")
+  contractsAsEmployer   Contract[] @relation("EmployerContracts")
 
   @@index([email])
   @@index([phone])
@@ -185,6 +191,7 @@ model Category {
   children   Category[]       @relation("CategoryHierarchy")
   skills     Skill[]
   projects   Project[]
+  serviceListings ServiceListing[]
 
   @@index([slug])
   @@index([parentId])
@@ -207,6 +214,7 @@ model Skill {
   synonyms   SkillSynonym[]
   userSkills UserSkill[]
   projects   ProjectSkill[]
+  serviceListings ServiceListingSkill[]
 
   @@index([slug])
   @@index([categoryId])
@@ -280,6 +288,7 @@ model Project {
   savedBy     SavedProject[]
   matchScores MatchScore[]
   conversations Conversation[]
+  contract    Contract?
 
   @@index([employerId, createdAt])
   @@index([status, createdAt])
@@ -534,6 +543,194 @@ model ProjectInvitation {
 
   @@unique([projectId, freelancerId])
   @@index([freelancerId, status])
+}
+
+// ============ CONTRACTS & MILESTONES ============
+
+model Contract {
+  id               String   @id @default(cuid())
+  projectId        String   @unique
+  freelancerId     String
+  employerId       String
+  status           String   @default("DRAFT")
+  amountRial       Int
+  budgetType       String   @default("FIXED")
+  startedAt        DateTime?
+  deadline         DateTime?
+  completedAt      DateTime?
+  cancelledAt      DateTime?
+  cancelReason     String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  project    Project     @relation(fields: [projectId], references: [id])
+  freelancer User        @relation("FreelancerContracts", fields: [freelancerId], references: [id])
+  employer   User        @relation("EmployerContracts", fields: [employerId], references: [id])
+  milestones Milestone[]
+  payments   Payment[]
+
+  @@index([freelancerId, status])
+  @@index([employerId, status])
+  @@index([status, createdAt])
+}
+
+model Milestone {
+  id          String    @id @default(cuid())
+  contractId  String
+  title       String
+  description String?
+  amountRial  Int
+  status      String    @default("PENDING")
+  dueDate     DateTime?
+  approvedAt  DateTime?
+  rejectedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  contract Contract @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@index([contractId, status])
+  @@index([dueDate])
+}
+
+// ============ PAYMENTS ============
+
+model Payment {
+  id               String   @id @default(cuid())
+  contractId       String
+  milestoneId      String?
+  amountRial       Int
+  status           String   @default("PENDING")
+  provider         String   @default("INTERNAL")
+  description      String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  contract    Contract           @relation(fields: [contractId], references: [id])
+  transactions PaymentTransaction[]
+
+  @@index([contractId, createdAt])
+  @@index([status])
+}
+
+model PaymentTransaction {
+  id           String   @id @default(cuid())
+  paymentId    String
+  provider     String
+  externalId   String?
+  status       String   @default("PENDING")
+  amountRial   Int
+  metadata     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@index([paymentId])
+  @@index([provider, externalId])
+}
+
+// ============ SERVICE MARKETPLACE ============
+
+model ServiceListing {
+  id              String   @id @default(cuid())
+  freelancerId    String
+  title           String
+  slug            String   @unique
+  description     String
+  categoryId      String?
+  priceRial       Int
+  deliveryDays    Int
+  revisions       Int      @default(1)
+  trialPriceRial  Int?
+  trialDays      Int?
+  status          String   @default("DRAFT")
+  isFeatured      Boolean  @default(false)
+  totalOrders     Int      @default(0)
+  averageRating   Float?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  freelancer  User      @relation(fields: [freelancerId], references: [id])
+  category    Category? @relation(fields: [categoryId], references: [id])
+  skills      ServiceListingSkill[]
+  orders      ServiceOrder[]
+
+  @@index([freelancerId, status])
+  @@index([categoryId, status])
+  @@index([status, createdAt])
+  @@index([priceRial])
+}
+
+model ServiceListingSkill {
+  id               String @id @default(cuid())
+  serviceListingId String
+  skillId          String
+
+  serviceListing ServiceListing @relation(fields: [serviceListingId], references: [id], onDelete: Cascade)
+  skill          Skill           @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([serviceListingId, skillId])
+}
+
+model ServiceOrder {
+  id               String   @id @default(cuid())
+  serviceId        String
+  employerId       String
+  status           String   @default("PENDING")
+  priceRial        Int
+  requirements     String?
+  deliveryDays     Int
+  revisions        Int      @default(1)
+  acceptedAt       DateTime?
+  startedAt        DateTime?
+  completedAt      DateTime?
+  cancelledAt      DateTime?
+  cancelReason     String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  service  ServiceListing @relation(fields: [serviceId], references: [id])
+  employer User           @relation("EmployerServiceOrders", fields: [employerId], references: [id])
+
+  @@index([serviceId, status])
+  @@index([employerId, createdAt])
+  @@index([status, createdAt])
+}
+
+// ============ TEAMS ============
+
+model Team {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  leaderId    String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  leader  User         @relation("TeamLeader", fields: [leaderId], references: [id])
+  members TeamMember[]
+
+  @@index([leaderId])
+  @@index([slug])
+}
+
+model TeamMember {
+  id       String   @id @default(cuid())
+  teamId   String
+  userId   String
+  role     String   @default("MEMBER")
+  joinedAt DateTime @default(now())
+  leftAt   DateTime?
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@index([userId])
+  @@index([teamId, role])
 }
 
 // ============ BLOG & CONTENT ============

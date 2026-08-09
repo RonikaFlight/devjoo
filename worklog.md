@@ -343,3 +343,45 @@ Stage Summary:
 - Employer dashboard provides comprehensive hiring funnel + spend + response metrics
 - Price Radar provides market intelligence (category/skill rates, freelancer rate distribution)
 - Ready for Phase 10 (Advanced Marketplace)
+
+---
+Task ID: 10
+Agent: Main Agent
+Task: Phase 10 — Advanced Marketplace (Contracts, Services, Teams, Payments, Paid Trial)
+
+Work Log:
+- Added 9 new Prisma models: Contract, Milestone, Payment, PaymentTransaction, ServiceListing, ServiceListingSkill, ServiceOrder, Team, TeamMember
+- Added trialPriceRial + trialDays fields to ServiceListing
+- Updated User model with 6 new relations (ledTeams, teamMemberships, serviceListings, serviceOrders, contractsAsFreelancer, contractsAsEmployer)
+- Updated Project model with contract relation, Category with serviceListings, Skill with serviceListings
+- Ran prisma db push + generate (42 total models)
+- Added 7 enum groups to enums.ts with Persian labels: CONTRACT_STATUS (6), MILESTONE_STATUS (6), PAYMENT_STATUS (6), PAYMENT_PROVIDER (5), SERVICE_LISTING_STATUS (4), SERVICE_ORDER_STATUS (8), TEAM_MEMBER_ROLE (3)
+- Added state machine transition maps: VALID_CONTRACT_TRANSITIONS, VALID_MILESTONE_TRANSITIONS, VALID_SERVICE_ORDER_TRANSITIONS
+- Created 4 Zod validators: contract.ts, service.ts, team.ts, payment.ts
+- Created contracts/service.ts: createContract (from accepted proposal, milestone sum validation), getContract, listContracts, updateContractStatus, addMilestone, updateMilestoneStatus
+- Created services/service.ts: createServiceListing (slug, category+skill linking), getServiceListing, listServiceListings (public filters), listMyServiceListings, updateServiceListing, updateServiceListingStatus, createServiceOrder (with trial support), listServiceOrders, updateServiceOrderStatus
+- Created teams/service.ts: createTeam (auto-leader, slug), getTeam (by ID or slug), listTeams (public search), listMyTeams, updateTeam, addTeamMember, removeTeamMember, updateTeamMemberRole
+- Created payments/provider.ts: PaymentProvider interface, InternalPaymentProvider (dev mode), getPaymentProvider factory, isRealPaymentConfigured helper
+- Created payments/service.ts: createPayment (contract/milestone validation, provider integration), getPayment, listPayments
+- Created 21 API route files (18 endpoints):
+  - Contracts: POST /api/v1/contracts, GET /me, GET/PATCH /[id], POST /[id]/milestones, PATCH /[id]/milestones/[milestoneId]
+  - Services: GET / (public), GET /[slug] (public), GET+POST /me, PATCH /me/[serviceId], POST /orders, GET /me/orders, PATCH /orders/[id]
+  - Teams: GET / (public), GET+POST /me, GET+PATCH /[id], POST /[id]/members, PATCH+DELETE /[id]/members/[memberId]
+  - Payments: POST /, GET /me, GET /[id]
+- Fixed import path: @/modules/auth/helpers → @/lib/auth/helpers
+- Fixed getAuthUser() usage: returns {user, session}, destructured to auth.user.id
+- Fixed teams/service.ts: extra closing braces in Prisma select syntax
+- Updated .env: FEATURE_PAYMENTS_ENABLED, FEATURE_PAID_TRIAL_ENABLED, FEATURE_TEAM_MODE_ENABLED, FEATURE_MESSAGING_ENABLED, PAYMENT_PROVIDER=INTERNAL
+- Added ADR-020: Provider-agnostic payment abstraction
+- Updated TODO.md (Phase 10 complete), CHANGELOG.md (v0.10.0), DECISIONS.md (ADR-020), PROJECT_STATE.md
+- ESLint clean, TypeScript type-check clean for all new Phase 10 files
+
+Stage Summary:
+- Phase 10 Advanced Marketplace is COMPLETE
+- 18 new API endpoints operational
+- 9 new Prisma models (42 total)
+- Contracts with milestone-based progress tracking
+- Service marketplace (Fiverr-style) with paid trial support
+- Team mode for freelancer collaboration
+- Payment abstraction ready for Iranian payment gateways
+- Ready for Phase 11 (Admin)

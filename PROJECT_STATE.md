@@ -2,13 +2,13 @@
 DevJoo
 
 # Current Phase
-Phase 10 — Advanced Marketplace (READY TO START)
+Phase 11 — Admin (READY TO START)
 
 # Last Completed Task
-Phase 9 Analytics: Proposal analytics (win rate, velocity, by category/month), Project analytics (lifecycle, time-to-hire, trends), Employer dashboard (hiring funnel, spend, response time), Price Radar (market rates, freelancer rates, proposal vs budget), 4 API endpoints, ADR-019
+Phase 10 Advanced Marketplace: Contracts & milestones, service marketplace, team mode, paid trial, payment abstraction, 9 new Prisma models, 18 API endpoints, ADR-020
 
 # Currently Working On
-None — Phase 9 complete, ready for Phase 10
+None — Phase 10 complete, ready for Phase 11
 
 # Completed Features
 - Phase 0 complete (see below)
@@ -21,6 +21,7 @@ None — Phase 9 complete, ready for Phase 10
 - Phase 7 complete: Communication — messaging, notifications, dispatcher, SSE stream, job queues (see below)
 - Phase 8 complete: AI — provider abstraction, project builder, proposal assistant (see below)
 - Phase 9 complete: Analytics — proposal analytics, project analytics, employer dashboard, price radar (see below)
+- Phase 10 complete: Advanced marketplace — contracts, milestones, service marketplace, teams, paid trial, payment abstraction (see below)
 
 ## Phase 0 Completed
 - All 10 project memory files
@@ -141,6 +142,18 @@ None — Phase 9 complete, ready for Phase 10
 - POST /api/v1/ai/generate-proposal (freelancer-only, security: can only generate for self)
 - ADR-018: Provider-agnostic AI with structured output parsing
 
+## Phase 10 Completed
+- Contracts: create from accepted proposal, status state machine (DRAFT→ACTIVE→IN_PROGRESS→COMPLETED, with CANCELLED/DISPUTED), project status sync
+- Milestones: add to contract, status state machine (PENDING→IN_PROGRESS→SUBMITTED→APPROVED/REJECTED), role-based authorization
+- Service Marketplace: freelancer CRUD with slug, category+skill linking, public filtered listing, order state machine
+- Service Orders: PENDING→ACCEPTED→IN_PROGRESS→DELIVERED→COMPLETED (with REVISION_REQUESTED/CANCELLED/REFUNDED), role-based transitions
+- Team Mode: create with auto-leader, member management (add/remove/role change), limits (5 teams/user, 20 members/team)
+- Paid Trial: optional trialPriceRial+trialDays on ServiceListing, isTrial flag on order creation
+- Payment Abstraction: PaymentProvider interface, InternalPaymentProvider (dev), provider factory, transaction tracking
+- Zod validators: contract.ts, service.ts, team.ts, payment.ts
+- 18 API endpoints: contracts (5), services (8), teams (5), payments (3)
+- ADR-020: Provider-agnostic payment abstraction
+
 ## Phase 9 Completed
 - Proposal Analytics: win rate, status distribution, by category (win rate + avg price), by month (trend), velocity (week/month/year)
 - Project Analytics: status distribution, time-to-hire (publish → accepted), category trends, monthly breakdown, avg quality score
@@ -166,9 +179,10 @@ None — Phase 9 complete, ready for Phase 10
 - ADR-017: Event-driven notification dispatch (see DECISIONS.md)
 - ADR-018: Provider-agnostic AI with structured output parsing (see DECISIONS.md)
 - ADR-019: On-demand analytics computation (see DECISIONS.md)
+- ADR-020: Provider-agnostic payment abstraction (see DECISIONS.md)
 
 # Database Status
-- Prisma schema: 33 models defined (added Conversation, ConversationMember, Message)
+- Prisma schema: 42 models defined (added Contract, Milestone, Payment, PaymentTransaction, ServiceListing, ServiceListingSkill, ServiceOrder, Team, TeamMember)
 - SQLite database: synced
 - Seed data: 10 categories, 75 skills, 93 synonyms seeded
 - Test users created via API: 3 OTP-verified users
@@ -235,6 +249,27 @@ None — Phase 9 complete, ready for Phase 10
 - GET /api/v1/me/analytics/projects — working (auth required, employer)
 - GET /api/v1/me/analytics/employer — working (auth required, employer)
 - GET /api/v1/analytics/price-radar — working (public, optional category filter)
+- POST /api/v1/contracts — working (auth required, employer only)
+- GET /api/v1/contracts/me — working (auth required, role-adaptive)
+- GET /api/v1/contracts/[id] — working (auth required)
+- PATCH /api/v1/contracts/[id] — working (auth required, parties only)
+- POST /api/v1/contracts/[id]/milestones — working (auth required, parties only)
+- PATCH /api/v1/contracts/[id]/milestones/[milestoneId] — working (auth required, role-based)
+- GET /api/v1/services — working (public, filtered)
+- GET /api/v1/services/[slug] — working (public)
+- GET/POST /api/v1/services/me — working (auth required, freelancer only)
+- PATCH /api/v1/services/me/[serviceId] — working (auth required, owner only)
+- POST /api/v1/services/orders — working (auth required, employer only)
+- GET /api/v1/services/me/orders — working (auth required)
+- PATCH /api/v1/services/orders/[id] — working (auth required, parties only)
+- GET /api/v1/teams — working (public, searchable)
+- GET/POST /api/v1/teams/me — working (auth required, freelancer only)
+- GET/PATCH /api/v1/teams/[id] — working (auth required for PATCH, leader only)
+- POST /api/v1/teams/[id]/members — working (auth required, leader only)
+- PATCH/DELETE /api/v1/teams/[id]/members/[memberId] — working (auth required, leader only)
+- POST /api/v1/payments — working (auth required, employer only)
+- GET /api/v1/payments/me — working (auth required)
+- GET /api/v1/payments/[id] — working (auth required, parties only)
 
 # Frontend Status
 - Next.js 16 App Router, RTL, Vazirmatn, purple design, dark mode
@@ -304,6 +339,8 @@ None — Phase 9 complete, ready for Phase 10
 - Email/SMS queues are in-memory — lost on server restart (acceptable until production)
 - AI features require AI_API_KEY env var — endpoints return 503 when not configured
 - Analytics computed on-demand (see ADR-019 — acceptable until traffic warrants caching)
+- Payments use internal dev provider (see ADR-020 — ZarinPal/IDPay needed for production)
+- Service marketplace, teams, contracts have no frontend pages (APIs only)
 
 # Blockers
 - None
@@ -314,21 +351,27 @@ None — Phase 9 complete, ready for Phase 10
 - npx prisma generate ✓
 
 # Recently Modified Files
-- src/modules/analytics/proposal-analytics.ts (NEW)
-- src/modules/analytics/project-analytics.ts (NEW)
-- src/modules/analytics/employer-metrics.ts (NEW)
-- src/modules/analytics/price-radar.ts (NEW)
-- src/lib/validators/analytics.ts (NEW)
+- src/modules/contracts/service.ts (NEW)
+- src/modules/services/service.ts (NEW)
+- src/modules/teams/service.ts (NEW)
+- src/modules/payments/provider.ts (NEW)
+- src/modules/payments/service.ts (NEW)
+- src/lib/validators/contract.ts (NEW)
+- src/lib/validators/service.ts (NEW)
+- src/lib/validators/team.ts (NEW)
+- src/lib/validators/payment.ts (NEW)
 - src/lib/validators/index.ts (UPDATED)
-- src/app/api/v1/me/analytics/proposals/route.ts (NEW)
-- src/app/api/v1/me/analytics/projects/route.ts (NEW)
-- src/app/api/v1/me/analytics/employer/route.ts (NEW)
-- src/app/api/v1/analytics/price-radar/route.ts (NEW)
-- TODO.md (UPDATED — Phase 9 marked complete)
-- CHANGELOG.md (UPDATED — v0.9.0)
-- DECISIONS.md (UPDATED — ADR-019)
-- API_STATUS.md (UPDATED — 4 new endpoints)
+- src/types/enums.ts (UPDATED — contracts, milestones, payments, services, teams enums)
+- src/app/api/v1/contracts/ (NEW — 5 routes)
+- src/app/api/v1/services/ (NEW — 8 routes)
+- src/app/api/v1/teams/ (NEW — 5 routes)
+- src/app/api/v1/payments/ (NEW — 3 routes)
+- prisma/schema.prisma (UPDATED — 9 new models)
+- .env (UPDATED — marketplace feature flags, PAYMENT_PROVIDER)
+- TODO.md (UPDATED — Phase 10 marked complete)
+- CHANGELOG.md (UPDATED — v0.10.0)
+- DECISIONS.md (UPDATED — ADR-020)
 - PROJECT_STATE.md (UPDATED)
 
 # Next Recommended Task
-Start Phase 10 — Advanced Marketplace: Service marketplace, Team mode, Paid trial, Milestones, Contracts, Payment abstraction
+Start Phase 11 — Admin: Admin dashboard, user management, project moderation, skill management, category management, SEO control panel, content management, feature flag configuration

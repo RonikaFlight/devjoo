@@ -309,3 +309,174 @@ export const NOTIFICATION_CHANNEL_LABELS: Record<NotificationChannel, string> = 
   SMS: 'پیامک',
   PUSH: 'اعلان پوش',
 };
+
+// ============ CONTRACTS ============
+
+export const CONTRACT_STATUS = {
+  DRAFT: 'DRAFT',
+  ACTIVE: 'ACTIVE',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  DISPUTED: 'DISPUTED',
+} as const;
+
+export type ContractStatus = (typeof CONTRACT_STATUS)[keyof typeof CONTRACT_STATUS];
+
+export const VALID_CONTRACT_TRANSITIONS: Record<ContractStatus, ContractStatus[]> = {
+  DRAFT: ['ACTIVE', 'CANCELLED'],
+  ACTIVE: ['IN_PROGRESS', 'CANCELLED'],
+  IN_PROGRESS: ['COMPLETED', 'CANCELLED', 'DISPUTED'],
+  COMPLETED: [],
+  CANCELLED: [],
+  DISPUTED: ['IN_PROGRESS', 'CANCELLED', 'COMPLETED'],
+};
+
+export const CONTRACT_STATUS_LABELS: Record<ContractStatus, string> = {
+  DRAFT: 'پیش‌نویس',
+  ACTIVE: 'فعال',
+  IN_PROGRESS: 'در حال انجام',
+  COMPLETED: 'تکمیل شده',
+  CANCELLED: 'لغو شده',
+  DISPUTED: 'زیر اختلاف',
+};
+
+// ============ MILESTONES ============
+
+export const MILESTONE_STATUS = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  SUBMITTED: 'SUBMITTED',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  CANCELLED: 'CANCELLED',
+} as const;
+
+export type MilestoneStatus = (typeof MILESTONE_STATUS)[keyof typeof MILESTONE_STATUS];
+
+export const VALID_MILESTONE_TRANSITIONS: Record<MilestoneStatus, MilestoneStatus[]> = {
+  PENDING: ['IN_PROGRESS', 'CANCELLED'],
+  IN_PROGRESS: ['SUBMITTED', 'CANCELLED'],
+  SUBMITTED: ['APPROVED', 'REJECTED'],
+  APPROVED: [],
+  REJECTED: ['IN_PROGRESS', 'CANCELLED'],
+  CANCELLED: [],
+};
+
+export const MILESTONE_STATUS_LABELS: Record<MilestoneStatus, string> = {
+  PENDING: 'در انتظار',
+  IN_PROGRESS: 'در حال انجام',
+  SUBMITTED: 'تحویل داده شده',
+  APPROVED: 'تایید شده',
+  REJECTED: 'رد شده',
+  CANCELLED: 'لغو شده',
+};
+
+// ============ PAYMENTS ============
+
+export const PAYMENT_STATUS = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  REFUNDED: 'REFUNDED',
+  CANCELLED: 'CANCELLED',
+} as const;
+
+export type PaymentStatus = (typeof PAYMENT_STATUS)[keyof typeof PAYMENT_STATUS];
+
+export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
+  PENDING: 'در انتظار',
+  PROCESSING: 'در حال پردازش',
+  COMPLETED: 'تکمیل شده',
+  FAILED: 'ناموفق',
+  REFUNDED: 'بازپرداخت شده',
+  CANCELLED: 'لغو شده',
+};
+
+export const PAYMENT_PROVIDER = {
+  INTERNAL: 'INTERNAL',
+  ZARINPAL: 'ZARINPAL',
+  IDPAY: 'IDPAY',
+  PAYIR: 'PAYIR',
+  BANK_TRANSFER: 'BANK_TRANSFER',
+} as const;
+
+export type PaymentProvider = (typeof PAYMENT_PROVIDER)[keyof typeof PAYMENT_PROVIDER];
+
+export const PAYMENT_PROVIDER_LABELS: Record<PaymentProvider, string> = {
+  INTERNAL: 'پرداخت داخلی',
+  ZARINPAL: 'زرین‌پال',
+  IDPAY: 'آیدی‌پی',
+  PAYIR: 'پی‌آی‌آر',
+  BANK_TRANSFER: 'انتقال بانکی',
+};
+
+// ============ SERVICE MARKETPLACE ============
+
+export const SERVICE_LISTING_STATUS = {
+  DRAFT: 'DRAFT',
+  PUBLISHED: 'PUBLISHED',
+  PAUSED: 'PAUSED',
+  ARCHIVED: 'ARCHIVED',
+} as const;
+
+export type ServiceListingStatus = (typeof SERVICE_LISTING_STATUS)[keyof typeof SERVICE_LISTING_STATUS];
+
+export const SERVICE_LISTING_STATUS_LABELS: Record<ServiceListingStatus, string> = {
+  DRAFT: 'پیش‌نویس',
+  PUBLISHED: 'منتشر شده',
+  PAUSED: 'متوقف',
+  ARCHIVED: 'بایگانی شده',
+};
+
+export const SERVICE_ORDER_STATUS = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  DELIVERED: 'DELIVERED',
+  REVISION_REQUESTED: 'REVISION_REQUESTED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  REFUNDED: 'REFUNDED',
+} as const;
+
+export type ServiceOrderStatus = (typeof SERVICE_ORDER_STATUS)[keyof typeof SERVICE_ORDER_STATUS];
+
+export const VALID_SERVICE_ORDER_TRANSITIONS: Record<ServiceOrderStatus, ServiceOrderStatus[]> = {
+  PENDING: ['ACCEPTED', 'CANCELLED'],
+  ACCEPTED: ['IN_PROGRESS', 'CANCELLED'],
+  IN_PROGRESS: ['DELIVERED', 'CANCELLED'],
+  DELIVERED: ['COMPLETED', 'REVISION_REQUESTED'],
+  REVISION_REQUESTED: ['IN_PROGRESS', 'CANCELLED'],
+  COMPLETED: [],
+  CANCELLED: [],
+  REFUNDED: [],
+};
+
+export const SERVICE_ORDER_STATUS_LABELS: Record<ServiceOrderStatus, string> = {
+  PENDING: 'در انتظار تایید',
+  ACCEPTED: 'قبول شده',
+  IN_PROGRESS: 'در حال انجام',
+  DELIVERED: 'تحویل داده شده',
+  REVISION_REQUESTED: 'درخواست اصلاح',
+  COMPLETED: 'تکمیل شده',
+  CANCELLED: 'لغو شده',
+  REFUNDED: 'بازپرداخت شده',
+};
+
+// ============ TEAMS ============
+
+export const TEAM_MEMBER_ROLE = {
+  LEADER: 'LEADER',
+  SENIOR: 'SENIOR',
+  MEMBER: 'MEMBER',
+} as const;
+
+export type TeamMemberRole = (typeof TEAM_MEMBER_ROLE)[keyof typeof TEAM_MEMBER_ROLE];
+
+export const TEAM_MEMBER_ROLE_LABELS: Record<TeamMemberRole, string> = {
+  LEADER: 'رهبر تیم',
+  SENIOR: 'عضو ارشد',
+  MEMBER: 'عضو',
+};

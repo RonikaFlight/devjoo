@@ -341,3 +341,36 @@ Compute all analytics on-demand at query time rather than using materialized vie
 - Adding caching later is a non-breaking change (same API response shape)
 
 **Status:** Accepted
+
+---
+
+## ADR-020 — Provider-Agnostic Payment Abstraction
+
+**Decision:**
+Implement a `PaymentProvider` interface with an internal dev provider. Real payment gateways (ZarinPal, IDPay, Payir) can be added as implementations behind the same interface without touching business logic.
+
+**Reason:**
+- Iran's payment ecosystem has multiple providers (ZarinPal, IDPay, Payir, bank transfer) — abstracting behind an interface allows easy swapping
+- The `InternalPaymentProvider` simulates instant payment success in development — no external dependencies
+- `PAYMENT_PROVIDER` env var selects the active provider at runtime
+- `isRealPaymentConfigured()` helper allows conditional logic (e.g., show payment form vs. instant-approval in dev)
+- Transaction records track all provider interactions for audit and debugging
+- The Payment model links to Contract (and optionally Milestone) for full payment traceability
+
+**Architecture:**
+- `modules/payments/provider.ts` — `PaymentProvider` interface, `InternalPaymentProvider`, `getPaymentProvider()` factory
+- `modules/payments/service.ts` — createPayment (validates contract, creates Payment + PaymentTransaction), getPayment, listPayments
+- `lib/validators/payment.ts` — createPaymentSchema, paymentQuerySchema
+- 3 API endpoints: POST /api/v1/payments, GET /api/v1/payments/me, GET /api/v1/payments/[id]
+
+**Configuration:**
+- `PAYMENT_PROVIDER` — active provider name (default: INTERNAL)
+- `FEATURE_PAYMENTS_ENABLED` — master feature flag
+
+**Consequences:**
+- In dev mode, payments are instant (no real money moves)
+- Adding a real provider requires implementing 3 methods: createPayment, verifyPayment, refundPayment
+- Payment → Contract → Project linkage provides full traceability
+- Future: webhook endpoints for payment callbacks from real providers
+
+**Status:** Accepted

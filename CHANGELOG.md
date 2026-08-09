@@ -1,5 +1,65 @@
 # DevJoo — Changelog
 
+## [0.10.0] — 2026-08-09
+
+### Added
+- **Contracts & Milestones**:
+  - Contract creation from accepted proposals with milestone validation
+  - Contract state machine: DRAFT → ACTIVE → IN_PROGRESS → COMPLETED (with CANCELLED, DISPUTED branches)
+  - Milestone state machine: PENDING → IN_PROGRESS → SUBMITTED → APPROVED/REJECTED
+  - Role-based authorization: only employer can approve milestones, freelancer submits
+  - Automatic project status update (IN_PROGRESS on contract, COMPLETED on contract completion)
+  - POST /api/v1/contracts (employer, creates from accepted proposal)
+  - GET /api/v1/contracts/me (list own contracts as freelancer/employer)
+  - GET/PATCH /api/v1/contracts/[id]
+  - POST /api/v1/contracts/[id]/milestones (add milestone)
+  - PATCH /api/v1/contracts/[id]/milestones/[milestoneId] (update status)
+- **Service Marketplace** (Fiverr-style):
+  - Service listings: create, update, publish/pause/archive
+  - Freelancer-only CRUD with slug generation, category + skill linking
+  - Public listing with filters (category, skill, price range, sort, search)
+  - Service orders with full state machine: PENDING → ACCEPTED → IN_PROGRESS → DELIVERED → COMPLETED (with REVISION_REQUESTED, CANCELLED, REFUNDED)
+  - Role-based status transitions (freelancer accepts/starts/delivers, employer completes/requests revision)
+  - GET /api/v1/services (public, filtered)
+  - GET /api/v1/services/[slug] (public detail)
+  - GET/POST /api/v1/services/me (freelancer CRUD)
+  - PATCH /api/v1/services/me/[serviceId] (update + status)
+  - POST /api/v1/services/orders (employer places order)
+  - GET /api/v1/services/me/orders (list own orders)
+  - PATCH /api/v1/services/orders/[id] (status update)
+- **Team Mode**:
+  - Team creation with auto-leader membership
+  - Team listing (public, searchable) and my teams
+  - Member management: add, remove, role change (LEADER, SENIOR, MEMBER)
+  - Limits: max 5 teams per user, max 20 members per team
+  - Soft member removal (leftAt timestamp)
+  - GET /api/v1/teams (public), GET/POST /api/v1/teams/me
+  - GET/PATCH /api/v1/teams/[id]
+  - POST /api/v1/teams/[id]/members
+  - PATCH/DELETE /api/v1/teams/[id]/members/[memberId]
+- **Payment Abstraction**:
+  - `PaymentProvider` interface with createPayment, verifyPayment, refundPayment
+  - `InternalPaymentProvider` for dev mode (simulates instant success)
+  - Provider factory with env-based config (PAYMENT_PROVIDER)
+  - Payment creation with contract/milestone validation
+  - Transaction tracking per payment
+  - POST /api/v1/payments (create payment)
+  - GET /api/v1/payments/me (list own payments)
+  - GET /api/v1/payments/[id] (payment detail)
+- **Paid Trial**:
+  - Service listings support optional trialPriceRial and trialDays
+  - Trial orders use reduced price and shorter delivery
+  - isTrial flag on service order creation
+- **New Prisma Models**: Contract, Milestone, Payment, PaymentTransaction, ServiceListing, ServiceListingSkill, ServiceOrder, Team, TeamMember
+- **New Enums + Persian Labels**: CONTRACT_STATUS (6), MILESTONE_STATUS (6), PAYMENT_STATUS (6), PAYMENT_PROVIDER (5), SERVICE_LISTING_STATUS (4), SERVICE_ORDER_STATUS (8), TEAM_MEMBER_ROLE (3)
+- **Zod Validators**: contract.ts, service.ts, team.ts, payment.ts
+- **Environment Config**: FEATURE_PAYMENTS_ENABLED, FEATURE_PAID_TRIAL_ENABLED, FEATURE_TEAM_MODE_ENABLED, PAYMENT_PROVIDER
+
+### Decisions
+- ADR-020: Provider-agnostic payment abstraction (interface-based, internal dev provider, swap to ZarinPal/IDPay in production)
+
+---
+
 ## [0.9.0] — 2026-08-09
 
 ### Added
