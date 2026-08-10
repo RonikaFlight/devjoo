@@ -5,7 +5,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-surface mt-auto">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Brand */}
           <div className="space-y-4">
             <Link href="/" className="inline-block">
@@ -29,6 +29,9 @@ export function Footer() {
                   {item.label}
                 </Link>
               ))}
+              <Link href="/hire" className="text-sm text-text-secondary hover:text-primary transition-colors">
+                استخدام فریلنسر
+              </Link>
             </nav>
           </div>
 
@@ -78,13 +81,10 @@ export function Footer() {
               <Link href="/projects/seo-digital-marketing" className="text-sm text-text-secondary hover:text-primary transition-colors">
                 سئو و دیجیتال مارکتینگ
               </Link>
-              <Link href="/hire" className="text-sm text-text-secondary hover:text-primary transition-colors">
-                استخدام فریلنسر
-              </Link>
             </nav>
           </div>
 
-          {/* About */}
+          {/* About DevJoo */}
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-text-primary">درباره DevJoo</h3>
             <nav className="flex flex-col gap-2">
@@ -94,8 +94,14 @@ export function Footer() {
               <Link href="/contact" className="text-sm text-text-secondary hover:text-primary transition-colors">
                 تماس با ما
               </Link>
+              <Link href="/faq" className="text-sm text-text-secondary hover:text-primary transition-colors">
+                سوالات متداول
+              </Link>
               <Link href="/terms" className="text-sm text-text-secondary hover:text-primary transition-colors">
                 قوانین و مقررات
+              </Link>
+              <Link href="/privacy" className="text-sm text-text-secondary hover:text-primary transition-colors">
+                حریم خصوصی
               </Link>
             </nav>
           </div>

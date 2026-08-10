@@ -4,6 +4,7 @@ import { db } from '@/lib/db';
 
 const GITHUB_TOKEN_URL = 'https://github.com/login/oauth/access_token';
 const GITHUB_USER_URL = 'https://api.github.com/user';
+const GITHUB_AUTH_URL = 'https://github.com/login/oauth/authorize';
 
 interface GithubTokenResponse {
   access_token: string;
@@ -18,6 +19,37 @@ interface GithubUser {
   email?: string;
   avatar_url?: string;
   bio?: string;
+}
+
+/**
+ * GET /api/v1/auth/oauth/github?callbackUrl=...
+ * Redirect user to GitHub's OAuth consent screen.
+ */
+export async function GET(request: NextRequest) {
+  const clientId = process.env.GITHUB_CLIENT_ID;
+
+  if (!clientId) {
+    return NextResponse.redirect(
+      new URL('/auth/login?error=oauth_not_configured', request.url)
+    );
+  }
+
+  const callbackUrl = request.nextUrl.searchParams.get('callbackUrl') || '/dashboard';
+  const state = Buffer.from(
+    JSON.stringify({ callbackUrl, provider: 'github' }),
+    'utf-8'
+  ).toString('base64url');
+
+  const redirectUri = `${new URL(request.url).origin}/auth/callback/github`;
+
+  const params = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: redirectUri,
+    scope: 'read:user user:email',
+    state,
+  });
+
+  return NextResponse.redirect(`${GITHUB_AUTH_URL}?${params.toString()}`);
 }
 
 /**

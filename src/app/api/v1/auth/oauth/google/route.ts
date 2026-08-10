@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createSession, getSessionCookieOptions, findOrCreateUserByPhone, assignRole } from '@/lib/auth';
+import { createSession, getSessionCookieOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
 
 const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const GOOGLE_USERINFO_URL = 'https://www.googleapis.com/oauth2/v2/userinfo';
+const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
 
 interface GoogleTokenResponse {
   access_token: string;
@@ -20,6 +21,41 @@ interface GoogleUserInfo {
   name?: string;
   picture?: string;
   locale?: string;
+}
+
+/**
+ * GET /api/v1/auth/oauth/google?callbackUrl=...
+ * Redirect user to Google's OAuth consent screen.
+ */
+export async function GET(request: NextRequest) {
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+
+  if (!clientId) {
+    // If Google OAuth is not configured, return an error page
+    return NextResponse.redirect(
+      new URL('/auth/login?error=oauth_not_configured', request.url)
+    );
+  }
+
+  const callbackUrl = request.nextUrl.searchParams.get('callbackUrl') || '/dashboard';
+  const state = Buffer.from(
+    JSON.stringify({ callbackUrl, provider: 'google' }),
+    'utf-8'
+  ).toString('base64url');
+
+  const redirectUri = `${new URL(request.url).origin}/auth/callback/google`;
+
+  const params = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: redirectUri,
+    response_type: 'code',
+    scope: 'openid email profile',
+    access_type: 'offline',
+    prompt: 'select_account',
+    state,
+  });
+
+  return NextResponse.redirect(`${GOOGLE_AUTH_URL}?${params.toString()}`);
 }
 
 /**

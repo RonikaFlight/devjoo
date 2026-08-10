@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import {
   Globe, Smartphone, Palette, Brain, Server, Search,
   BarChart3, ShieldCheck, Image, Lock, ArrowLeft,
+  Users, Zap,
 } from 'lucide-react';
 
 export const metadata: Metadata = generatePageMetadata({
@@ -84,7 +85,7 @@ export default async function HirePage() {
         <div className="mb-6">
           <Breadcrumbs
             items={[
-              { label: 'خانه', href: '/' },
+              { label: 'صفحه اصلی', href: '/' },
               { label: 'استخدام فریلنسر' },
             ]}
           />
@@ -92,21 +93,45 @@ export default async function HirePage() {
         <StructuredData data={breadcrumbLd} />
 
         {/* Hero */}
-        <div className="mb-10 text-center">
-          <h1 className="text-2xl font-bold sm:text-3xl lg:text-4xl">
-            متخصص مناسب پروژه‌ات را{' '}
-            <span className="text-primary">پیدا کن</span>
-          </h1>
-          <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
-            از بین صدها فریلنسر تأییدشده، متخصص مورد نظر خود را برای پروژه‌های
-            برنامه‌نویسی، طراحی، سئو و سایر حوزه‌های دیجیتال پیدا کنید.
-          </p>
+        <section className="mb-12">
+          <div className="brand-gradient rounded-2xl p-8 sm:p-12 text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20">
+              <Zap className="h-7 w-7 text-white" />
+            </div>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-4">
+              متخصص مناسب پروژه‌ات را{' '}
+              <span className="text-white/90">پیدا کن</span>
+            </h1>
+            <p className="mx-auto max-w-2xl text-white/85 text-base sm:text-lg leading-relaxed">
+              از بین صدها فریلنسر تأییدشده، متخصص مورد نظر خود را برای پروژه‌های
+              برنامه‌نویسی، طراحی، سئو و سایر حوزه‌های دیجیتال پیدا کنید.
+            </p>
+          </div>
+        </section>
+
+        {/* Quick Stats */}
+        <div className="mb-12 grid grid-cols-3 gap-4 max-w-2xl mx-auto">
+          {[
+            { icon: Users, value: '۵۰۰+', label: 'فریلنسر فعال' },
+            { icon: ShieldCheck, value: 'احراز هویت', label: 'تضمین شده' },
+            { icon: Zap, value: 'سریع', label: 'پیدا کردن متخصص' },
+          ].map((stat) => {
+            const Icon = stat.icon;
+            return (
+              <div key={stat.label} className="text-center">
+                <Icon className="h-6 w-6 text-primary mx-auto mb-2" />
+                <p className="text-lg font-bold text-text-primary">{stat.value}</p>
+                <p className="text-xs text-text-secondary">{stat.label}</p>
+              </div>
+            );
+          })}
         </div>
 
         {/* Popular Hire Links */}
         {hireLinks.length > 0 && (
-          <div className="mb-10 rounded-xl border border-border bg-surface p-6">
-            <h2 className="mb-4 text-lg font-semibold">
+          <div className="mb-12">
+            <h2 className="text-xl font-bold text-text-primary mb-6 flex items-center gap-2">
+              <div className="h-6 w-1 rounded-full bg-primary" />
               استخدام بر اساس تخصص
             </h2>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -115,13 +140,13 @@ export default async function HirePage() {
                   key={`${link.slug}-${link.name}`}
                   href={`/hire/${link.slug}`}
                 >
-                  <div className="flex items-center gap-3 rounded-lg border border-border p-3 transition-colors hover:border-primary/30 hover:bg-primary-soft">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary-soft">
-                      <ArrowLeft className="h-4 w-4 text-primary" />
+                  <div className="flex items-center gap-3 rounded-xl border border-border p-4 transition-all hover:border-primary/30 hover:bg-primary-soft hover:shadow-sm">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-soft">
+                      <ArrowLeft className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium">استخدام {link.name}</p>
-                      <p className="text-xs text-muted-foreground">{link.categoryName}</p>
+                      <p className="text-sm font-semibold text-text-primary">استخدام {link.name}</p>
+                      <p className="text-xs text-text-secondary">{link.categoryName}</p>
                     </div>
                   </div>
                 </Link>
@@ -131,8 +156,11 @@ export default async function HirePage() {
         )}
 
         {/* Categories for Hiring */}
-        <div className="mb-10">
-          <h2 className="mb-4 text-lg font-semibold">دسته‌بندی‌ها</h2>
+        <div className="mb-12">
+          <h2 className="text-xl font-bold text-text-primary mb-6 flex items-center gap-2">
+            <div className="h-6 w-1 rounded-full bg-primary" />
+            دسته‌بندی‌ها
+          </h2>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {categories.map((cat) => {
               const IconComp = iconMap[cat.icon || 'Globe'] || Globe;
@@ -141,10 +169,10 @@ export default async function HirePage() {
                   <Card className="group h-full transition-all hover:border-primary/30 hover:shadow-md">
                     <CardContent className="p-5">
                       <div className="mb-3 flex items-center gap-3">
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-soft">
-                          <IconComp className="h-4 w-4 text-primary" />
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft">
+                          <IconComp className="h-5 w-5 text-primary" />
                         </div>
-                        <h3 className="font-semibold group-hover:text-primary transition-colors">
+                        <h3 className="font-bold text-text-primary group-hover:text-primary transition-colors">
                           {cat.name}
                         </h3>
                       </div>
@@ -169,25 +197,25 @@ export default async function HirePage() {
         </div>
 
         {/* CTA */}
-        <div className="rounded-xl bg-primary p-8 text-center text-white">
-          <h2 className="text-xl font-bold sm:text-2xl">
+        <section className="rounded-2xl bg-primary p-8 sm:p-10 text-center">
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-3">
             پروژه‌ات را ثبت کن، پیشنهادها بگیر
           </h2>
-          <p className="mx-auto mt-2 max-w-lg text-primary-foreground/80">
+          <p className="mx-auto max-w-lg text-primary-foreground/80 mb-6">
             پروژه خود را رایگان ثبت کنید و از بین پیشنهادهای متخصصین، بهترین را انتخاب کنید.
           </p>
-          <Button size="lg" variant="secondary" className="mt-6" asChild>
+          <Button size="lg" variant="secondary" className="mt-2" asChild>
             <Link href="/projects/create">
               ثبت پروژه رایگان
               <ArrowLeft className="mr-2 h-4 w-4" />
             </Link>
           </Button>
-        </div>
+        </section>
 
         {/* SEO Content */}
-        <div className="mt-12 rounded-xl border border-border p-6">
-          <h2 className="mb-3 text-lg font-semibold">استخدام فریلنسر در DevJoo</h2>
-          <div className="text-sm text-muted-foreground leading-relaxed space-y-3">
+        <div className="mt-12 rounded-xl border border-border bg-surface p-6 sm:p-8">
+          <h2 className="mb-4 text-lg font-bold text-text-primary">استخدام فریلنسر در DevJoo</h2>
+          <div className="text-sm text-text-secondary leading-relaxed space-y-3">
             <p>
               DevJoo پلتفرم استخدام فریلنسر و متخصص دیجیتال در ایران است.
               اگر به دنبال برنامه‌نویس React، طراح UI/UX، متخصص سئو یا هر متخصص دیجیتال دیگری هستید،
