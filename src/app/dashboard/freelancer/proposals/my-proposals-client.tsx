@@ -128,7 +128,7 @@ export default function MyProposalsClient() {
           </p>
           <Button className="mt-4" asChild>
             <Link href="/projects">
-              <Briefcase className="ml-2 h-4 w-4" />
+              <Briefcase className="ms-2 h-4 w-4" />
               مشاهده پروژه‌ها
             </Link>
           </Button>
@@ -180,7 +180,7 @@ export default function MyProposalsClient() {
                   {proposal.status === PROPOSAL_STATUS.ACCEPTED && (
                     <Button size="sm" asChild>
                       <Link href="/dashboard/messages">
-                        <MessageCircle className="ml-1 h-4 w-4" />
+                        <MessageCircle className="ms-1 h-4 w-4" />
                         شروع گفتگو
                       </Link>
                     </Button>
@@ -199,7 +199,7 @@ export default function MyProposalsClient() {
                 disabled={page <= 1}
                 onClick={() => setPage((p) => p - 1)}
               >
-                <ChevronRight className="ml-1 h-4 w-4" />
+                <ChevronRight className="ms-1 h-4 w-4" />
                 قبلی
               </Button>
               <span className="text-sm text-muted-foreground">
@@ -212,7 +212,7 @@ export default function MyProposalsClient() {
                 onClick={() => setPage((p) => p + 1)}
               >
                 بعدی
-                <ChevronLeft className="mr-1 h-4 w-4" />
+                <ChevronLeft className="ms-1 h-4 w-4" />
               </Button>
             </div>
           )}

@@ -49,7 +49,7 @@ export default async function FreelancerProfilePage({ params }: Props) {
           <Button asChild>
             <Link href="/freelancers">
               مشاهده فریلنسرها
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ArrowLeft className="ms-2 h-4 w-4" />
             </Link>
           </Button>
         </div>

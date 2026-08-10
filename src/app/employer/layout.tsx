@@ -90,7 +90,7 @@ export default function EmployerLayout({
   if (isLoading) {
     return (
       <div className="flex min-h-screen">
-        <aside className="hidden h-screen w-64 shrink-0 border-l border-border bg-surface p-4 lg:block">
+        <aside className="hidden h-screen w-64 shrink-0 border-s border-border bg-surface p-4 lg:block">
           <Skeleton className="mb-4 h-8 w-32" />
           <div className="space-y-2">
             {Array.from({ length: 8 }).map((_, i) => (
@@ -113,13 +113,13 @@ export default function EmployerLayout({
   return (
     <div className="flex min-h-screen">
       {/* Desktop Sidebar */}
-      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 border-l border-border bg-surface lg:flex lg:flex-col">
+      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 border-s border-border bg-surface lg:flex lg:flex-col">
         {/* Logo */}
         <div className="flex h-16 items-center border-b border-border px-5">
           <Link href="/employer" className="text-lg font-bold text-primary">
             DevJoo
           </Link>
-          <span className="mr-2 text-xs text-text-muted">کارفرما</span>
+          <span className="ms-2 text-xs text-text-muted">کارفرما</span>
         </div>
 
         {/* Nav */}

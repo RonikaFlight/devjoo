@@ -198,7 +198,7 @@ export function ProjectDetailClient({ project }: { project: ProjectData }) {
     if (isLoading) {
       return (
         <Button className="w-full" size="lg" disabled>
-          <Briefcase className="ml-2 h-4 w-4" />
+          <Briefcase className="ms-2 h-4 w-4" />
           در حال بارگذاری...
         </Button>
       );
@@ -208,7 +208,7 @@ export function ProjectDetailClient({ project }: { project: ProjectData }) {
       return (
         <Button className="w-full" size="lg" asChild>
           <Link href={`/project/${project.slug}/proposals`}>
-            <Briefcase className="ml-2 h-4 w-4" />
+            <Briefcase className="ms-2 h-4 w-4" />
             پیشنهادهای دریافت شده
           </Link>
         </Button>
@@ -228,7 +228,7 @@ export function ProjectDetailClient({ project }: { project: ProjectData }) {
     if (!isFreelancer) {
       return (
         <Button className="w-full" size="lg" disabled>
-          <Briefcase className="ml-2 h-4 w-4" />
+          <Briefcase className="ms-2 h-4 w-4" />
           فقط فریلنسرها می‌توانند پیشنهاد ارسال کنند
         </Button>
       );
@@ -249,7 +249,7 @@ export function ProjectDetailClient({ project }: { project: ProjectData }) {
         size="lg"
         onClick={handleOpenProposalDialog}
       >
-        <Send className="ml-2 h-4 w-4" />
+        <Send className="ms-2 h-4 w-4" />
         ارسال پیشنهاد
       </Button>
     );

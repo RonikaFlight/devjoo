@@ -13,6 +13,8 @@ import {
 } from 'lucide-react';
 import { formatNumber } from '@/lib/utils/currency';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = generatePageMetadata({
   title: 'دسته‌بندی‌ها',
   description: 'دسته‌بندی‌های پروژه‌های فریلنسری شامل برنامه‌نویسی وب، موبایل، طراحی UI/UX، هوش مصنوعی، بک‌اند، سئو و بیشتر در DevJoo.',

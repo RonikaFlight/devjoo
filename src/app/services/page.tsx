@@ -49,11 +49,11 @@ export default function ServicesPage() {
         {/* Search */}
         <div className="mb-6 max-w-xl mx-auto">
           <div className="relative">
-            <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-text-muted" />
+            <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-5 w-5 text-text-muted" />
             <input
               type="text"
               placeholder="جستجوی خدمت..."
-              className="w-full rounded-xl border border-border bg-surface py-3 pr-10 pl-4 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/30"
+              className="w-full rounded-xl border border-border bg-surface py-3 ps-10 pe-4 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/30"
               readOnly
             />
           </div>
@@ -89,7 +89,7 @@ export default function ServicesPage() {
           <Button asChild>
             <Link href="/dashboard/freelancer/services">
               ثبت خدمات
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ArrowLeft className="ms-2 h-4 w-4" />
             </Link>
           </Button>
         </div>

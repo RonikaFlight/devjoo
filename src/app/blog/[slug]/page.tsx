@@ -52,7 +52,7 @@ export default async function BlogPostPage({ params }: Props) {
           <Button asChild>
             <Link href="/blog">
               بازگشت به وبلاگ
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ArrowLeft className="ms-2 h-4 w-4" />
             </Link>
           </Button>
         </div>

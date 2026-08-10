@@ -401,7 +401,7 @@ export default function MessagesClient() {
             <Dialog open={newConvOpen} onOpenChange={setNewConvOpen}>
               <DialogTrigger asChild>
                 <Button size="sm" variant="outline">
-                  <Plus className="ml-1 h-4 w-4" />
+                  <Plus className="ms-1 h-4 w-4" />
                   مکالمه جدید
                 </Button>
               </DialogTrigger>
@@ -648,7 +648,7 @@ export default function MessagesClient() {
                           key={msg.id}
                           className={cn(
                             'flex flex-col',
-                            isMine ? 'items-start' : 'items-end',
+                            isMine ? 'items-end' : 'items-start',
                           )}
                         >
                           {/* Sender name for PROJECT conversations */}
@@ -679,7 +679,7 @@ export default function MessagesClient() {
                           <span
                             className={cn(
                               'mt-1 text-xs text-muted-foreground',
-                              isMine ? 'ms-1' : 'me-1',
+                              isMine ? 'me-1' : 'ms-1',
                             )}
                           >
                             {formatMessageTime(msg.createdAt)}

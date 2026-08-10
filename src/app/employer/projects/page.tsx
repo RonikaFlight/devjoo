@@ -75,7 +75,7 @@ export default function EmployerProjectsPage() {
         </div>
         <Button asChild>
           <Link href="/projects/new">
-            <Plus className="ml-2 h-4 w-4" />
+            <Plus className="ms-2 h-4 w-4" />
             ثبت پروژه جدید
           </Link>
         </Button>

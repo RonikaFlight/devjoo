@@ -35,13 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   });
 }
 
-export async function generateStaticParams() {
-  const skills = await db.skill.findMany({
-    where: { isActive: true },
-    select: { slug: true },
-  });
-  return skills.map((s) => ({ slug: s.slug }));
-}
+export const dynamic = 'force-dynamic';
 
 export default async function SkillProjectsPage({ params }: PageProps) {
   const { slug } = await params;

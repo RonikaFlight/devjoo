@@ -101,6 +101,8 @@ interface PageProps {
   params: Promise<{ role: string }>;
 }
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { role } = await params;
   const mapping = hireRoleToSkill[role];
@@ -116,9 +118,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   });
 }
 
-export async function generateStaticParams() {
-  return allHireRoles.map((role) => ({ role }));
-}
+
 
 export default async function HireRolePage({ params }: PageProps) {
   const { role } = await params;

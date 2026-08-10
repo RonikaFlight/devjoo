@@ -54,7 +54,7 @@ export default function FreelancerProfilePage() {
                   {user?.displayName?.charAt(0) || 'ف'}
                 </AvatarFallback>
               </Avatar>
-              <button className="absolute -bottom-1 -left-1 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md transition-transform hover:scale-105">
+              <button className="absolute -bottom-1 -start-1 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md transition-transform hover:scale-105">
                 <Camera className="h-4 w-4" />
               </button>
             </div>

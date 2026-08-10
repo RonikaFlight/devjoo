@@ -76,7 +76,7 @@ export function ProjectsPageClient() {
         <h1 className="text-2xl font-bold">پروژه‌ها</h1>
         <p className="mt-1 text-muted-foreground">
           پروژه‌های مناسب خود را پیدا کنید
-          {!loading && <span className="mr-2">({total.toLocaleString('fa-IR')} پروژه)</span>}
+          {!loading && <span className="ms-2">({total.toLocaleString('fa-IR')} پروژه)</span>}
         </p>
       </div>
 

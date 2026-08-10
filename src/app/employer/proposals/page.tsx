@@ -143,15 +143,15 @@ export default function EmployerProposalsPage() {
 
                 <div className="flex shrink-0 gap-2">
                   <Button variant="outline" size="sm">
-                    <Eye className="ml-1 h-4 w-4" />
+                    <Eye className="ms-1 h-4 w-4" />
                     مشاهده
                   </Button>
                   <Button variant="outline" size="sm" className="text-green-600 hover:text-green-700">
-                    <CheckCircle className="ml-1 h-4 w-4" />
+                    <CheckCircle className="ms-1 h-4 w-4" />
                     تایید
                   </Button>
                   <Button variant="outline" size="sm" className="text-red-500 hover:text-red-600">
-                    <XCircle className="ml-1 h-4 w-4" />
+                    <XCircle className="ms-1 h-4 w-4" />
                     رد
                   </Button>
                 </div>

@@ -30,13 +30,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   });
 }
 
-export async function generateStaticParams() {
-  const categories = await db.category.findMany({
-    where: { isActive: true },
-    select: { slug: true },
-  });
-  return categories.map((cat) => ({ slug: cat.slug }));
-}
+export const dynamic = 'force-dynamic';
 
 export default async function CategoryProjectsPage({ params }: PageProps) {
   const { slug } = await params;

@@ -101,8 +101,8 @@ export function LoginClient() {
     >
       {/* Subtle background decoration */}
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 h-96 w-96 rounded-full bg-brand-100/60 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-brand-100/40 blur-3xl" />
+        <div className="absolute -top-40 -end-40 h-96 w-96 rounded-full bg-brand-100/60 blur-3xl" />
+        <div className="absolute -bottom-40 -start-40 h-96 w-96 rounded-full bg-brand-100/40 blur-3xl" />
       </div>
 
       <div className="w-full max-w-[420px]">

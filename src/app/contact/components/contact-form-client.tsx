@@ -65,9 +65,9 @@ export function ContactFormClient() {
       </div>
       <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
         {isSubmitting ? (
-          <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+          <Loader2 className="ms-2 h-4 w-4 animate-spin" />
         ) : (
-          <Send className="ml-2 h-4 w-4" />
+          <Send className="ms-2 h-4 w-4" />
         )}
         ارسال پیام
       </Button>

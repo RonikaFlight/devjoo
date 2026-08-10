@@ -14,6 +14,8 @@ import {
   Users, Zap,
 } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = generatePageMetadata({
   title: 'استخدام فریلنسر و برنامه‌نویس',
   description:
@@ -207,7 +209,7 @@ export default async function HirePage() {
           <Button size="lg" variant="secondary" className="mt-2" asChild>
             <Link href="/projects/create">
               ثبت پروژه رایگان
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ArrowLeft className="ms-2 h-4 w-4" />
             </Link>
           </Button>
         </section>

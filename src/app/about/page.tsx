@@ -179,7 +179,7 @@ export default function AboutPage() {
             <Button size="lg" variant="secondary" asChild>
               <Link href="/auth/register">
                 ثبت‌نام رایگان
-                <ArrowLeft className="mr-2 h-4 w-4" />
+                <ArrowLeft className="ms-2 h-4 w-4" />
               </Link>
             </Button>
             <Button size="lg" variant="ghost" className="text-white hover:bg-white/10" asChild>

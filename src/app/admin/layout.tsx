@@ -30,7 +30,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
-      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 border-l border-border bg-card md:block">
+      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 border-s border-border bg-card md:block">
         <div className="flex h-16 items-center border-b border-border px-6">
           <Link href="/admin" className="text-lg font-bold text-primary">
             DevJoo Admin
@@ -48,7 +48,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             </Link>
           ))}
         </nav>
-        <div className="absolute bottom-4 left-4 right-4">
+        <div className="absolute bottom-4 start-4 end-4">
           <Link
             href="/dashboard"
             className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:text-foreground"

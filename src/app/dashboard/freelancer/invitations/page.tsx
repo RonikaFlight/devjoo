@@ -47,7 +47,7 @@ export default function FreelancerInvitationsPage() {
         </p>
         <Button variant="outline" className="mt-4" asChild>
           <Link href="/dashboard/freelancer/profile">
-            <UserCircle className="ml-2 h-4 w-4" />
+            <UserCircle className="ms-2 h-4 w-4" />
             ویرایش پروفایل
           </Link>
         </Button>

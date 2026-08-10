@@ -139,7 +139,7 @@ export default function FaqPage() {
                     key={idx}
                     value={`${cat.title}-${idx}`}
                   >
-                    <AccordionTrigger className="text-text-primary font-medium text-right">
+                    <AccordionTrigger className="text-text-primary font-medium text-start">
                       {item.q}
                     </AccordionTrigger>
                     <AccordionContent className="text-text-secondary leading-relaxed">
@@ -163,7 +163,7 @@ export default function FaqPage() {
           <Button size="lg" variant="secondary" asChild>
             <Link href="/contact">
               تماس با ما
-              <ArrowLeft className="mr-2 h-4 w-4" />
+              <ArrowLeft className="ms-2 h-4 w-4" />
             </Link>
           </Button>
         </div>
